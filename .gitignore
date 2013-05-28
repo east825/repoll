@@ -1,3 +1,6 @@
-.idea/
-target/
-repoll.imp
+/.idea/
+/target/
+/wiki/
+/db/
+/derby.log
+/repoll.iml
