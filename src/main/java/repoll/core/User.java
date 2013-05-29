@@ -46,7 +46,7 @@ public class User extends DomainObject {
 
     @Override
     public String toString() {
-        return String.format("User(id = %d, login = %s)", getId(), login);
+        return String.format("User(id=%d, login='%s')", getId(), login);
     }
 
     boolean isAuthorized() {

@@ -25,15 +25,8 @@ public class PollMapper extends AbstractMapper<Poll> {
             "(user_id, title, description, creation) values (?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Poll\" where id = ?";
 
-    private final Map<Long, Poll> loadedMap = new HashMap<>();
-
     private PollMapper() {
         super();
-    }
-
-    @Override
-    protected Map<Long, Poll> getLoadedMap() {
-        return loadedMap;
     }
 
     @Override

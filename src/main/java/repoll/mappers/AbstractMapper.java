@@ -2,14 +2,15 @@ package repoll.mappers;
 
 import repoll.core.ConnectionProvider;
 import repoll.core.DomainObject;
-import repoll.core.User;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractMapper<T extends DomainObject> {
 
     protected final Connection connection;
+    private final Map<Long, T> loadedMap = new HashMap<>();
 
     /*
      * All mapper objects are singletons and can't be instantiated directly
@@ -17,8 +18,6 @@ public abstract class AbstractMapper<T extends DomainObject> {
     protected AbstractMapper() {
         connection = ConnectionProvider.connection();
     }
-
-    protected abstract Map<Long, T> getLoadedMap();
 
     protected abstract PreparedStatement getLoadByIdStatement(long id) throws SQLException;
 
@@ -36,7 +35,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
     }
 
     public T loadById(long id) throws MapperException {
-        Map<Long, T> loadedMap = getLoadedMap();
+        Map<Long, T> loadedMap = this.loadedMap;
         T object = loadedMap.get(id);
         if (object != null) {
             return object;
@@ -47,7 +46,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
                 return null;
             resultSet.next();
             object = loadObject(resultSet);
-            getLoadedMap().put(id, object);
+            loadedMap.put(id, object);
             return object;
         } catch (SQLException e) {
             throw new MapperException("Error searching object with id = " + id, e);
@@ -55,7 +54,6 @@ public abstract class AbstractMapper<T extends DomainObject> {
     }
 
     public final void update(T domainObject) throws MapperException {
-        Map<Long, ? extends DomainObject> loadedMap = getLoadedMap();
         if (domainObject.getId() == DomainObject.UNSAVED_OBJECT_ID) {
             throw new IllegalStateException("Object " + domainObject + " was not saved in database before its update");
         }
@@ -75,8 +73,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
         } catch (SQLException e) {
             throw new MapperException("Error while deleting object " + domainObject, e);
         } finally {
-            Map<Long, T> map = getLoadedMap();
-            map.remove(domainObject.getId());
+            loadedMap.remove(domainObject.getId());
         }
     }
 
@@ -88,7 +85,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
             statement.executeUpdate();
             long newId = generateId(statement);
             domainObject.setId(newId);
-            System.out.println(newId);
+            loadedMap.put(newId, domainObject);
             return newId;
         } catch (SQLException e) {
             throw new MapperException("Error while inserting object " + domainObject, e);
