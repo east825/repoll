@@ -1,6 +1,11 @@
 package repoll.core;
 
-public interface DatabasePersistent<T> {
-    void save();
-    T load();
+import repoll.mappers.MapperException;
+
+public interface DatabasePersistent {
+    void insert() throws MapperException;
+
+    void update() throws MapperException;
+
+    void delete() throws MapperException;
 }
