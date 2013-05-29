@@ -1,8 +1,5 @@
 package repoll.core;
 
-import repoll.mappers.AbstractMapper;
-import repoll.mappers.PollMapper;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,12 +15,6 @@ public class Poll extends DomainObject {
     public Poll(User author, String title) {
         this.author = author;
         this.title = title;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PollMapper mapper() {
-        return PollMapper.getInstance();
     }
 
     public User getAuthor() {

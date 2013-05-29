@@ -1,9 +1,6 @@
 package repoll.core;
 
-import repoll.mappers.UserMapper;
-
 import java.sql.Timestamp;
-import java.util.List;
 
 public class User extends DomainObject {
     private String firstName, middleName, lastName;
@@ -36,12 +33,6 @@ public class User extends DomainObject {
     // TODO: calculate actual hash here
     private static String calculatePasswordHash(String password) {
         return password;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public UserMapper mapper() {
-        return UserMapper.getInstance();
     }
 
     @Override
