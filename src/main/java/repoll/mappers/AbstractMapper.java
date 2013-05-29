@@ -11,7 +11,10 @@ public abstract class AbstractMapper<T extends DomainObject> {
 
     protected final Connection connection;
 
-    AbstractMapper () {
+    /*
+     * All mapper objects are singletons and can't be instantiated directly
+     */
+    protected AbstractMapper() {
         connection = ConnectionProvider.connection();
     }
 
@@ -25,7 +28,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
 
     protected abstract PreparedStatement getDeleteStatement(T domainObject) throws SQLException;
 
-    protected abstract T loadObject(ResultSet resultSet) throws SQLException;
+    protected abstract T loadObject(ResultSet resultSet) throws SQLException, MapperException;
 
     private long generateId() {
         // TODO: unique primary key generation

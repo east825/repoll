@@ -1,14 +1,30 @@
 package repoll.core;
 
+import repoll.mappers.AbstractMapper;
+import repoll.mappers.PollMapper;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Poll {
+public class Poll extends DomainObject {
     private User author;
-    private String title, description;
-    private Date creationDate;
-    private List<Answer> answers;
-    private List<Commentary> commentaries;
+    private String title, description = "";
+    private Date creationDate = new Date(System.currentTimeMillis());
+    private List<Answer> answers = new ArrayList<>();
+    private List<Commentary> commentaries = new ArrayList<>();
+
+
+    public Poll(User author, String title) {
+        this.author = author;
+        this.title = title;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PollMapper mapper() {
+        return PollMapper.getInstance();
+    }
 
     public User getAuthor() {
         return author;

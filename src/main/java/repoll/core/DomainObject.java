@@ -39,4 +39,8 @@ public abstract class DomainObject implements DatabasePersistent {
         }
     }
 
+    public final boolean isSaved() {
+        return id != UNSAVED_OBJECT_ID;
+    }
+
 }
