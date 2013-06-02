@@ -83,7 +83,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
         }
         try (PreparedStatement statement = getInsertStatement(domainObject)) {
             statement.executeUpdate();
-            long newId = generateId(statement);
+            long newId = generatedId(statement);
             domainObject.setId(newId);
             loadedMap.put(newId, domainObject);
             return newId;
@@ -92,22 +92,15 @@ public abstract class AbstractMapper<T extends DomainObject> {
         }
     }
 
-    private long generateId(PreparedStatement statement) throws MapperException {
+    private long generatedId(PreparedStatement statement) throws MapperException {
         try {
             ResultSet keys = statement.getGeneratedKeys();
             if (keys.next()) {
                 return keys.getLong(1);
             }
-            throw new AssertionError("No generated keys available");
+            throw new AssertionError("No generated keys");
         } catch (SQLException e) {
             throw new MapperException("Error while generating primary key", e);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-//        User me = User.builder("east826", "foobarbaz").withAdditionalInfo("Some uninteresting stuff").build();
-//        System.out.println(me);
-//        me.insert();
-        System.out.println(UserMapper.getInstance().loadById(30));
     }
 }
