@@ -14,6 +14,7 @@ public class Mappers {
         registry.put(Poll.class, PollMapper.getInstance());
         registry.put(Answer.class, AnswerMapper.getInstance());
         registry.put(Commentary.class, CommentaryMapper.getInstance());
+        registry.put(Vote.class, VoteMapper.getInstance());
     }
 
     public static <T extends DomainObject> AbstractMapper<T> getForClass(Class<T> cls) {
