@@ -79,10 +79,12 @@ public class AnswerMapper extends AbstractMapper<Answer> {
 
     @Override
     protected Answer loadObject(ResultSet resultSet) throws SQLException, MapperException {
-        return new Answer(
+        Answer answer = new Answer(
                 Mappers.getForClass(Poll.class).loadById(resultSet.getLong("poll_id")),
                 resultSet.getString("description")
         );
+        answer.setId(resultSet.getByte("id"));
+        return answer;
     }
 
     private void validate(Answer answer) {

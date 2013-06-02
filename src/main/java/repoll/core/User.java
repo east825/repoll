@@ -1,12 +1,16 @@
 package repoll.core;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class User extends DomainObject {
     private String firstName, middleName, lastName;
     private String additionalInfo;
     private String login, passwordHash;
-    private Timestamp registrationDate, lastVisitDate;
+    private Date registrationDate;
+    private Date lastVisitDate;
 
     public User() {}
 
@@ -40,8 +44,16 @@ public class User extends DomainObject {
         return String.format("User(id=%d, login='%s')", getId(), login);
     }
 
-    boolean isAuthorized() {
-        return false;
+    public List<Poll> getAuthoredPolls() {
+        return Collections.emptyList();
+    }
+
+    public List<Commentary> getCommentaries() {
+        return Collections.emptyList();
+    }
+
+    public List<Vote> getVotes() {
+        return Collections.emptyList();
     }
 
     public String getFirstName() {
@@ -92,19 +104,15 @@ public class User extends DomainObject {
         this.passwordHash = passwordHash;
     }
 
-    public Timestamp getRegistrationDate() {
+    public Date getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(Timestamp registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public Timestamp getLastVisitDate() {
+    public Date getLastVisitDate() {
         return lastVisitDate;
     }
 
-    public void setLastVisitDate(Timestamp lastVisitDate) {
+    public void setLastVisitDate(Date lastVisitDate) {
         this.lastVisitDate = lastVisitDate;
     }
 
@@ -127,32 +135,32 @@ public class User extends DomainObject {
             this.passwordHash = calculatePasswordHash(password);
         }
 
-        public Builder withFirstName(String firstName) {
+        public Builder firstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public Builder withMiddleName(String middleName) {
+        public Builder middleName(String middleName) {
             this.middleName = middleName;
             return this;
         }
 
-        public Builder withLastName(String lastName) {
+        public Builder lastName(String lastName) {
             this.lastName = lastName;
             return this;
         }
 
-        public Builder withAdditionalInfo(String additionalInfo) {
+        public Builder additionalInfo(String additionalInfo) {
             this.additionalInfo = additionalInfo;
             return this;
         }
 
-        public Builder withRegistrationDate(Timestamp registrationDate) {
+        public Builder registrationDate(Timestamp registrationDate) {
             this.registrationDate = registrationDate;
             return this;
         }
 
-        public Builder withLastVisitDate(Timestamp lastVisitDate) {
+        public Builder lastVisitDate(Timestamp lastVisitDate) {
             this.lastVisitDate = lastVisitDate;
             return this;
         }

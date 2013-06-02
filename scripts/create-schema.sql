@@ -40,7 +40,8 @@ CREATE TABLE "Vote" (
         CONSTRAINT "Vote_Answer_FK" REFERENCES "Answer" ON DELETE CASCADE,
     -- votes remain intouch if user no longer exists
     user_id int
-        constraint "Vote_User_FK" REFERENCES "User" ON DELETE SET NULL
+        constraint "Vote_User_FK" REFERENCES "User" ON DELETE SET NULL,
+    creation_datetime timestamp NOT NULL
     --  CONSTRAINT Vote_PK PRIMARY KEY (answer_id, user_id)
 );
 
@@ -53,5 +54,6 @@ CREATE TABLE "Commentary" (
     user_id int 
         CONSTRAINT "Commentary_User_FK" REFERENCES "User" ON DELETE SET NULL,
     -- message if mandatory
-    message varchar(3000) NOT NULL CHECK (LENGTH(TRIM(message)) > 0)
+    message varchar(3000) NOT NULL CHECK (LENGTH(TRIM(message)) > 0),
+    creation_datetime timestamp NOT NULL
 );

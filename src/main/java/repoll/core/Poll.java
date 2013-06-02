@@ -1,60 +1,56 @@
 package repoll.core;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class Poll extends DomainObject {
-    private User author;
-    private String title, description = "";
-    private Date creationDate = new Date(System.currentTimeMillis());
-    private List<Answer> answers = new ArrayList<>();
-    private List<Commentary> commentaries = new ArrayList<>();
-
+    private final User author;
+    private String title, description;
+    private final Date creationDate;
 
     public Poll(User author, String title) {
+        this(author, title, "");
+    }
+
+    public Poll(User author, String title, String description) {
+        this(author, title, description, new Date(System.currentTimeMillis()));
+    }
+
+    public Poll(User author, String title, String description, Date creationDate) {
         this.author = author;
         this.title = title;
+        this.description = description;
+        this.creationDate = creationDate;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Poll(id=%d title=%s)", getId(), title);
+    }
+
+    public List<Commentary> getCommentaries() {
+        return Collections.emptyList();
+    }
+
+    public List<Answer> getAnswers() {
+        return Collections.emptyList();
     }
 
     public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
     public Date getCreationDate() {
         return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String descriptikkon) {
+    public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Commentary> getCommentaries() {
-        return commentaries;
-    }
-
-    public void setCommentaries(List<Commentary> commentaries) {
-        this.commentaries = commentaries;
     }
 
     public String getTitle() {

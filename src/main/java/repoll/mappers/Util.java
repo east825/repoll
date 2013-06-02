@@ -9,6 +9,14 @@ public class Util {
     }
 
     public static Date timestampToDate(Timestamp timestamp) {
-        return new Date(timestamp.getTime());
+        return timestamp;
+    }
+
+    public static java.sql.Date dateToSqlDate(Date date) {
+        return new java.sql.Date(date.getTime());
+    }
+
+    public static Date sqlDateToDate(java.sql.Date date) {
+        return date;
     }
 }

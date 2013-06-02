@@ -29,11 +29,6 @@ public abstract class AbstractMapper<T extends DomainObject> {
 
     protected abstract T loadObject(ResultSet resultSet) throws SQLException, MapperException;
 
-    private long generateId() {
-        // TODO: unique primary key generation
-        return 42L;
-    }
-
     public T loadById(long id) throws MapperException {
         Map<Long, T> loadedMap = this.loadedMap;
         T object = loadedMap.get(id);

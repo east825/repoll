@@ -91,11 +91,13 @@ public class PollMapper extends AbstractMapper<Poll> {
 
     @Override
     protected Poll loadObject(ResultSet resultSet) throws SQLException, MapperException {
-        long userId = resultSet.getLong("user_id");
-        String title = resultSet.getString("title");
-        Poll poll = new Poll(Mappers.getForClass(User.class).loadById(userId), title);
-        poll.setDescription(resultSet.getString("description"));
-        poll.setCreationDate(resultSet.getDate("creation_date"));
+        Poll poll = new Poll(
+                Mappers.getForClass(User.class).loadById(resultSet.getLong("user_id")),
+                resultSet.getString("title"),
+                resultSet.getString("description"),
+                resultSet.getTimestamp("creation_datetime")
+        );
+        poll.setId(resultSet.getLong("id"));
         return poll;
     }
 

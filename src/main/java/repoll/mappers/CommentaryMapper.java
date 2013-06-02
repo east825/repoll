@@ -20,10 +20,10 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
 
     public static final String SEARCH_QUERY = "select * from \"Commentary\" where id = ?";
     public static final String UPDATE_QUERY = "update \"Commentary\" set " +
-            "user_id = ?, poll_id = ?, message = ? where id = ?";
+            "user_id = ?, poll_id = ?, message = ?, creation_datetime = ? where id = ?";
 
     public static final String INSERT_QUERY = "insert into \"Commentary\" " +
-            "(user_id, poll_id, message) values (?, ?, ?)";
+            "(user_id, poll_id, message, creation_datetime) values (?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Commentary\" where id = ?";
 
     @Override
@@ -51,7 +51,8 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
             }
             statement.setLong(2, commentary.getPoll().getId());
             statement.setString(3, commentary.getMessage());
-            statement.setLong(4, commentary.getId());
+            statement.setTimestamp(4, Util.dateToTimestamp(commentary.getCreationDate()));
+            statement.setLong(5, commentary.getId());
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -62,7 +63,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     @Override
     protected PreparedStatement getInsertStatement(Commentary commentary) throws SQLException {
         validate(commentary);
-        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
         try {
             User author = commentary.getAuthor();
             if (author != null) {
@@ -72,6 +73,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
             }
             statement.setLong(2, commentary.getPoll().getId());
             statement.setString(3, commentary.getMessage());
+            statement.setTimestamp(4, Util.dateToTimestamp(commentary.getCreationDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -93,11 +95,14 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
 
     @Override
     protected Commentary loadObject(ResultSet resultSet) throws SQLException, MapperException {
-        return new Commentary(
+        Commentary commentary = new Commentary(
                 Mappers.getForClass(User.class).loadById(resultSet.getLong("user_id")),
                 Mappers.getForClass(Poll.class).loadById(resultSet.getLong("poll_id")),
-                resultSet.getString("message")
+                resultSet.getString("message"),
+                resultSet.getTimestamp("creation_datetime")
         );
+        commentary.setId(resultSet.getLong("id"));
+        return commentary;
     }
 
     private void validate(Commentary commentary) {

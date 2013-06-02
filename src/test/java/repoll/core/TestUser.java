@@ -19,7 +19,7 @@ public class TestUser extends DatabaseTest {
 
     @Test
     public void testUserCreation() throws Exception {
-        User testUser = User.builder("someLogin", "somePassword").withAdditionalInfo("It's just test user").build();
+        User testUser = User.builder("someLogin", "somePassword").additionalInfo("It's just test user").build();
         testUser.insert();
         Connection connection = ConnectionProvider.connection();
         try (PreparedStatement statement = connection.prepareStatement("select * from \"User\" where id = ?")) {

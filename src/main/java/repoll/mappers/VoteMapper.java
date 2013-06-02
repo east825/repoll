@@ -16,12 +16,13 @@ public class VoteMapper extends AbstractMapper<Vote> {
     }
 
     public static final String SEARCH_QUERY = "select * from \"Vote\" where id = ?";
-    public static final String UPDATE_QUERY = "update \"Vote\" set user_id = ?, answer_id = ? where id = ?";
-    public static final String INSERT_QUERY = "insert into \"Vote\" (user_id, answer_id) values (?, ?)";
+    public static final String UPDATE_QUERY = "update \"Vote\" " +
+            "set user_id = ?, answer_id = ?, creation_datetime = ? where id = ?";
+    public static final String INSERT_QUERY = "insert into \"Vote\" " +
+            "(user_id, answer_id, creation_datetime) values (?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Vote\" where id = ?";
 
-    private VoteMapper() {
-    }
+    private VoteMapper() {}
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
@@ -42,7 +43,8 @@ public class VoteMapper extends AbstractMapper<Vote> {
         try {
             statement.setLong(1, vote.getAuthor().getId());
             statement.setLong(2, vote.getAnswer().getId());
-            statement.setLong(3, vote.getId());
+            statement.setTimestamp(3, Util.dateToTimestamp(vote.getCreationDate()));
+            statement.setLong(4, vote.getId());
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -57,6 +59,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
         try {
             statement.setLong(1, vote.getAuthor().getId());
             statement.setLong(2, vote.getAnswer().getId());
+            statement.setTimestamp(3, Util.dateToTimestamp(vote.getCreationDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -77,11 +80,14 @@ public class VoteMapper extends AbstractMapper<Vote> {
     }
 
     @Override
-    protected Vote loadObject(ResultSet vote) throws SQLException, MapperException {
-        return new Vote(
-                Mappers.getForClass(User.class).loadById(vote.getLong("user_id")),
-                Mappers.getForClass(Answer.class).loadById(vote.getLong("answer_id"))
+    protected Vote loadObject(ResultSet resultSet) throws SQLException, MapperException {
+        Vote vote = new Vote(
+                Mappers.getForClass(User.class).loadById(resultSet.getLong("user_id")),
+                Mappers.getForClass(Answer.class).loadById(resultSet.getLong("answer_id")),
+                resultSet.getTimestamp("creation_datetime")
         );
+        vote.setId(resultSet.getLong("id"));
+        return vote;
     }
 
     private void validate(Vote vote) {

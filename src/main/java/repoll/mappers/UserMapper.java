@@ -34,7 +34,8 @@ public class UserMapper extends AbstractMapper<User> {
     /*
      * Prevents external instantiation
      */
-    private UserMapper() {}
+    private UserMapper() {
+    }
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
@@ -58,8 +59,8 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(4, user.getMiddleName());
             statement.setString(5, user.getLastName());
             statement.setString(6, user.getAdditionalInfo());
-            statement.setTimestamp(7, user.getRegistrationDate());
-            statement.setTimestamp(8, user.getLastVisitDate());
+            statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
+            statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -77,8 +78,8 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(4, user.getMiddleName());
             statement.setString(5, user.getLastName());
             statement.setString(6, user.getAdditionalInfo());
-            statement.setTimestamp(7, user.getRegistrationDate());
-            statement.setTimestamp(8, user.getLastVisitDate());
+            statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
+            statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -88,7 +89,7 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected PreparedStatement getDeleteStatement(User user) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);;
+        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
         try {
             statement.setLong(1, user.getId());
             return statement;
@@ -100,16 +101,15 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected User loadObject(ResultSet resultSet) throws SQLException {
-        User user = new User();
+        User user = User.builder(resultSet.getString("login"), resultSet.getString("password"))
+                .firstName(resultSet.getString("first_name"))
+                .middleName(resultSet.getString("middle_name"))
+                .lastName(resultSet.getString("last_name"))
+                .additionalInfo(resultSet.getString("additional_info"))
+                .registrationDate(resultSet.getTimestamp("registration_datetime"))
+                .lastVisitDate(resultSet.getTimestamp("last_visit_datetime"))
+                .build();
         user.setId(resultSet.getLong("id"));
-        user.setLogin(resultSet.getString("login"));
-        user.setPasswordHash(resultSet.getString("password"));
-        user.setFirstName(resultSet.getString("first_name"));
-        user.setMiddleName(resultSet.getString("middle_name"));
-        user.setLastName(resultSet.getString("last_name"));
-        user.setAdditionalInfo(resultSet.getString("additional_info"));
-        user.setRegistrationDate(resultSet.getTimestamp("registration_datetime"));
-        user.setLastVisitDate(resultSet.getTimestamp("last_visit_datetime"));
         return user;
     }
 
