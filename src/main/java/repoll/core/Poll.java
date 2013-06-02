@@ -26,7 +26,7 @@ public class Poll extends DomainObject {
 
     @Override
     public String toString() {
-        return String.format("Poll(id=%d title=%s)", getId(), title);
+        return String.format("Poll(id=%d title='%s')", getId(), title);
     }
 
     public List<Commentary> getCommentaries() {

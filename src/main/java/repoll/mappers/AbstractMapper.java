@@ -37,9 +37,9 @@ public abstract class AbstractMapper<T extends DomainObject> {
         }
         try (PreparedStatement statement = getLoadByIdStatement(id)) {
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet == null)
+            if (resultSet == null || !resultSet.next()) {
                 return null;
-            resultSet.next();
+            }
             object = loadObject(resultSet);
             loadedMap.put(id, object);
             return object;
@@ -49,8 +49,8 @@ public abstract class AbstractMapper<T extends DomainObject> {
     }
 
     public final void update(T domainObject) throws MapperException {
-        if (domainObject.getId() == DomainObject.UNSAVED_OBJECT_ID) {
-            throw new IllegalStateException("Object " + domainObject + " was not saved in database before its update");
+        if (!domainObject.isSaved()) {
+            throw new MapperException("Object " + domainObject + " was not saved in database before its update");
         }
         try (PreparedStatement statement = getUpdateStatement(domainObject)) {
             statement.executeUpdate();
@@ -60,8 +60,8 @@ public abstract class AbstractMapper<T extends DomainObject> {
     }
 
     public final void delete(T domainObject) throws MapperException {
-        if (domainObject.getId() == DomainObject.UNSAVED_OBJECT_ID) {
-            throw new IllegalStateException("Object " + domainObject + " was not saved in database before its update");
+        if (!domainObject.isSaved()) {
+            throw new MapperException("Object " + domainObject + " was not saved in database before its update");
         }
         try (PreparedStatement statement = getDeleteStatement(domainObject)) {
             statement.executeUpdate();
@@ -73,8 +73,8 @@ public abstract class AbstractMapper<T extends DomainObject> {
     }
 
     public final long insert(T domainObject) throws MapperException {
-        if (domainObject.getId() != DomainObject.UNSAVED_OBJECT_ID) {
-            throw new IllegalStateException("Object " + domainObject + " probably already was saved in database");
+        if (domainObject.isSaved()) {
+            throw new MapperException("Object " + domainObject + " probably already was saved in database");
         }
         try (PreparedStatement statement = getInsertStatement(domainObject)) {
             statement.executeUpdate();

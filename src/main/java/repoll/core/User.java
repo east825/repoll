@@ -1,5 +1,7 @@
 package repoll.core;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Date;
@@ -11,13 +13,6 @@ public class User extends DomainObject {
     private String login, passwordHash;
     private Date registrationDate;
     private Date lastVisitDate;
-
-    public User() {}
-
-    public User(String login, String password) {
-        this.login = login;
-        this.passwordHash = calculatePasswordHash(password);
-    }
 
     public User(Builder builder) {
         firstName = builder.firstName;
@@ -35,7 +30,7 @@ public class User extends DomainObject {
     }
 
     // TODO: calculate actual hash here
-    private static String calculatePasswordHash(String password) {
+    private static String calculatePasswordHash(@NotNull String password) {
         return password;
     }
 
@@ -60,7 +55,7 @@ public class User extends DomainObject {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(@NotNull String firstName) {
         this.firstName = firstName;
     }
 
@@ -68,7 +63,7 @@ public class User extends DomainObject {
         return middleName;
     }
 
-    public void setMiddleName(String middleName) {
+    public void setMiddleName(@NotNull String middleName) {
         this.middleName = middleName;
     }
 
@@ -76,7 +71,7 @@ public class User extends DomainObject {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(@NotNull String lastName) {
         this.lastName = lastName;
     }
 
@@ -84,7 +79,7 @@ public class User extends DomainObject {
         return additionalInfo;
     }
 
-    public void setAdditionalInfo(String additionalInfo) {
+    public void setAdditionalInfo(@NotNull String additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
 
@@ -92,7 +87,7 @@ public class User extends DomainObject {
         return login;
     }
 
-    public void setLogin(String login) {
+    public void setLogin(@NotNull String login) {
         this.login = login;
     }
 
@@ -100,8 +95,8 @@ public class User extends DomainObject {
         return passwordHash;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(@NotNull String password) {
+        this.passwordHash = calculatePasswordHash(passwordHash);
     }
 
     public Date getRegistrationDate() {
@@ -112,13 +107,9 @@ public class User extends DomainObject {
         return lastVisitDate;
     }
 
-    public void setLastVisitDate(Date lastVisitDate) {
+    public void setLastVisitDate(@NotNull Date lastVisitDate) {
         this.lastVisitDate = lastVisitDate;
     }
-
-//    public List<Poll> getAuthoredPolls() {
-//
-//    }
 
     public static class Builder {
         String firstName = "";
@@ -127,40 +118,40 @@ public class User extends DomainObject {
         String additionalInfo = "";
         String login;
         String passwordHash;
-        Timestamp registrationDate = new Timestamp(System.currentTimeMillis());
-        Timestamp lastVisitDate = new Timestamp(System.currentTimeMillis());
+        Date registrationDate = new Timestamp(System.currentTimeMillis());
+        Date lastVisitDate = new Timestamp(System.currentTimeMillis());
 
-        public Builder(String login, String password) {
+        public Builder(@NotNull String login, @NotNull String password) {
             this.login = login;
             this.passwordHash = calculatePasswordHash(password);
         }
 
-        public Builder firstName(String firstName) {
+        public Builder firstName(@NotNull String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public Builder middleName(String middleName) {
+        public Builder middleName(@NotNull String middleName) {
             this.middleName = middleName;
             return this;
         }
 
-        public Builder lastName(String lastName) {
+        public Builder lastName(@NotNull String lastName) {
             this.lastName = lastName;
             return this;
         }
 
-        public Builder additionalInfo(String additionalInfo) {
+        public Builder additionalInfo(@NotNull String additionalInfo) {
             this.additionalInfo = additionalInfo;
             return this;
         }
 
-        public Builder registrationDate(Timestamp registrationDate) {
+        public Builder registrationDate(@NotNull Date registrationDate) {
             this.registrationDate = registrationDate;
             return this;
         }
 
-        public Builder lastVisitDate(Timestamp lastVisitDate) {
+        public Builder lastVisitDate(@NotNull Date lastVisitDate) {
             this.lastVisitDate = lastVisitDate;
             return this;
         }
