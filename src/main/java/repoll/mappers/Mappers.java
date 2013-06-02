@@ -1,5 +1,6 @@
 package repoll.mappers;
 
+import repoll.core.Answer;
 import repoll.core.DomainObject;
 import repoll.core.Poll;
 import repoll.core.User;
@@ -14,6 +15,7 @@ public class Mappers {
     static {
         registry.put(User.class, UserMapper.getInstance());
         registry.put(Poll.class, PollMapper.getInstance());
+        registry.put(Answer.class, AnswerMapper.getInstance());
     }
 
     public static <T extends DomainObject> AbstractMapper<T> getForClass(Class<T> cls) {
