@@ -3,10 +3,7 @@ package repoll.mappers;
 import repoll.core.Poll;
 import repoll.core.User;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class PollMapper extends AbstractMapper<Poll> {
     private static final PollMapper INSTANCE = new PollMapper();
@@ -17,10 +14,10 @@ public class PollMapper extends AbstractMapper<Poll> {
 
     public static final String SEARCH_QUERY = "select * from \"Poll\" where id = ?";
     public static final String UPDATE_QUERY = "update \"Poll\" set " +
-            "user_id = ?, title = ?, description = ?, creation = ?, where id = ?";
+            "user_id = ?, title = ?, description = ?, creation_datetime = ?, where id = ?";
 
     public static final String INSERT_QUERY = "insert into \"Poll\" " +
-            "(user_id, title, description, creation) values (?, ?, ?, ?)";
+            "(user_id, title, description, creation_datetime) values (?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Poll\" where id = ?";
 
     private PollMapper() {}
@@ -42,7 +39,12 @@ public class PollMapper extends AbstractMapper<Poll> {
         validate(poll);
         PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
         try {
-            statement.setLong(1, poll.getAuthor().getId());
+            User author = poll.getAuthor();
+            if (author != null) {
+                statement.setLong(1, author.getId());
+            } else {
+                statement.setNull(1, Types.INTEGER);
+            }
             statement.setString(2, poll.getTitle());
             statement.setString(3, poll.getDescription());
             statement.setTimestamp(4, Util.dateToTimestamp(poll.getCreationDate()));
@@ -59,7 +61,12 @@ public class PollMapper extends AbstractMapper<Poll> {
         validate(poll);
         PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
-            statement.setLong(1, poll.getAuthor().getId());
+            User author = poll.getAuthor();
+            if (author != null) {
+                statement.setLong(1, author.getId());
+            } else {
+                statement.setNull(1, Types.INTEGER);
+            }
             statement.setString(2, poll.getTitle());
             statement.setString(3, poll.getDescription());
             statement.setTimestamp(4, Util.dateToTimestamp(poll.getCreationDate()));
