@@ -70,11 +70,11 @@ public class AnswerMapper extends AbstractMapper<Answer> {
         PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
         try {
             statement.setLong(1, answer.getId());
+            return statement;
         } catch (SQLException e) {
             statement.close();
             throw e;
         }
-        return null;
     }
 
     @Override
