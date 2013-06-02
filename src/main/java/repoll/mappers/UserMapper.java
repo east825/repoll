@@ -6,8 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserMapper extends AbstractMapper<User> {
     private static UserMapper INSTANCE = new UserMapper();
@@ -36,28 +34,24 @@ public class UserMapper extends AbstractMapper<User> {
     /*
      * Prevents external instantiation
      */
-    private UserMapper() {
-        super();
-    }
+    private UserMapper() {}
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
-        PreparedStatement statement = null;
+        PreparedStatement statement = connection.prepareStatement(SEARCH_QUERY);
         try {
-            statement = connection.prepareStatement(SEARCH_QUERY);
             statement.setLong(1, id);
             return statement;
         } catch (SQLException e) {
-            if (statement != null) statement.close();
+            statement.close();
             throw e;
         }
     }
 
     @Override
     protected PreparedStatement getUpdateStatement(User user) throws SQLException {
-        PreparedStatement statement = null;
+        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
         try {
-            statement = connection.prepareStatement(UPDATE_QUERY);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPasswordHash());
             statement.setString(3, user.getFirstName());
@@ -68,16 +62,15 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setTimestamp(8, user.getLastVisitDate());
             return statement;
         } catch (SQLException e) {
-            if (statement != null) statement.close();
+            statement.close();
             throw e;
         }
     }
 
     @Override
     protected PreparedStatement getInsertStatement(User user) throws SQLException {
-        PreparedStatement statement = null;
+        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
-            statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPasswordHash());
             statement.setString(3, user.getFirstName());
@@ -88,20 +81,19 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setTimestamp(8, user.getLastVisitDate());
             return statement;
         } catch (SQLException e) {
-            if (statement != null) statement.close();
+            statement.close();
             throw e;
         }
     }
 
     @Override
     protected PreparedStatement getDeleteStatement(User user) throws SQLException {
-        PreparedStatement statement = null;
+        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);;
         try {
-            statement = connection.prepareStatement(DELETE_QUERY);
             statement.setLong(1, user.getId());
             return statement;
         } catch (SQLException e) {
-            if (statement != null) statement.close();
+            statement.close();
             throw e;
         }
     }
