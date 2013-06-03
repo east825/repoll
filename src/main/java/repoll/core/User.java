@@ -105,7 +105,7 @@ public class User extends DomainObject {
     }
 
     public void setPassword(@NotNull String password) {
-        this.passwordHash = calculatePasswordHash(passwordHash);
+        this.passwordHash = calculatePasswordHash(password);
     }
 
     @NotNull
@@ -123,14 +123,14 @@ public class User extends DomainObject {
     }
 
     public static class Builder {
-        String firstName = "";
-        String middleName = "";
-        String lastName = "";
-        String additionalInfo = "";
-        String login;
-        String passwordHash;
-        Date registrationDate = new Timestamp(System.currentTimeMillis());
-        Date lastVisitDate = new Timestamp(System.currentTimeMillis());
+        private String firstName = "";
+        private String middleName = "";
+        private String lastName = "";
+        private String additionalInfo = "";
+        private String login;
+        private String passwordHash;
+        private Date registrationDate = new Timestamp(System.currentTimeMillis());
+        private Date lastVisitDate = new Timestamp(System.currentTimeMillis());
 
         public Builder(@NotNull String login, @NotNull String password) {
             this.login = login;

@@ -20,13 +20,14 @@ public class UserMapper extends AbstractMapper<User> {
             "password = ?, " +
             "first_name = ?, " +
             "middle_name = ?, " +
+            "last_name = ?, " +
             "additional_info = ?, " +
             "registration_datetime = ?, " +
             "last_visit_datetime = ?" +
             "where id = ?";
 
     public static final String INSERT_QUERY = "insert into \"User\" " +
-            "(login, password, first_name, last_name, middle_name, " +
+            "(login, password, first_name, middle_name, last_name," +
             "additional_info, registration_datetime, last_visit_datetime)" +
             "values (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"User\" where id = ?";
@@ -61,6 +62,7 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(6, user.getAdditionalInfo());
             statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
             statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
+            statement.setLong(9, user.getId());
             return statement;
         } catch (SQLException e) {
             statement.close();
