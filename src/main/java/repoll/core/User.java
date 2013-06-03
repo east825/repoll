@@ -39,18 +39,22 @@ public class User extends DomainObject {
         return String.format("User(id=%d, login='%s')", getId(), login);
     }
 
+    @NotNull
     public List<Poll> getAuthoredPolls() {
         return Collections.emptyList();
     }
 
+    @NotNull
     public List<Commentary> getCommentaries() {
         return Collections.emptyList();
     }
 
+    @NotNull
     public List<Vote> getVotes() {
         return Collections.emptyList();
     }
 
+    @NotNull
     public String getFirstName() {
         return firstName;
     }
@@ -59,6 +63,7 @@ public class User extends DomainObject {
         this.firstName = firstName;
     }
 
+    @NotNull
     public String getMiddleName() {
         return middleName;
     }
@@ -67,6 +72,7 @@ public class User extends DomainObject {
         this.middleName = middleName;
     }
 
+    @NotNull
     public String getLastName() {
         return lastName;
     }
@@ -75,6 +81,7 @@ public class User extends DomainObject {
         this.lastName = lastName;
     }
 
+    @NotNull
     public String getAdditionalInfo() {
         return additionalInfo;
     }
@@ -83,6 +90,7 @@ public class User extends DomainObject {
         this.additionalInfo = additionalInfo;
     }
 
+    @NotNull
     public String getLogin() {
         return login;
     }
@@ -91,6 +99,7 @@ public class User extends DomainObject {
         this.login = login;
     }
 
+    @NotNull
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -99,10 +108,12 @@ public class User extends DomainObject {
         this.passwordHash = calculatePasswordHash(passwordHash);
     }
 
+    @NotNull
     public Date getRegistrationDate() {
         return registrationDate;
     }
 
+    @NotNull
     public Date getLastVisitDate() {
         return lastVisitDate;
     }

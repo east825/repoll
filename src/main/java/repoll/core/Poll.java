@@ -1,5 +1,8 @@
 package repoll.core;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +20,7 @@ public class Poll extends DomainObject {
         this(author, title, description, new Date(System.currentTimeMillis()));
     }
 
-    public Poll(User author, String title, String description, Date creationDate) {
+    public Poll(@Nullable User author, @NotNull String title, @NotNull String description, @NotNull Date creationDate) {
         this.author = author;
         this.title = title;
         this.description = description;
@@ -29,35 +32,41 @@ public class Poll extends DomainObject {
         return String.format("Poll(id=%d title='%s')", getId(), title);
     }
 
+    @NotNull
     public List<Commentary> getCommentaries() {
         return Collections.emptyList();
     }
 
+    @NotNull
     public List<Answer> getAnswers() {
         return Collections.emptyList();
     }
 
+    @Nullable
     public User getAuthor() {
         return author;
     }
 
+    @NotNull
     public Date getCreationDate() {
         return creationDate;
     }
 
+    @NotNull
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@NotNull String description) {
         this.description = description;
     }
 
+    @NotNull
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@NotNull String title) {
         this.title = title;
     }
 }
