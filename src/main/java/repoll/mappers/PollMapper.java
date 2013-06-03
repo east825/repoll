@@ -102,8 +102,7 @@ public class PollMapper extends AbstractMapper<Poll> {
     }
 
     private void validate(Poll poll) {
-        User author = poll.getAuthor();
-        if (author != null && !author.isSaved()) {
+        if (poll.getAuthor() != null && !poll.getAuthor().isSaved()) {
             throw new IllegalStateException("Author of " + poll + " should be saved first");
         }
     }

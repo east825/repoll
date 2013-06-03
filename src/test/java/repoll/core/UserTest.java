@@ -1,6 +1,5 @@
 package repoll.core;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.junit.After;
 import org.junit.Test;
 import repoll.mappers.MapperException;
@@ -21,7 +20,7 @@ public class UserTest extends DatabaseTest {
     }
 
     @Test
-    public void testUserCreation() throws MapperException, SQLException {
+    public void createUser() throws MapperException, SQLException {
         User testUser = User.builder("someLogin", "somePassword").additionalInfo("It's just test user").build();
         testUser.insert();
         Connection connection = ConnectionProvider.connection();
@@ -38,7 +37,7 @@ public class UserTest extends DatabaseTest {
     }
 
     @Test(expected = MapperException.class)
-    public void testConflictLogin() throws MapperException {
+    public void conflictLoginValue() throws MapperException {
         User u1 = User.builder("login", "foo").build();
         User u2 = User.builder("login", "bar").build();
         u1.insert();
@@ -46,7 +45,7 @@ public class UserTest extends DatabaseTest {
     }
 
     @Test
-    public void testInvalidParameters() throws MapperException {
+    public void illegalParameters() throws MapperException {
         try {
             User.builder(null, "passwd").build();
             fail();
