@@ -14,7 +14,7 @@ public class PollMapper extends AbstractMapper<Poll> {
 
     public static final String SEARCH_QUERY = "select * from \"Poll\" where id = ?";
     public static final String UPDATE_QUERY = "update \"Poll\" set " +
-            "user_id = ?, title = ?, description = ?, creation_datetime = ?, where id = ?";
+            "user_id = ?, title = ?, description = ?, creation_datetime = ? where id = ?";
 
     public static final String INSERT_QUERY = "insert into \"Poll\" " +
             "(user_id, title, description, creation_datetime) values (?, ?, ?, ?)";
