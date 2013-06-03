@@ -6,20 +6,20 @@ import org.junit.BeforeClass;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DatabaseTest {
 
     @BeforeClass
     public static void initializeTestDatabase() {
         connectTestDatabase();
-        createTestDatabaseSchema();
+//        createTestDatabaseSchema();
     }
 
-    @AfterClass
+//    @AfterClass
     public static void resetTestDatabase() {
         dropTestDatabaseSchema();
         try {
@@ -84,6 +84,14 @@ public class DatabaseTest {
                 builder.append(line);
             }
             statement.executeUpdate(builder.toString());
+        }
+    }
+
+    protected void executeCountQueryAndCheckResult(String query, int expected) throws SQLException {
+        try (Statement statement = ConnectionProvider.connection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            assertTrue(resultSet.next());
+            assertEquals(expected, resultSet.getLong(1));
         }
     }
 }

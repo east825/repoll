@@ -57,7 +57,6 @@ public class AnswerMapper extends AbstractMapper<Answer> {
         try {
             statement.setLong(1, answer.getPoll().getId());
             statement.setString(2, answer.getDescription());
-            statement.setLong(3, answer.getId());
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -88,9 +87,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
     }
 
     private void validate(Answer answer) {
-        if (answer.getPoll() == null) {
-            throw new NullPointerException("Poll of " + answer + " is undefined");
-        } else if (!answer.getPoll().isSaved()) {
+        if (!answer.getPoll().isSaved()) {
             throw new IllegalStateException("Poll of " + answer + " should be saved first");
         }
     }
