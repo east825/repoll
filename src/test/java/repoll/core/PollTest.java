@@ -1,21 +1,15 @@
 package repoll.core;
 
-import org.junit.Before;
 import org.junit.Test;
 import repoll.mappers.MapperException;
 
 import java.sql.*;
 import java.util.Date;
 
-import static org.junit.Assert.*;;
+import static org.junit.Assert.*;
 
 public class PollTest extends DatabaseTest {
     private static final String SELECT_ALL_FIELDS_QUERY = "select * from \"Poll\" where id = ?";
-
-    @Before
-    public void setUp() {
-        clearTestDatabase();
-    }
 
     @Test
     public void insertAndDeletePoll() throws MapperException, SQLException {
@@ -24,7 +18,7 @@ public class PollTest extends DatabaseTest {
         Poll poll = new Poll(author, "title");
         poll.insert();
         assertTrue(poll.isSaved());
-        Statement statement = ConnectionProvider.connection().createStatement();
+        Statement statement = testConnection.createStatement();
         assertTrue(statement.executeQuery("select * from \"User\"").next());
         assertTrue(statement.executeQuery("select * from \"Poll\"").next());
         author.delete();
@@ -39,8 +33,7 @@ public class PollTest extends DatabaseTest {
         Date creationDate = new Date(100);
         Poll poll = new Poll(null, "title1", "description1", creationDate);
         poll.insert();
-        Connection connection = ConnectionProvider.connection();
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
+        try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
             statement.setLong(1, poll.getId());
             ResultSet resultSet = statement.executeQuery();
             assertTrue(resultSet.next());

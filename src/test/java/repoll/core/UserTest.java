@@ -1,37 +1,26 @@
 package repoll.core;
 
-import org.junit.After;
 import org.junit.Test;
 import repoll.mappers.MapperException;
 import repoll.mappers.Mappers;
 import repoll.mappers.UserMapper;
-import repoll.mappers.Util;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import static org.junit.Assert.*;
 
 public class UserTest extends DatabaseTest {
     private static final String SELECT_ALL_FIELDS_QUERY = "select * from \"User\" where id = ?";
 
-    @After
-    public void clearDatabase() {
-        clearTestDatabase();
-    }
-
     @Test
     public void insertAndDeleteUser() throws MapperException, SQLException {
         User user = User.builder("someLogin", "somePassword").additionalInfo("It's just test user").build();
         user.insert();
         assertTrue(user.isSaved());
-        Connection connection = ConnectionProvider.connection();
-        try (PreparedStatement statement = connection.prepareStatement("select * from \"User\" where id = ?")) {
+        try (PreparedStatement statement = testConnection.prepareStatement("select * from \"User\" where id = ?")) {
             statement.setLong(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
@@ -58,8 +47,7 @@ public class UserTest extends DatabaseTest {
                 .lastVisitDate(lastVisitDate1)
                 .build();
         user.insert();
-        Connection connection = ConnectionProvider.connection();
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
+        try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
             statement.setLong(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             assertTrue(resultSet.next());

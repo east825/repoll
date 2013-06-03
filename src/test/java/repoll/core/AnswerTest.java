@@ -1,12 +1,10 @@
 package repoll.core;
 
-import org.junit.After;
 import org.junit.Test;
 import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
 import repoll.mappers.Mappers;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,11 +15,6 @@ public class AnswerTest extends DatabaseTest {
 
     private static final String COUNT_ANSWERS_QUERY = "select count(id) from \"Answer\"";
     private static final String SELECT_DESCRIPTION_QUERY = "select description from \"Answer\" where id = ?";
-
-    @After
-    public void setUp() {
-        clearTestDatabase();
-    }
 
     @Test
     public void insertAndDeleteAnswer() throws MapperException, SQLException {
@@ -47,8 +40,7 @@ public class AnswerTest extends DatabaseTest {
         poll.insert();
         Answer answer = new Answer(poll, "Answer #1");
         answer.insert();
-        Connection connection = ConnectionProvider.connection();
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_DESCRIPTION_QUERY)) {
+        try (PreparedStatement statement = testConnection.prepareStatement(SELECT_DESCRIPTION_QUERY)) {
             statement.setLong(1, answer.getId());
             ResultSet resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
