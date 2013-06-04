@@ -7,6 +7,7 @@ import repoll.core.Vote;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class VoteMapper extends AbstractMapper<Vote> {
     private static VoteMapper INSTANCE = new VoteMapper();
@@ -55,7 +56,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
     @Override
     protected PreparedStatement getInsertStatement(Vote vote) throws SQLException {
         validate(vote);
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
+        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
             statement.setLong(1, vote.getAuthor().getId());
             statement.setLong(2, vote.getAnswer().getId());

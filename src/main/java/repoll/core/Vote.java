@@ -1,5 +1,8 @@
 package repoll.core;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Date;
 
 /*
@@ -11,10 +14,10 @@ public class Vote extends DomainObject {
     private final Date creationDate;
 
     public Vote(User author, Answer answer) {
-        this(author, answer, new Date(System.currentTimeMillis()));
+        this(author, answer, new Date());
     }
 
-    public Vote(User author, Answer answer, Date creationDate) {
+    public Vote(@Nullable User author, @NotNull Answer answer, @NotNull Date creationDate) {
         this.author = author;
         this.answer = answer;
         this.creationDate = creationDate;
@@ -28,14 +31,17 @@ public class Vote extends DomainObject {
         );
     }
 
+    @Nullable
     public User getAuthor() {
         return author;
     }
 
+    @NotNull
     public Answer getAnswer() {
         return answer;
     }
 
+    @NotNull
     public Date getCreationDate() {
         return creationDate;
     }

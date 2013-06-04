@@ -91,7 +91,7 @@ public abstract class AbstractMapper<T extends DomainObject> {
         try {
             ResultSet keys = statement.getGeneratedKeys();
             if (keys == null || !keys.next()) {
-                throw new AssertionError("No generated keys");
+                throw new AssertionError("No generated keys. Probably missing Statement.RETURN_GENERATED_KEYS.");
             }
             return keys.getLong(1);
         } catch (SQLException e) {
