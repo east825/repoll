@@ -90,10 +90,10 @@ public abstract class AbstractMapper<T extends DomainObject> {
     private long generatedId(PreparedStatement statement) throws MapperException {
         try {
             ResultSet keys = statement.getGeneratedKeys();
-            if (keys.next()) {
-                return keys.getLong(1);
+            if (keys == null || !keys.next()) {
+                throw new AssertionError("No generated keys");
             }
-            throw new AssertionError("No generated keys");
+            return keys.getLong(1);
         } catch (SQLException e) {
             throw new MapperException("Error while generating primary key", e);
         }
