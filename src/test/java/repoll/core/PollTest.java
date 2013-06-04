@@ -54,10 +54,9 @@ public class PollTest extends DatabaseTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void pollAuthorNotInsertedBefore() throws MapperException {
+    public void authorNotInsertedBeforePoll() throws MapperException {
         User author = User.builder("login", "passwd").build();
-        Poll poll = new Poll(author, "title");
-        poll.insert();
+        new Poll(author, "title").insert();
     }
 
     @Test

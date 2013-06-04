@@ -4,10 +4,7 @@ import repoll.core.Commentary;
 import repoll.core.Poll;
 import repoll.core.User;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 
 public class CommentaryMapper extends AbstractMapper<Commentary> {
     private static final CommentaryMapper INSTANCE = new CommentaryMapper();
@@ -63,7 +60,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     @Override
     protected PreparedStatement getInsertStatement(Commentary commentary) throws SQLException {
         validate(commentary);
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
+        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
             User author = commentary.getAuthor();
             if (author != null) {
@@ -106,9 +103,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     }
 
     private void validate(Commentary commentary) {
-        if (commentary.getPoll() == null) {
-            throw new NullPointerException("Poll of " + commentary + " is undefined");
-        } else if (!commentary.getPoll().isSaved()) {
+        if (!commentary.getPoll().isSaved()) {
             throw new IllegalStateException("Poll of " + commentary + " should be saved first");
         }
         if (commentary.getAuthor() != null && !commentary.getAuthor().isSaved()) {
