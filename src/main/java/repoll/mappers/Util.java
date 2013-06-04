@@ -1,9 +1,13 @@
 package repoll.mappers;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Util {
+    public static final DateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
     public static Timestamp dateToTimestamp(Date date) {
         return new Timestamp(date.getTime());
     }
