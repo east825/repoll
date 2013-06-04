@@ -59,6 +59,12 @@ public class PollTest extends DatabaseTest {
         new Poll(author, "title").insert();
     }
 
+    @Test(expected = MapperException.class)
+    public void conflictingTitle() throws MapperException {
+        new Poll(null, "title").insert();
+        new Poll(null, "title").insert();
+    }
+
     @Test
     public void illegalParameters() {
         User u1 = User.builder("login", "passwd").build();
@@ -106,5 +112,37 @@ public class PollTest extends DatabaseTest {
         } catch (IllegalArgumentException e) {
             // pass
         }
+    }
+
+    @Test
+    public void selectCommentaries() throws MapperException {
+        Poll poll1 = new Poll(null, "titlel");
+        poll1.insert();
+        Poll poll2 = new Poll(null, "title2");
+        poll2.insert();
+        Commentary c1 = new Commentary(null, poll1, "commentary #1");
+        c1.insert();
+        Commentary c2 = new Commentary(null, poll1, "commentary #2");
+        c2.insert();
+        Commentary c3 = new Commentary(null, poll2, "commentary #3");
+        c3.insert();
+        assertEquals(2, poll1.getCommentaries().size());
+        assertEquals(1, poll2.getCommentaries().size());
+    }
+
+    @Test
+    public void selectAnswers() throws MapperException {
+        Poll poll1 = new Poll(null, "titlel");
+        poll1.insert();
+        Poll poll2 = new Poll(null, "title2");
+        poll2.insert();
+        Answer answer1 = new Answer(poll1, "answer #1");
+        answer1.insert();
+        Answer answer2 = new Answer(poll1, "answer #2");
+        answer2.insert();
+        Answer answer3 = new Answer(poll2, "answer #3");
+        answer3.insert();
+        assertEquals(2, poll1.getAnswers().size());
+        assertEquals(1, poll2.getAnswers().size());
     }
 }

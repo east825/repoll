@@ -1,6 +1,10 @@
 package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
+import repoll.mappers.MapperException;
+import repoll.mappers.Mappers;
+
+import java.util.List;
 
 public class Answer extends DomainObject {
     private final Poll poll;
@@ -23,5 +27,9 @@ public class Answer extends DomainObject {
 
     public void setDescription(@NotNull String description) {
         this.description = description;
+    }
+
+    public List<Vote> getVotes() throws MapperException {
+        return Mappers.getForClass(Vote.class).selectRelated(this);
     }
 }

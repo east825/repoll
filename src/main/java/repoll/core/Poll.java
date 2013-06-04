@@ -2,8 +2,9 @@ package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.mappers.MapperException;
+import repoll.mappers.Mappers;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -33,13 +34,13 @@ public class Poll extends DomainObject {
     }
 
     @NotNull
-    public List<Commentary> getCommentaries() {
-        return Collections.emptyList();
+    public List<Commentary> getCommentaries() throws MapperException {
+        return Mappers.getForClass(Commentary.class).selectRelated(this);
     }
 
     @NotNull
-    public List<Answer> getAnswers() {
-        return Collections.emptyList();
+    public List<Answer> getAnswers() throws MapperException {
+        return Mappers.getForClass(Answer.class).selectRelated(this);
     }
 
     @Nullable

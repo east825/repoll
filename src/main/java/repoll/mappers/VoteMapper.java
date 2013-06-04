@@ -1,13 +1,11 @@
 package repoll.mappers;
 
 import repoll.core.Answer;
+import repoll.core.DomainObject;
 import repoll.core.User;
 import repoll.core.Vote;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class VoteMapper extends AbstractMapper<Vote> {
     private static VoteMapper INSTANCE = new VoteMapper();
@@ -22,6 +20,8 @@ public class VoteMapper extends AbstractMapper<Vote> {
     public static final String INSERT_QUERY = "insert into \"Vote\" " +
             "(user_id, answer_id, creation_datetime) values (?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Vote\" where id = ?";
+    private static final String SELECT_BY_USER_QUERY = "select id from \"Vote\" where user_id = ?";
+    private static final String SELECT_BY_ANSWER_QUERY = "select id from \"Vote\" where answer_id = ?";
 
     private VoteMapper() {}
 
@@ -42,7 +42,12 @@ public class VoteMapper extends AbstractMapper<Vote> {
         validate(vote);
         PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
         try {
-            statement.setLong(1, vote.getAuthor().getId());
+            User author = vote.getAuthor();
+            if (author == null) {
+                statement.setNull(1, Types.INTEGER);
+            } else {
+                statement.setLong(1, author.getId());
+            }
             statement.setLong(2, vote.getAnswer().getId());
             statement.setTimestamp(3, Util.dateToTimestamp(vote.getCreationDate()));
             statement.setLong(4, vote.getId());
@@ -58,7 +63,12 @@ public class VoteMapper extends AbstractMapper<Vote> {
         validate(vote);
         PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
-            statement.setLong(1, vote.getAuthor().getId());
+            User author = vote.getAuthor();
+            if (author == null) {
+                statement.setNull(1, Types.INTEGER);
+            } else {
+                statement.setLong(1, author.getId());
+            }
             statement.setLong(2, vote.getAnswer().getId());
             statement.setTimestamp(3, Util.dateToTimestamp(vote.getCreationDate()));
             return statement;
@@ -91,10 +101,27 @@ public class VoteMapper extends AbstractMapper<Vote> {
         return vote;
     }
 
+    @Override
+    protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
+        PreparedStatement statement;
+        if (object instanceof User) {
+            statement = connection.prepareStatement(SELECT_BY_USER_QUERY);
+        } else if (object instanceof Answer) {
+            statement = connection.prepareStatement(SELECT_BY_ANSWER_QUERY);
+        } else {
+            return null;
+        }
+        try {
+            statement.setLong(1, object.getId());
+            return statement;
+        } catch (SQLException e) {
+            statement.close();
+            throw e;
+        }
+    }
+
     private void validate(Vote vote) {
-        if (vote.getAnswer() == null) {
-            throw new NullPointerException("Answer of " + vote + " is undefined");
-        } else if (!vote.getAnswer().isSaved()) {
+        if (!vote.getAnswer().isSaved()) {
             throw new IllegalStateException("Answer of " + vote + " should be saved first");
         }
         if (vote.getAuthor() != null && !vote.getAuthor().isSaved()) {

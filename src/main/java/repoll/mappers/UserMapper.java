@@ -1,5 +1,6 @@
 package repoll.mappers;
 
+import repoll.core.DomainObject;
 import repoll.core.User;
 
 import java.sql.PreparedStatement;
@@ -115,4 +116,11 @@ public class UserMapper extends AbstractMapper<User> {
         return user;
     }
 
+    /*
+     * User table has no foreign keys
+     */
+    @Override
+    protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
+        return null;
+    }
 }

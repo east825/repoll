@@ -1,9 +1,9 @@
 package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
+import repoll.mappers.MapperException;
+import repoll.mappers.Mappers;
 
-import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,18 +40,18 @@ public class User extends DomainObject {
     }
 
     @NotNull
-    public List<Poll> getAuthoredPolls() {
-        return Collections.emptyList();
+    public List<Poll> getAuthoredPolls() throws MapperException {
+        return Mappers.getForClass(Poll.class).selectRelated(this);
     }
 
     @NotNull
-    public List<Commentary> getCommentaries() {
-        return Collections.emptyList();
+    public List<Commentary> getCommentaries() throws MapperException {
+        return Mappers.getForClass(Commentary.class).selectRelated(this);
     }
 
     @NotNull
-    public List<Vote> getVotes() {
-        return Collections.emptyList();
+    public List<Vote> getVotes() throws MapperException {
+        return Mappers.getForClass(Vote.class).selectRelated(this);
     }
 
     @NotNull

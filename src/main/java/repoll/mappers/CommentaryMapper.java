@@ -1,6 +1,7 @@
 package repoll.mappers;
 
 import repoll.core.Commentary;
+import repoll.core.DomainObject;
 import repoll.core.Poll;
 import repoll.core.User;
 
@@ -22,6 +23,8 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     public static final String INSERT_QUERY = "insert into \"Commentary\" " +
             "(user_id, poll_id, message, creation_datetime) values (?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Commentary\" where id = ?";
+    private static final String SELECT_BY_USER_QUERY = "select id from \"Commentary\" where user_id = ?";
+    private static final String SELECT_BY_POLL_QUERY = "select id from \"Commentary\" where poll_id = ?";
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
@@ -100,6 +103,25 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
         );
         commentary.setId(resultSet.getLong("id"));
         return commentary;
+    }
+
+    @Override
+    protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
+        PreparedStatement statement;
+        if (object instanceof User) {
+            statement = connection.prepareStatement(SELECT_BY_USER_QUERY);
+        } else if (object instanceof Poll) {
+            statement = connection.prepareStatement(SELECT_BY_POLL_QUERY);
+        } else {
+            return null;
+        }
+        try {
+            statement.setLong(1, object.getId());
+            return statement;
+        } catch (SQLException e) {
+            statement.close();
+            throw e;
+        }
     }
 
     private void validate(Commentary commentary) {

@@ -4,7 +4,9 @@ import repoll.core.ConnectionProvider;
 import repoll.core.DomainObject;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractMapper<T extends DomainObject> {
@@ -27,6 +29,8 @@ public abstract class AbstractMapper<T extends DomainObject> {
 
     protected abstract PreparedStatement getDeleteStatement(T domainObject) throws SQLException;
 
+    protected abstract PreparedStatement getSelectByStatement(DomainObject object) throws SQLException;
+
     protected abstract T loadObject(ResultSet resultSet) throws SQLException, MapperException;
 
     public T loadById(long id) throws MapperException {
@@ -45,6 +49,25 @@ public abstract class AbstractMapper<T extends DomainObject> {
             return object;
         } catch (SQLException e) {
             throw new MapperException("Error searching object with id = " + id, e);
+        }
+    }
+
+    public List<T> selectRelated(DomainObject domainObject) throws MapperException {
+        try (PreparedStatement statement = getSelectByStatement(domainObject)) {
+            if (statement == null) {
+                throw new UnsupportedOperationException("Can't select by " + domainObject);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet == null) {
+                throw new AssertionError("Select query returned no ResultSet");
+            }
+            List<T> results = new ArrayList<>();
+            while (resultSet.next()) {
+                results.add(loadById(resultSet.getLong("id")));
+            }
+            return results;
+        } catch (SQLException e) {
+            throw new MapperException("Error while selecting by " + domainObject, e);
         }
     }
 

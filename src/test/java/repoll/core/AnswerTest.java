@@ -60,6 +60,14 @@ public class AnswerTest extends DatabaseTest {
         answer.insert();
     }
 
+    @Test(expected = MapperException.class)
+    public void conflictingDescription() throws MapperException {
+        Poll poll = new Poll(null, "title");
+        poll.insert();
+        new Answer(poll, "answer").insert();
+        new Answer(poll, "answer").insert();
+    }
+
     @Test
     public void illegalParameters() {
         try {
@@ -84,5 +92,21 @@ public class AnswerTest extends DatabaseTest {
         }
     }
 
-
+    @Test
+    public void selectVotes() throws MapperException {
+        Poll poll = new Poll(null, "title");
+        poll.insert();
+        Answer answer1 = new Answer(poll, "answer #1");
+        answer1.insert();
+        Answer answer2 = new Answer(poll, "answer #2");
+        answer2.insert();
+        Vote vote1 = new Vote(null, answer1);
+        vote1.insert();
+        Vote vote2 = new Vote(null, answer1);
+        vote2.insert();
+        Vote vote3 = new Vote(null, answer2);
+        vote3.insert();
+        assertEquals(2, answer1.getVotes().size());
+        assertEquals(1, answer2.getVotes().size());
+    }
 }

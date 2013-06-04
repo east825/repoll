@@ -1,5 +1,6 @@
 package repoll.mappers;
 
+import repoll.core.DomainObject;
 import repoll.core.Poll;
 import repoll.core.User;
 
@@ -20,7 +21,10 @@ public class PollMapper extends AbstractMapper<Poll> {
             "(user_id, title, description, creation_datetime) values (?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"Poll\" where id = ?";
 
-    private PollMapper() {}
+    public static final String SELECT_BY_AUTHOR_QUERY = "select id from \"Poll\" where user_id = ?";
+
+    private PollMapper() {
+    }
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
@@ -105,5 +109,20 @@ public class PollMapper extends AbstractMapper<Poll> {
         if (poll.getAuthor() != null && !poll.getAuthor().isSaved()) {
             throw new IllegalStateException("Author of " + poll + " should be saved first");
         }
+    }
+
+    @Override
+    protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
+        if (object instanceof User) {
+            PreparedStatement statement = connection.prepareStatement(SELECT_BY_AUTHOR_QUERY);
+            try {
+                statement.setLong(1, object.getId());
+                return statement;
+            } catch (SQLException e) {
+                statement.close();
+                throw e;
+            }
+        }
+        return null;
     }
 }
