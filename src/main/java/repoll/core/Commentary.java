@@ -16,7 +16,7 @@ public class Commentary extends DomainObject {
     private final Date creationDate;
 
     public Commentary(User author, Poll poll, String message) {
-        this(author, poll, message, new Date(System.currentTimeMillis()));
+        this(author, poll, message, new Date());
     }
 
     public Commentary(@Nullable User author, @NotNull Poll poll, @NotNull String message, @NotNull Date creationDate) {

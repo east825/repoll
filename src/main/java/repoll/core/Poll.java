@@ -17,7 +17,7 @@ public class Poll extends DomainObject {
     }
 
     public Poll(User author, String title, String description) {
-        this(author, title, description, new Date(System.currentTimeMillis()));
+        this(author, title, description, new Date());
     }
 
     public Poll(@Nullable User author, @NotNull String title, @NotNull String description, @NotNull Date creationDate) {

@@ -129,8 +129,8 @@ public class User extends DomainObject {
         private String additionalInfo = "";
         private String login;
         private String passwordHash;
-        private Date registrationDate = new Timestamp(System.currentTimeMillis());
-        private Date lastVisitDate = new Timestamp(System.currentTimeMillis());
+        private Date registrationDate = new Date();
+        private Date lastVisitDate = new Date();
 
         public Builder(@NotNull String login, @NotNull String password) {
             this.login = login;
