@@ -2,6 +2,7 @@ package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.mappers.MapperException;
 
 import java.util.Date;
 

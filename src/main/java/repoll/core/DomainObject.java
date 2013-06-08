@@ -51,4 +51,11 @@ public abstract class DomainObject implements DatabasePersistent {
             id = UNSAVED_OBJECT_ID;
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof DomainObject)) return false;
+        return isSaved() && id == ((DomainObject) obj).getId();
+    }
 }

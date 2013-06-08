@@ -25,6 +25,12 @@ public class User extends DomainObject {
         lastVisitDate = builder.lastVisitDate;
     }
 
+    public static User newFromCredentials(String login, String password) throws MapperException {
+        User user = new Builder(login, password).build();
+        user.insert();
+        return user;
+    }
+
     public static Builder builder(String login, String password) {
         return new Builder(login, password);
     }
@@ -32,6 +38,28 @@ public class User extends DomainObject {
     // TODO: calculate actual hash here
     private static String calculatePasswordHash(@NotNull String password) {
         return password;
+    }
+
+    public Vote voteFor(Answer answer) throws MapperException {
+        Vote vote = new Vote(this, answer);
+        vote.insert();
+        return vote;
+    }
+
+    public Commentary commentPoll(Poll poll, String message) throws MapperException {
+        Commentary commentary = new Commentary(this, poll, message);
+        commentary.insert();
+        return commentary;
+    }
+
+    public Poll createPoll(String title) throws MapperException {
+        return createPoll(title, "");
+    }
+
+    public Poll createPoll(String title, String description) throws MapperException {
+        Poll poll = new Poll(this, title, description);
+        poll.insert();
+        return poll;
     }
 
     @Override

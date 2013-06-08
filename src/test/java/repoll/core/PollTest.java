@@ -116,32 +116,21 @@ public class PollTest extends DatabaseTest {
 
     @Test
     public void selectCommentaries() throws MapperException {
-        Poll poll1 = new Poll(null, "titlel");
-        poll1.insert();
-        Poll poll2 = new Poll(null, "title2");
-        poll2.insert();
-        Commentary c1 = new Commentary(null, poll1, "commentary #1");
-        c1.insert();
-        Commentary c2 = new Commentary(null, poll1, "commentary #2");
-        c2.insert();
-        Commentary c3 = new Commentary(null, poll2, "commentary #3");
-        c3.insert();
+        Poll poll1 = Util.newAnonymousPoll("titlel");
+        Poll poll2 = Util.newAnonymousPoll("title2");
+        Util.newAnonymousCommentary(poll1, "commentary #1");
+        Util.newAnonymousCommentary(poll1, "commentary #2");
+        Util.newAnonymousCommentary(poll2, "commentary #3");
         assertEquals(2, poll1.getCommentaries().size());
         assertEquals(1, poll2.getCommentaries().size());
     }
 
     @Test
     public void selectAnswers() throws MapperException {
-        Poll poll1 = new Poll(null, "titlel");
-        poll1.insert();
-        Poll poll2 = new Poll(null, "title2");
-        poll2.insert();
-        Answer answer1 = new Answer(poll1, "answer #1");
-        answer1.insert();
-        Answer answer2 = new Answer(poll1, "answer #2");
-        answer2.insert();
-        Answer answer3 = new Answer(poll2, "answer #3");
-        answer3.insert();
+        Poll poll1 = Util.newAnonymousPoll("title1");
+        poll1.addAnswers("answer #1", "answer #2");
+        Poll poll2 = Util.newAnonymousPoll("title2");
+        poll2.addAnswer("answer #3");
         assertEquals(2, poll1.getAnswers().size());
         assertEquals(1, poll2.getAnswers().size());
     }

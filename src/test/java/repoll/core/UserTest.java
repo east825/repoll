@@ -182,18 +182,12 @@ public class UserTest extends DatabaseTest {
 
     @Test
     public void authoredPolls() throws MapperException {
-        User user1 = User.builder("login1", "passwd").build();
-        user1.insert();
-        User user2 = User.builder("login2", "passwd").build();
-        user2.insert();
-        User user3 = User.builder("login3", "passwd").build();
-        user3.insert();
-        Poll poll1 = new Poll(user1, "poll #1");
-        poll1.insert();
-        Poll poll2 = new Poll(user1, "poll #2");
-        poll2.insert();
-        Poll poll3 = new Poll(user2, "poll #3");
-        poll3.insert();
+        User user1 = User.newFromCredentials("login1", "passwd");
+        User user2 = User.newFromCredentials("login2", "passwd");
+        User user3 = User.newFromCredentials("login3", "passwd");
+        user1.createPoll("poll #1");
+        user1.createPoll("poll #2");
+        user2.createPoll("poll #3");
         assertEquals(2, user1.getAuthoredPolls().size());
         assertEquals(1, user2.getAuthoredPolls().size());
         assertEquals(0, user3.getAuthoredPolls().size());
@@ -201,40 +195,26 @@ public class UserTest extends DatabaseTest {
 
     @Test
     public void authoredCommentaries() throws MapperException {
-        User user1 = User.builder("login1", "passwd").build();
-        user1.insert();
-        User user2 = User.builder("login2", "passwd").build();
-        user2.insert();
-        Poll poll = new Poll(user1, "title");
-        poll.insert();
-        Commentary commentary1 = new Commentary(user1, poll, "commentary #1");
-        commentary1.insert();
-        Commentary commentary2 = new Commentary(user1, poll, "commentary #2");
-        commentary2.insert();
-        Commentary commentary3 = new Commentary(user2, poll, "commentary #3");
-        commentary3.insert();
+        User user1 = User.newFromCredentials("login1", "passwd");
+        User user2 = User.newFromCredentials("login2", "passwd");
+        Poll poll = user1.createPoll("title");
+        user1.commentPoll(poll, "commentary #1");
+        user1.commentPoll(poll, "commentary #2");
+        user2.commentPoll(poll, "commentary #3");
         assertEquals(2, user1.getCommentaries().size());
         assertEquals(1, user2.getCommentaries().size());
     }
 
     @Test
     public void authoredVotes() throws MapperException {
-        User user1 = User.builder("login1", "passwd").build();
-        user1.insert();
-        User user2 = User.builder("login2", "passwd").build();
-        user2.insert();
-        Poll poll = new Poll(user1, "title");
-        poll.insert();
-        Answer answer1 = new Answer(poll, "answer #1");
-        answer1.insert();
-        Answer answer2 = new Answer(poll, "answer #2");
-        answer2.insert();
-        Vote vote1 = new Vote(user1, answer1);
-        vote1.insert();
-        Vote vote2 = new Vote(user1, answer1);
-        vote2.insert();
-        Vote vote3 = new Vote(user2, answer1);
-        vote3.insert();
+        User user1 = User.newFromCredentials("login1", "passwd");
+        User user2 = User.newFromCredentials("login2", "passwd");
+        Poll poll = user1.createPoll("title");
+        Answer answer1 = poll.addAnswer("answer #1");
+        Answer answer2 = poll.addAnswer("answer #2");
+        user1.voteFor(answer1);
+        user1.voteFor(answer2);
+        user2.voteFor(answer1);
         assertEquals(2, user1.getVotes().size());
         assertEquals(1, user2.getVotes().size());
     }

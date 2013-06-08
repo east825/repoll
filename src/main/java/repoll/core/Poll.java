@@ -33,6 +33,19 @@ public class Poll extends DomainObject {
         return String.format("Poll(id=%d title='%s')", getId(), title);
     }
 
+    public List<Answer> addAnswers(String... answers) throws MapperException {
+        for (String answer : answers) {
+            addAnswer(answer);
+        }
+        return getAnswers();
+    }
+
+    public Answer addAnswer(String description) throws MapperException {
+        Answer answer = new Answer(this, description);
+        answer.insert();
+        return answer;
+    }
+
     @NotNull
     public List<Commentary> getCommentaries() throws MapperException {
         return Mappers.getForClass(Commentary.class).selectRelated(this);
