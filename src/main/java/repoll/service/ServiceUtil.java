@@ -8,7 +8,7 @@ public class ServiceUtil {
 
     private static Gson buildGson() {
         return new GsonBuilder()
-                .setDateFormat("Y-m-d'T'H:M:SZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
                 .create();
     }

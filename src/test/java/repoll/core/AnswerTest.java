@@ -1,6 +1,7 @@
 package repoll.core;
 
 import org.junit.Test;
+import repoll.DatabaseTest;
 import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
 

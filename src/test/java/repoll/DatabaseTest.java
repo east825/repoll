@@ -1,7 +1,9 @@
-package repoll.core;
+package repoll;
 
 import org.junit.After;
 import org.junit.Before;
+import repoll.core.ConnectionProvider;
+import repoll.core.Statements;
 
 import java.sql.*;
 
