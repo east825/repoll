@@ -22,6 +22,7 @@ public class PollMapper extends AbstractMapper<Poll> {
     public static final String DELETE_QUERY = "delete from \"Poll\" where id = ?";
 
     public static final String SELECT_BY_AUTHOR_QUERY = "select id from \"Poll\" where user_id = ?";
+    public static final String SELECT_ALL_QUERY = "select id from \"Poll\"";
 
     private PollMapper() {
     }
@@ -105,12 +106,6 @@ public class PollMapper extends AbstractMapper<Poll> {
         return poll;
     }
 
-    private void validate(Poll poll) {
-        if (poll.getAuthor() != null && !poll.getAuthor().isSaved()) {
-            throw new IllegalStateException("Author of " + poll + " should be saved first");
-        }
-    }
-
     @Override
     protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
         if (object instanceof User) {
@@ -124,5 +119,16 @@ public class PollMapper extends AbstractMapper<Poll> {
             }
         }
         return null;
+    }
+
+    @Override
+    protected PreparedStatement getSelectAllStatement() throws SQLException {
+        return connection.prepareStatement(SELECT_ALL_QUERY);
+    }
+
+    private void validate(Poll poll) {
+        if (poll.getAuthor() != null && !poll.getAuthor().isSaved()) {
+            throw new IllegalStateException("Author of " + poll + " should be saved first");
+        }
     }
 }

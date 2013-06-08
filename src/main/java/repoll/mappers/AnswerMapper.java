@@ -21,6 +21,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
     public static final String INSERT_QUERY = "insert into \"Answer\" (poll_id, description) values (?, ?)";
     public static final String DELETE_QUERY = "delete from \"Answer\" where id = ?";
     public static final String SELECT_BY_POLL_QUERY = "select id from \"Answer\" where poll_id = ?";
+    public static final String SELECT_ALL_QUERY = "select id from \"Answer\"";
 
     private AnswerMapper() {
     }
@@ -101,6 +102,11 @@ public class AnswerMapper extends AbstractMapper<Answer> {
             }
         }
         return null;
+    }
+
+    @Override
+    protected PreparedStatement getSelectAllStatement() throws SQLException {
+        return connection.prepareStatement(SELECT_ALL_QUERY);
     }
 
     private void validate(Answer answer) {

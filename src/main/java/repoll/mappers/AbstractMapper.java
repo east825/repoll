@@ -31,6 +31,8 @@ public abstract class AbstractMapper<T extends DomainObject> {
 
     protected abstract PreparedStatement getSelectByStatement(DomainObject object) throws SQLException;
 
+    protected abstract PreparedStatement getSelectAllStatement() throws SQLException;
+
     protected abstract T loadObject(ResultSet resultSet) throws SQLException, MapperException;
 
     public T loadById(long id) throws MapperException {
@@ -58,9 +60,6 @@ public abstract class AbstractMapper<T extends DomainObject> {
                 throw new UnsupportedOperationException("Can't select by " + domainObject);
             }
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet == null) {
-                throw new AssertionError("Select query returned no ResultSet");
-            }
             List<T> results = new ArrayList<>();
             while (resultSet.next()) {
                 results.add(loadById(resultSet.getLong("id")));
@@ -92,6 +91,19 @@ public abstract class AbstractMapper<T extends DomainObject> {
             throw new MapperException("Error while deleting object " + domainObject, e);
         } finally {
             loadedMap.remove(domainObject.getId());
+        }
+    }
+
+    public final List<T> all() throws MapperException {
+        try (PreparedStatement statement = getSelectAllStatement()) {
+            ResultSet resultSet = statement.executeQuery();
+            List<T> objects = new ArrayList<>();
+            while (resultSet.next()) {
+                objects.add(loadById(resultSet.getLong("id")));
+            }
+            return objects;
+        } catch (SQLException e) {
+            throw new MapperException("Error while selecting all objects", e);
         }
     }
 

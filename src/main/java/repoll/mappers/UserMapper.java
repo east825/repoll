@@ -32,6 +32,7 @@ public class UserMapper extends AbstractMapper<User> {
             "additional_info, registration_datetime, last_visit_datetime)" +
             "values (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"User\" where id = ?";
+    public static final String SELECT_ALL_QUERY = "delete from \"User\"";
 
     /*
      * Prevents external instantiation
@@ -116,9 +117,14 @@ public class UserMapper extends AbstractMapper<User> {
         return user;
     }
 
+    @Override
+    protected PreparedStatement getSelectAllStatement() throws SQLException {
+        return connection.prepareStatement(SELECT_ALL_QUERY);
+    }
+
     /*
-     * User table has no foreign keys
-     */
+         * User table has no foreign keys
+         */
     @Override
     protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
         return null;

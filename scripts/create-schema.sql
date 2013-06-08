@@ -7,8 +7,8 @@ CREATE TABLE "User" (
     last_name varchar(30) NOT NULL DEFAULT '',
     middle_name varchar(30) NOT NULL DEFAULT '',
     additional_info varchar(3000) NOT NULL DEFAULT '',
-    registration_datetime timestamp NOT NULL,
-    last_visit_datetime timestamp NOT NULL
+    registration_datetime timestamp NOT NULL default CURRENT_TIMESTAMP,
+    last_visit_datetime timestamp NOT NULL default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "Poll" (
@@ -19,7 +19,7 @@ CREATE TABLE "Poll" (
         CONSTRAINT "Poll_User_FK" REFERENCES "User" ON DELETE SET NULL,
     title varchar(100) NOT NULL CONSTRAINT "Poll_title_UQ" UNIQUE CHECK (LENGTH(TRIM(title)) > 0),
     description varchar(3000) NOT NULL DEFAULT '',
-    creation_datetime timestamp NOT NULL
+    creation_datetime timestamp NOT NULL default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "Answer" (
@@ -41,7 +41,7 @@ CREATE TABLE "Vote" (
     -- votes remain intouch if user no longer exists
     user_id int
         constraint "Vote_User_FK" REFERENCES "User" ON DELETE SET NULL,
-    creation_datetime timestamp NOT NULL
+    creation_datetime timestamp NOT NULL default CURRENT_TIMESTAMP
     --  CONSTRAINT Vote_PK PRIMARY KEY (answer_id, user_id)
 );
 
@@ -55,5 +55,5 @@ CREATE TABLE "Commentary" (
         CONSTRAINT "Commentary_User_FK" REFERENCES "User" ON DELETE SET NULL,
     -- message if mandatory
     message varchar(3000) NOT NULL CHECK (LENGTH(TRIM(message)) > 0),
-    creation_datetime timestamp NOT NULL
+    creation_datetime timestamp NOT NULL default CURRENT_TIMESTAMP
 );

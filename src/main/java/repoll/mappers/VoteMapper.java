@@ -22,6 +22,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
     public static final String DELETE_QUERY = "delete from \"Vote\" where id = ?";
     private static final String SELECT_BY_USER_QUERY = "select id from \"Vote\" where user_id = ?";
     private static final String SELECT_BY_ANSWER_QUERY = "select id from \"Vote\" where answer_id = ?";
+    private static final String SELECT_ALL_QUERY = "select id from \"Vote\"";
 
     private VoteMapper() {}
 
@@ -118,6 +119,11 @@ public class VoteMapper extends AbstractMapper<Vote> {
             statement.close();
             throw e;
         }
+    }
+
+    @Override
+    protected PreparedStatement getSelectAllStatement() throws SQLException {
+        return connection.prepareStatement(SELECT_ALL_QUERY);
     }
 
     private void validate(Vote vote) {

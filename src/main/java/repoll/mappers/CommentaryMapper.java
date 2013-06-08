@@ -25,6 +25,8 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     public static final String DELETE_QUERY = "delete from \"Commentary\" where id = ?";
     private static final String SELECT_BY_USER_QUERY = "select id from \"Commentary\" where user_id = ?";
     private static final String SELECT_BY_POLL_QUERY = "select id from \"Commentary\" where poll_id = ?";
+    private static final String SELECT_ALL_QUERY = "select id from \"Commentary\"";
+
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
@@ -122,6 +124,11 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
             statement.close();
             throw e;
         }
+    }
+
+    @Override
+    protected PreparedStatement getSelectAllStatement() throws SQLException {
+        return connection.prepareStatement(SELECT_ALL_QUERY);
     }
 
     private void validate(Commentary commentary) {
