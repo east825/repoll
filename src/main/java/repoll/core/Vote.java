@@ -2,6 +2,8 @@ package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.mappers.AbstractMapper;
+import repoll.mappers.Mappers;
 
 import java.util.Date;
 
@@ -21,6 +23,10 @@ public class Vote extends DomainObject {
         this.author = author;
         this.answer = answer;
         this.creationDate = creationDate;
+    }
+
+    public static AbstractMapper<Vote> getMapper() {
+        return Mappers.getForClass(Vote.class);
     }
 
     @Override

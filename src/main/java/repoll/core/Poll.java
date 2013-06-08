@@ -2,6 +2,7 @@ package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
 import repoll.mappers.Mappers;
 
@@ -26,6 +27,10 @@ public class Poll extends DomainObject {
         this.title = title;
         this.description = description;
         this.creationDate = creationDate;
+    }
+
+    public static AbstractMapper<Poll> getMapper() {
+        return Mappers.getForClass(Poll.class);
     }
 
     @Override

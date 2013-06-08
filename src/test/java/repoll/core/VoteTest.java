@@ -3,7 +3,6 @@ package repoll.core;
 import org.junit.Test;
 import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
-import repoll.mappers.Mappers;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -28,7 +27,7 @@ public class VoteTest extends DatabaseTest {
         answer2.insert();
         Vote vote1 = new Vote(user1, answer1);
         vote1.insert();
-        AbstractMapper<Vote> mapper = Mappers.getForClass(Vote.class);
+        AbstractMapper<Vote> mapper = Vote.getMapper();
         assertSame(vote1, mapper.loadById(vote1.getId()));
         assertTrue(vote1.isSaved());
         Vote vote2 = new Vote(user2, answer2);

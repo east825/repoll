@@ -2,7 +2,6 @@ package repoll.core;
 
 import org.junit.Test;
 import repoll.mappers.MapperException;
-import repoll.mappers.Mappers;
 import repoll.mappers.UserMapper;
 
 import java.sql.PreparedStatement;
@@ -24,7 +23,7 @@ public class UserTest extends DatabaseTest {
             statement.setLong(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
-            assertSame(user, Mappers.getForClass(User.class).loadById(user.getId()));
+            assertSame(user, User.getMapper().loadById(user.getId()));
             user.delete();
             assertFalse(user.isSaved());
             resultSet = statement.executeQuery();

@@ -2,7 +2,8 @@ package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import repoll.mappers.MapperException;
+import repoll.mappers.AbstractMapper;
+import repoll.mappers.Mappers;
 
 import java.util.Date;
 
@@ -25,6 +26,10 @@ public class Commentary extends DomainObject {
         this.poll = poll;
         this.message = message;
         this.creationDate = creationDate;
+    }
+
+    public static AbstractMapper<Commentary> getMapper() {
+        return Mappers.getForClass(Commentary.class);
     }
 
     @Override

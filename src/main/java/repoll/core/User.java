@@ -1,6 +1,7 @@
 package repoll.core;
 
 import org.jetbrains.annotations.NotNull;
+import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
 import repoll.mappers.Mappers;
 
@@ -33,6 +34,10 @@ public class User extends DomainObject {
 
     public static Builder builder(String login, String password) {
         return new Builder(login, password);
+    }
+
+    public static AbstractMapper<User> getMapper() {
+        return Mappers.getForClass(User.class);
     }
 
     // TODO: calculate actual hash here

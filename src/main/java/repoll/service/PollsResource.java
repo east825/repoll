@@ -1,7 +1,6 @@
 package repoll.service;
 
 import repoll.core.Poll;
-import repoll.mappers.Mappers;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,14 +14,14 @@ public class PollsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String allPolls() throws Exception {
-        return ServiceUtil.GSON.toJson(Mappers.getForClass(Poll.class).all());
+        return ServiceUtil.GSON.toJson(Poll.getMapper().all());
     }
 
     @GET
     @Path("/most-commented")
     @Produces(MediaType.APPLICATION_JSON)
     public String mostCommentedPoll() throws Exception {
-        List<Poll> allPolls = Mappers.getForClass(Poll.class).all();
+        List<Poll> allPolls = Poll.getMapper().all();
         if (allPolls.isEmpty()) {
             return "no polls";
         }

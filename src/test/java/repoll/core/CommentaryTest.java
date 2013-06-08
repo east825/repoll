@@ -3,7 +3,6 @@ package repoll.core;
 import org.junit.Test;
 import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
-import repoll.mappers.Mappers;
 import repoll.mappers.Util;
 
 import java.sql.PreparedStatement;
@@ -24,7 +23,7 @@ public class CommentaryTest extends DatabaseTest {
         poll.insert();
         Commentary c1 = new Commentary(null, poll, "message1");
         Commentary c2 = new Commentary(null, poll, "message2");
-        AbstractMapper<Commentary> mapper = Mappers.getForClass(Commentary.class);
+        AbstractMapper<Commentary> mapper = Commentary.getMapper();
         c1.insert();
         assertTrue(c1.isSaved());
         assertSame(c1, mapper.loadById(c1.getId()));

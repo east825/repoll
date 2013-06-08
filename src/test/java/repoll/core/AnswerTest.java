@@ -3,7 +3,6 @@ package repoll.core;
 import org.junit.Test;
 import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
-import repoll.mappers.Mappers;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +17,7 @@ public class AnswerTest extends DatabaseTest {
 
     @Test
     public void insertAndDeleteAnswer() throws MapperException, SQLException {
-        AbstractMapper<Answer> mapper = Mappers.getForClass(Answer.class);
+        AbstractMapper<Answer> mapper = Answer.getMapper();
         Poll poll = new Poll(null, "title");
         poll.insert();
         Answer answer1 = new Answer(poll, "Answer #1");
