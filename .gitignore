@@ -2,5 +2,6 @@
 /target/
 /wiki/
 /db/
+/lib/
 /derby.log
 /repoll.iml

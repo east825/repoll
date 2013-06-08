@@ -40,8 +40,11 @@ public class DatabaseTest {
     public static void connectTestDatabase() {
         try {
             ConnectionProvider.registerConnection(DriverManager.getConnection("jdbc:derby:db/test;create=true"));
-        } catch (SQLException e) {
-            throw new AssertionError("Error while connecting to test database", e);
+        } catch (SQLException sqlExc) {
+            for (Throwable exc: sqlExc) {
+                System.err.println(exc);
+            }
+            throw new AssertionError("Error while connecting to test database", sqlExc);
         }
     }
 
