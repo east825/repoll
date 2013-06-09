@@ -8,9 +8,9 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import repoll.DatabaseTest;
+import repoll.core.DatabaseTest;
 import repoll.core.Poll;
-import repoll.core.Util;
+import repoll.TestUtil;
 import repoll.mappers.MapperException;
 
 import javax.ws.rs.core.MediaType;
@@ -38,9 +38,9 @@ public class PollResourceTest extends DatabaseTest {
 
     @Test
     public void getAllPolls() throws MapperException {
-        Poll poll1 = Util.newAnonymousPoll("title1");
-        Poll poll2 = Util.newAnonymousPoll("title2");
-        Poll poll3 = Util.newAnonymousPoll("title3");
+        Poll poll1 = TestUtil.newAnonymousPoll("title1");
+        Poll poll2 = TestUtil.newAnonymousPoll("title2");
+        Poll poll3 = TestUtil.newAnonymousPoll("title3");
         String response = getAllPollsAsJsonString();
         List<Poll> receivedPolls = ServiceUtil.GSON.fromJson(response, LIST_OF_POLLS_TYPE);
         assertEquals(Arrays.asList(poll1, poll2, poll3), receivedPolls);
@@ -48,14 +48,14 @@ public class PollResourceTest extends DatabaseTest {
 
     @Test
     public void getMostCommentedPoll() throws MapperException {
-        Poll mostCommented = Util.newAnonymousPoll("Most commented");
-        Poll poll1 = Util.newAnonymousPoll("other poll #1");
-        Poll poll2 = Util.newAnonymousPoll("other poll #2");
-        Util.newAnonymousCommentary(mostCommented, "comment #1");
-        Util.newAnonymousCommentary(mostCommented, "comment #2");
-        Util.newAnonymousCommentary(mostCommented, "comment #3");
-        Util.newAnonymousCommentary(poll1, "comment #4");
-        Util.newAnonymousCommentary(poll2, "comment #5");
+        Poll mostCommented = TestUtil.newAnonymousPoll("Most commented");
+        Poll poll1 = TestUtil.newAnonymousPoll("other poll #1");
+        Poll poll2 = TestUtil.newAnonymousPoll("other poll #2");
+        TestUtil.newAnonymousCommentary(mostCommented, "comment #1");
+        TestUtil.newAnonymousCommentary(mostCommented, "comment #2");
+        TestUtil.newAnonymousCommentary(mostCommented, "comment #3");
+        TestUtil.newAnonymousCommentary(poll1, "comment #4");
+        TestUtil.newAnonymousCommentary(poll2, "comment #5");
         String response = getMostCommentedPollAsJsonString();
         assertEquals(mostCommented, ServiceUtil.GSON.fromJson(response, Poll.class));
     }

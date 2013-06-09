@@ -1,7 +1,7 @@
 package repoll.core;
 
 import org.junit.Test;
-import repoll.DatabaseTest;
+import repoll.TestUtil;
 import repoll.mappers.MapperException;
 
 import java.sql.*;
@@ -117,20 +117,20 @@ public class PollTest extends DatabaseTest {
 
     @Test
     public void selectCommentaries() throws MapperException {
-        Poll poll1 = Util.newAnonymousPoll("titlel");
-        Poll poll2 = Util.newAnonymousPoll("title2");
-        Util.newAnonymousCommentary(poll1, "commentary #1");
-        Util.newAnonymousCommentary(poll1, "commentary #2");
-        Util.newAnonymousCommentary(poll2, "commentary #3");
+        Poll poll1 = TestUtil.newAnonymousPoll("titlel");
+        Poll poll2 = TestUtil.newAnonymousPoll("title2");
+        TestUtil.newAnonymousCommentary(poll1, "commentary #1");
+        TestUtil.newAnonymousCommentary(poll1, "commentary #2");
+        TestUtil.newAnonymousCommentary(poll2, "commentary #3");
         assertEquals(2, poll1.getCommentaries().size());
         assertEquals(1, poll2.getCommentaries().size());
     }
 
     @Test
     public void selectAnswers() throws MapperException {
-        Poll poll1 = Util.newAnonymousPoll("title1");
+        Poll poll1 = TestUtil.newAnonymousPoll("title1");
         poll1.addAnswers("answer #1", "answer #2");
-        Poll poll2 = Util.newAnonymousPoll("title2");
+        Poll poll2 = TestUtil.newAnonymousPoll("title2");
         poll2.addAnswer("answer #3");
         assertEquals(2, poll1.getAnswers().size());
         assertEquals(1, poll2.getAnswers().size());
