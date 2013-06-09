@@ -1,10 +1,11 @@
 package repoll;
 
-import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
-import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 import repoll.service.PollsResource;
 
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 
 public class Repoll {
@@ -22,8 +23,9 @@ public class Repoll {
 
     private static void runServer() throws IOException {
         System.out.println("Starting server...");
-        HttpServer server = GrizzlyServerFactory.createHttpServer(
-                "http://localhost:8000", new ClassNamesResourceConfig(PollsResource.class));
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(
+                UriBuilder.fromUri("http://localhost:8000").build(),
+                new ResourceConfig(PollsResource.class));
         System.out.println("Press enter to stop server");
         System.in.read();
         server.stop();

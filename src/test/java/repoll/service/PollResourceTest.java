@@ -1,39 +1,54 @@
 package repoll.service;
 
 import com.google.gson.reflect.TypeToken;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
-import com.sun.jersey.api.core.ClassNamesResourceConfig;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import repoll.core.DatabaseTest;
-import repoll.core.Poll;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.*;
 import repoll.TestUtil;
+import repoll.core.Poll;
 import repoll.mappers.MapperException;
 
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Application;
 import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-public class PollResourceTest extends DatabaseTest {
+public class PollResourceTest extends JerseyTest {
     private static final Type LIST_OF_POLLS_TYPE = new TypeToken<List<Poll>>() {}.getType();
-    private static HttpServer server;
+    private static Connection testConnection;
 
     @BeforeClass
-    public static void startTestServer() throws Exception {
-        server = GrizzlyServerFactory.createHttpServer("http://localhost:8000",
-                new ClassNamesResourceConfig(PollsResource.class));
+    public static void connectTestDatabase() {
+        testConnection = TestUtil.initializeTestDatabaseConnection();
     }
 
     @AfterClass
-    public static void stopServer() {
-        server.stop();
+    public static void closeConnection() {
+        try {
+            testConnection.close();
+        } catch (SQLException e) {
+            throw new AssertionError("Error while closing connection to test database", e);
+        }
+    }
+
+    @Before
+    public void clearTestDatabaseBefore() {
+        TestUtil.clearDatabase(testConnection);
+    }
+
+    @After
+    public void clearTestDatabaseAfter() {
+        TestUtil.clearDatabase(testConnection);
+    }
+
+    @Override
+    protected Application configure() {
+        return new ResourceConfig(PollsResource.class);
     }
 
     @Test
@@ -62,23 +77,18 @@ public class PollResourceTest extends DatabaseTest {
 
     @Test
     public void noPolls() {
-        List<Poll> allPolls = ServiceUtil.GSON.fromJson(getAllPollsAsJsonString(), LIST_OF_POLLS_TYPE);
+        String allPollsAsJsonString = getAllPollsAsJsonString();
+        List<Poll> allPolls = ServiceUtil.GSON.fromJson(allPollsAsJsonString, LIST_OF_POLLS_TYPE);
         assertTrue(allPolls.isEmpty());
         assertEquals("no polls", getMostCommentedPollAsJsonString());
     }
 
-    private static String getMostCommentedPollAsJsonString() {
-        return Client.create()
-                    .resource("http://localhost:8000/polls/most-commented")
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .get(String.class);
+    private String getMostCommentedPollAsJsonString() {
+        return target("/polls/most-commented/").request().get(String.class);
     }
 
-    private static String getAllPollsAsJsonString() {
-        return Client.create()
-                .resource("http://localhost:8000/polls/")
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .get(String.class);
+    private String getAllPollsAsJsonString() {
+        return target("/polls/").request().get(String.class);
     }
 
 }
