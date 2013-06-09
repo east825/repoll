@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class PollResourceTest extends DatabaseTest {
     private static final Type LIST_OF_POLLS_TYPE = new TypeToken<List<Poll>>() {}.getType();
@@ -40,10 +41,7 @@ public class PollResourceTest extends DatabaseTest {
         Poll poll1 = Util.newAnonymousPoll("title1");
         Poll poll2 = Util.newAnonymousPoll("title2");
         Poll poll3 = Util.newAnonymousPoll("title3");
-        String response = Client.create()
-                .resource("http://localhost:8000/polls/")
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .get(String.class);
+        String response = getAllPollsAsJsonString();
         List<Poll> receivedPolls = ServiceUtil.GSON.fromJson(response, LIST_OF_POLLS_TYPE);
         assertEquals(Arrays.asList(poll1, poll2, poll3), receivedPolls);
     }
@@ -58,12 +56,29 @@ public class PollResourceTest extends DatabaseTest {
         Util.newAnonymousCommentary(mostCommented, "comment #3");
         Util.newAnonymousCommentary(poll1, "comment #4");
         Util.newAnonymousCommentary(poll2, "comment #5");
-        String response = Client.create()
-                .resource("http://localhost:8000/polls/most-commented")
+        String response = getMostCommentedPollAsJsonString();
+        assertEquals(mostCommented, ServiceUtil.GSON.fromJson(response, Poll.class));
+    }
+
+    @Test
+    public void noPolls() {
+        List<Poll> allPolls = ServiceUtil.GSON.fromJson(getAllPollsAsJsonString(), LIST_OF_POLLS_TYPE);
+        assertTrue(allPolls.isEmpty());
+        assertEquals("no polls", getMostCommentedPollAsJsonString());
+    }
+
+    private static String getMostCommentedPollAsJsonString() {
+        return Client.create()
+                    .resource("http://localhost:8000/polls/most-commented")
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .get(String.class);
+    }
+
+    private static String getAllPollsAsJsonString() {
+        return Client.create()
+                .resource("http://localhost:8000/polls/")
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .get(String.class);
-        assertEquals(mostCommented, ServiceUtil.GSON.fromJson(response, Poll.class));
-
     }
 
 }
