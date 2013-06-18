@@ -1,23 +1,21 @@
 package repoll.service;
 
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.zip.GZIPInputStream;
 
 import static repoll.service.ServiceUtil.StackExchangeResponseWrapper;
 
 public class StackExchangeUser {
     public static final String STACKEXCHAGE_USER_API_URI = "https://api.stackexchange.com/2.1/users/";
-    public static final Type WRAPPER_TYPE = new TypeToken<StackExchangeResponseWrapper<StackExchangeUser>>() {}.getType();
 
+    @Nullable
     public static StackExchangeUser loadById(int id) throws IOException {
         InputStream response = ClientBuilder.newClient().target(STACKEXCHAGE_USER_API_URI)
                 .path(String.valueOf(id))
@@ -26,13 +24,13 @@ public class StackExchangeUser {
                 .acceptEncoding("utf-8")
                 .get(InputStream.class);
         InputStreamReader decodedStream = new InputStreamReader(new GZIPInputStream(response));
-        String json = consumeStream(decodedStream);
-        System.err.println(json);
-        StackExchangeResponseWrapper<StackExchangeUser> wrapper = ServiceUtil.GSON.fromJson(json, WRAPPER_TYPE);
-        return wrapper.getItems().get(0);
+        String json = ServiceUtil.consumeStream(decodedStream);
+//        System.err.println(json);
+        StackExchangeResponseWrapper<StackExchangeUser> wrapper = ServiceUtil.GSON.fromJson(json, ServiceUtil.WRAPPER_TYPE);
+        return wrapper.hasItems() ? wrapper.getItems().get(0) : null;
     }
 
-    /*
+    /**
      * Serialization constructor
      */
     public StackExchangeUser() {
@@ -55,20 +53,7 @@ public class StackExchangeUser {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println(loadById(1013522));
+        System.out.println(loadById(1000000000));
     }
 
-    private static String consumeStream(Reader reader) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        char[] buffer = new char[256];
-        int nread;
-        try {
-            while ((nread = reader.read(buffer)) > 0) {
-                builder.append(buffer, 0, nread);
-            }
-            return builder.toString();
-        } finally {
-            reader.close();
-        }
-    }
 }
