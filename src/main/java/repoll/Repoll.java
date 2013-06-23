@@ -4,15 +4,40 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import repoll.service.PollsResource;
+import repoll.ui.MainPanel;
 
+import javax.swing.*;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Repoll {
+    public final static Logger LOG = createRootLogger();
+
+    private static Logger createRootLogger() {
+        Logger logger = Logger.getLogger("repoll");
+        logger.setUseParentHandlers(false);
+        logger.setLevel(Level.ALL);
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        logger.addHandler(handler);
+        return logger;
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            System.err.println("No command specified");
-            System.exit(1);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JFrame app = new JFrame("repoll UI");
+                    app.add(new MainPanel().getRootPanel());
+                    app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    app.pack();
+                    app.setVisible(true);
+                }
+            });
         } else if (args[0].equals("service")) {
             runServer();
         } else {
