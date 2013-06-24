@@ -11,6 +11,10 @@ public class ValidationUtil {
         return VALID_USERNAME_REGEX.matcher(login).matches();
     }
 
+    public static boolean isEmptyOrWhitespace(String s) {
+        return s.trim().isEmpty();
+    }
+
     public static boolean validateLoginAndShowDefaultMessageDialog(String login) {
         boolean isValid = validateLogin(login);
         if (!isValid) {

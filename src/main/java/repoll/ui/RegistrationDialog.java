@@ -1,10 +1,15 @@
 package repoll.ui;
 
+import repoll.core.User;
+import repoll.mappers.MapperException;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class RegistrationDialog extends JDialog {
+    private static final Logger LOG = Logger.getLogger(RegistrationDialog.class.getName());
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -15,6 +20,7 @@ public class RegistrationDialog extends JDialog {
     private JTextField lastNameField;
     private JPasswordField passwordField;
     private JPasswordField passwordRepeatField;
+    private User registeredUser;
 
     public RegistrationDialog() {
         setContentPane(contentPane);
@@ -51,17 +57,32 @@ public class RegistrationDialog extends JDialog {
 
     private void onOK() {
         if (validateFields()) {
-            saveUser();
-            dispose();
+            registeredUser = createUser();
+            if (registeredUser != null) {
+                dispose();
+            }
         }
     }
 
-    private void saveUser() {
-        // pass
+    private User createUser() {
+        User user = User.builder(userLoginField.getText(), passwordField.getText())
+                .firstName(firstNameField.getText())
+                .middleName(middleNameField.getText())
+                .lastName(lastNameField.getText())
+                .build();
+        try {
+            user.insert();
+            return user;
+        } catch (MapperException e) {
+            JOptionPane.showMessageDialog(this, "Can't save user: " + e.getMessage(),
+                    "User creation error", JOptionPane.ERROR_MESSAGE);
+            LOG.throwing("RegistrationDialog", "createUser", e);
+        }
+        return null;
     }
 
     private boolean validateFields() {
-        if (ValidationUtil.validateLoginAndShowDefaultMessageDialog(userLoginField.getText())) {
+        if (!ValidationUtil.validateLoginAndShowDefaultMessageDialog(userLoginField.getText())) {
             return false;
         }
         if (!Arrays.equals(passwordField.getPassword(), passwordRepeatField.getPassword())) {
@@ -79,10 +100,7 @@ public class RegistrationDialog extends JDialog {
         dispose();
     }
 
-    public static void main(String[] args) {
-        RegistrationDialog dialog = new RegistrationDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+    public User getUser() {
+        return registeredUser;
     }
 }

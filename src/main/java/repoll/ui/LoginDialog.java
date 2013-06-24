@@ -1,5 +1,7 @@
 package repoll.ui;
 
+import repoll.core.User;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.Arrays;
@@ -11,6 +13,7 @@ public class LoginDialog extends JDialog {
     private JTextField loginField;
     private JPasswordField passwordField;
     private JButton registrationButton;
+    private User currentUser;
 
     public LoginDialog() {
         setContentPane(contentPane);
@@ -45,9 +48,13 @@ public class LoginDialog extends JDialog {
         registrationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RegistrationDialog registrationDialog = new RegistrationDialog();
-                registrationDialog.pack();
-                registrationDialog.setVisible(true);
+                RegistrationDialog dialog = new RegistrationDialog();
+                dialog.pack();
+                dialog.setVisible(true);
+                currentUser = dialog.getUser();
+                if (currentUser != null) {
+                    dispose();
+                }
             }
         });
     }
@@ -56,27 +63,26 @@ public class LoginDialog extends JDialog {
         if (!validateFields()) {
             return;
         }
-        if (!Arrays.equals(passwordField.getPassword(), "passwd".toCharArray())) {
-            JOptionPane.showMessageDialog(contentPane, "Wrong password for user '" + loginField.getText() + "'",
-                    "Wrong password", JOptionPane.ERROR_MESSAGE);
+        currentUser = SearchUtil.findUser(loginField.getText());
+        if (currentUser == null ||
+                !Arrays.equals(passwordField.getPassword(), currentUser.getPasswordHash().toCharArray())) {
+            JOptionPane.showMessageDialog(contentPane, "Wrong credentials",
+                    "Wrong credentials", JOptionPane.ERROR_MESSAGE);
 
         } else {
             dispose();
         }
     }
 
-    private boolean validateFields() {
-        return ValidationUtil.validateLoginAndShowDefaultMessageDialog(loginField.getText());
-    }
-
     private void onCancel() {
         dispose();
     }
 
-    public static void main(String[] args) {
-        LoginDialog dialog = new LoginDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+    private boolean validateFields() {
+        return ValidationUtil.validateLoginAndShowDefaultMessageDialog(loginField.getText());
+    }
+
+    public User getUser() {
+        return currentUser;
     }
 }

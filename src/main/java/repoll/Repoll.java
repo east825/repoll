@@ -4,7 +4,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import repoll.service.PollsResource;
-import repoll.ui.MainPanel;
+import repoll.ui.MainApplication;
 
 import javax.swing.*;
 import javax.ws.rs.core.UriBuilder;
@@ -31,11 +31,7 @@ public class Repoll {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    JFrame app = new JFrame("repoll UI");
-                    app.add(new MainPanel().getRootPanel());
-                    app.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    app.pack();
-                    app.setVisible(true);
+                    MainApplication.getInstance().createAndShowGUI();
                 }
             });
         } else if (args[0].equals("service")) {

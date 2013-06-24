@@ -11,13 +11,13 @@ import java.util.List;
 
 public class SearchResults extends JPanel {
     private JList<Poll> pollsList;
-    private MainPanel mainPanel;
+    private MainApplication mainPanel;
 
-    public SearchResults(MainPanel panel) {
+    public SearchResults(MainApplication panel) {
         new SearchResults(Collections.<Poll>emptyList(), panel);
     }
 
-    public SearchResults(List<Poll> polls, MainPanel panel) {
+    public SearchResults(List<Poll> polls, MainApplication panel) {
         super(new BorderLayout());
         mainPanel = panel;
         pollsList = new JList<>();
