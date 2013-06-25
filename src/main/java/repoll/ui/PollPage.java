@@ -2,6 +2,7 @@ package repoll.ui;
 
 import repoll.core.*;
 import repoll.mappers.MapperException;
+import repoll.service.StackExchangeUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class PollPage {
@@ -23,6 +25,7 @@ public class PollPage {
     private JPanel resultsPanel;
     private JButton voteButton;
     private JPanel votingPanel;
+    private JButton viewProfileButton;
     private Poll poll;
 
     public PollPage(final Poll poll) {
@@ -90,6 +93,37 @@ public class PollPage {
         } catch (MapperException e) {
             LOG.throwing("PollPage", "PollPage", e);
         }
+        viewProfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SwingWorker<StackExchangeUser, Object>() {
+                    @Override
+                    protected StackExchangeUser doInBackground() throws Exception {
+                        User author = poll.getAuthor();
+                        if (author == null || author.getStackoverflowId() == -1) {
+                            return null;
+                        }
+                        return StackExchangeUser.loadById(author.getStackoverflowId());
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            StackExchangeUser user = get();
+                            if (user != null) {
+                                JDialog dialog = new StackoverflowUserProfile(user);
+                                dialog.setTitle("User: " + user.getDisplayName());
+                                dialog.pack();
+                                dialog.setModal(false);
+                                dialog.setVisible(true);
+                            }
+                        } catch (Exception e1) {
+                            LOG.finest("Error while loading user info: " + e1.getMessage());
+                        }
+                    }
+                }.execute();
+            }
+        });
     }
 
     private void fillCommentariesPanel(Poll poll) {

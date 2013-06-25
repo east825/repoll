@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -43,11 +44,13 @@ public class StackExchangeUser {
     @SerializedName("display_name")
     private String displayName;
     @SerializedName("profile_image")
-    private String profileImageLink;
+    private URL profileImageLink;
     @SerializedName("user_id")
     private int id;
     private int reputation;
     private int age;
+    @SerializedName("accept_rate")
+    private int acceptRate;
 
     @Override
     public String toString() {
@@ -62,7 +65,7 @@ public class StackExchangeUser {
         return displayName;
     }
 
-    public String getProfileImageLink() {
+    public URL getProfileImageLink() {
         return profileImageLink;
     }
 
@@ -76,6 +79,10 @@ public class StackExchangeUser {
 
     public int getAge() {
         return age;
+    }
+
+    public int getAcceptRate() {
+        return acceptRate;
     }
 
     public static void main(String[] args) throws Exception {
