@@ -37,7 +37,6 @@ public class ServiceUtil {
     /**
      * Auxiliary response holder for StackExchange services
      */
-
     public static class StackExchangeResponseWrapper<T> {
         private List<T> items;
 

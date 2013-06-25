@@ -8,12 +8,14 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 import static repoll.service.ServiceUtil.StackExchangeResponseWrapper;
 
 public class StackExchangeUser {
-    public static final String STACKEXCHAGE_USER_API_URI = "https://api.stackexchange.com/2.1/users/";
+    private static final String STACKEXCHAGE_USER_API_URI = "https://api.stackexchange.com/2.1/users/";
+    private static Logger LOG = Logger.getLogger(StackExchangeUser.class.getName());
 
     @Nullable
     public static StackExchangeUser loadById(int id) throws IOException {
@@ -25,7 +27,6 @@ public class StackExchangeUser {
                 .get(InputStream.class);
         InputStreamReader decodedStream = new InputStreamReader(new GZIPInputStream(response));
         String json = ServiceUtil.consumeStream(decodedStream);
-//        System.err.println(json);
         StackExchangeResponseWrapper<StackExchangeUser> wrapper = ServiceUtil.GSON.fromJson(json, ServiceUtil.WRAPPER_TYPE);
         return wrapper.hasItems() ? wrapper.getItems().get(0) : null;
     }
@@ -45,15 +46,40 @@ public class StackExchangeUser {
     private String profileImageLink;
     @SerializedName("user_id")
     private int id;
-    private int reputation, age;
+    private int reputation;
+    private int age;
 
     @Override
     public String toString() {
         return String.format("StackExchangeUser(id=%d, name='%s')", id, displayName);
     }
 
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getProfileImageLink() {
+        return profileImageLink;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getReputation() {
+        return reputation;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
     public static void main(String[] args) throws Exception {
-        System.out.println(loadById(1000000000));
+        System.out.println(loadById(1013522));
     }
 
 }
