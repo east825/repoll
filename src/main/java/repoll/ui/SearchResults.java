@@ -37,7 +37,7 @@ public class SearchResults extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 int index = pollsList.locationToIndex(e.getPoint());
                 Poll selectedPoll = pollsList.getModel().getElementAt(index);
-                  mainPanel.switchMainContent(new PollPage(selectedPoll).getRootPanel());
+                  mainPanel.showInMainPanel(new PollPage(selectedPoll).getRootPanel());
 //                JOptionPane.showMessageDialog(pollsList, "Poll " + selectedPoll.getTitle() + " selected");
 
             }
