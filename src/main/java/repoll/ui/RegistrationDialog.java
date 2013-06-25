@@ -20,6 +20,8 @@ public class RegistrationDialog extends JDialog {
     private JTextField lastNameField;
     private JPasswordField passwordField;
     private JPasswordField passwordRepeatField;
+    private JTextArea aboutField;
+    private JTextField stackoverflowIdField;
     private User registeredUser;
 
     public RegistrationDialog() {
@@ -69,7 +71,11 @@ public class RegistrationDialog extends JDialog {
                 .firstName(firstNameField.getText())
                 .middleName(middleNameField.getText())
                 .lastName(lastNameField.getText())
+                .additionalInfo(aboutField.getText())
                 .build();
+        if (!stackoverflowIdField.getText().isEmpty()) {
+            user.setStackoverflowId(Integer.parseInt(stackoverflowIdField.getText()));
+        }
         try {
             user.insert();
             return user;
@@ -83,6 +89,11 @@ public class RegistrationDialog extends JDialog {
 
     private boolean validateFields() {
         if (!ValidationUtil.validateLoginAndShowDefaultMessageDialog(userLoginField.getText())) {
+            return false;
+        }
+        if (!stackoverflowIdField.getText().matches("\\d*")) {
+            JOptionPane.showMessageDialog(this, "Stackoverflow ID should be non-negative number",
+                    "Invalid Stackoverflow ID", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (!Arrays.equals(passwordField.getPassword(), passwordRepeatField.getPassword())) {

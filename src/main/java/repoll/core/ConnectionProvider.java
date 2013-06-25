@@ -8,13 +8,14 @@ import java.sql.SQLException;
  * Registry object holding global connection instance.
  */
 public class ConnectionProvider {
-    private static ConnectionProvider instance = getDefaultConnection();
+    private static ConnectionProvider instance = defaultConnectionProvider();
 
-    private static ConnectionProvider getDefaultConnection() {
+    private static ConnectionProvider defaultConnectionProvider() {
         try {
             return new ConnectionProvider(DriverManager.getConnection("jdbc:derby:db/main"));
+//            return new ConnectionProvider(DriverManager.getConnection("jdbc:derby://localhost:1527//home/east825/development/repos/repoll/db/main"));
         } catch (SQLException e) {
-            throw new AssertionError("Default connection can't be established");
+            throw new AssertionError("Default connection can't be established", e);
         }
     }
 
@@ -34,5 +35,9 @@ public class ConnectionProvider {
 
     protected Connection getConnection() {
         return connection;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("in main");
     }
 }

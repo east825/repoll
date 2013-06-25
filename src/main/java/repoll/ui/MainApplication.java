@@ -16,6 +16,10 @@ import java.util.logging.Logger;
 
 public class MainApplication extends JFrame {
     private static final Logger LOG = Logger.getLogger(MainApplication.class.getName());
+    static {
+        // initialize default connection
+        ConnectionProvider.connection();
+    }
 
     private static MainApplication APPLICATION = null;
     public static synchronized MainApplication getInstance() {
