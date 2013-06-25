@@ -24,13 +24,14 @@ public class UserMapper extends AbstractMapper<User> {
             "last_name = ?, " +
             "additional_info = ?, " +
             "registration_datetime = ?, " +
-            "last_visit_datetime = ?" +
+            "last_visit_datetime = ?, " +
+            "stackoverflow_id = ? " +
             "where id = ?";
 
     public static final String INSERT_QUERY = "insert into \"User\" " +
             "(login, password, first_name, middle_name, last_name," +
-            "additional_info, registration_datetime, last_visit_datetime)" +
-            "values (?, ?, ?, ?, ?, ?, ?, ?)";
+            "additional_info, registration_datetime, last_visit_datetime, stackoverflow_id)" +
+            "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_QUERY = "delete from \"User\" where id = ?";
     public static final String SELECT_ALL_QUERY = "delete from \"User\"";
 
@@ -64,7 +65,8 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(6, user.getAdditionalInfo());
             statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
             statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
-            statement.setLong(9, user.getId());
+            statement.setInt(9, user.getStackoverflowId());
+            statement.setLong(10, user.getId());
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -84,6 +86,7 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(6, user.getAdditionalInfo());
             statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
             statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
+            statement.setInt(9, user.getStackoverflowId());
             return statement;
         } catch (SQLException e) {
             statement.close();
@@ -112,6 +115,7 @@ public class UserMapper extends AbstractMapper<User> {
                 .additionalInfo(resultSet.getString("additional_info"))
                 .registrationDate(resultSet.getTimestamp("registration_datetime"))
                 .lastVisitDate(resultSet.getTimestamp("last_visit_datetime"))
+                .stackoverflowId(resultSet.getInt("stackoverflow_id"))
                 .build();
         user.setId(resultSet.getLong("id"));
         return user;

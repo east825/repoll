@@ -14,6 +14,7 @@ public class User extends DomainObject {
     private String login, passwordHash;
     private Date registrationDate;
     private Date lastVisitDate;
+    private int stackoverflowId = -1;
 
     public User(Builder builder) {
         firstName = builder.firstName;
@@ -24,6 +25,7 @@ public class User extends DomainObject {
         passwordHash = builder.passwordHash;
         registrationDate = builder.registrationDate;
         lastVisitDate = builder.lastVisitDate;
+        stackoverflowId = builder.stackoverflowId;
     }
 
     public static User newFromCredentials(String login, String password) throws MapperException {
@@ -155,6 +157,17 @@ public class User extends DomainObject {
         this.lastVisitDate = lastVisitDate;
     }
 
+    public int getStackoverflowId() {
+        return stackoverflowId;
+    }
+
+    public void setStackoverflowId(int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("Stackoverflow id should be non-negative number");
+        }
+        this.stackoverflowId = id;
+    }
+
     public static class Builder {
         private String firstName = "";
         private String middleName = "";
@@ -164,6 +177,7 @@ public class User extends DomainObject {
         private String passwordHash;
         private Date registrationDate = new Date();
         private Date lastVisitDate = new Date();
+        private int stackoverflowId = -1;
 
         public Builder(@NotNull String login, @NotNull String password) {
             this.login = login;
@@ -197,6 +211,14 @@ public class User extends DomainObject {
 
         public Builder lastVisitDate(@NotNull Date lastVisitDate) {
             this.lastVisitDate = lastVisitDate;
+            return this;
+        }
+
+        public Builder stackoverflowId(int id) {
+            if (id < 0) {
+                throw new IllegalArgumentException("Stackoverflow id should be non-negative number");
+            }
+            stackoverflowId = id;
             return this;
         }
 

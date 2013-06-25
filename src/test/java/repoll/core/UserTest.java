@@ -45,6 +45,7 @@ public class UserTest extends DatabaseTest {
                 .additionalInfo("info1")
                 .registrationDate(registrationDate)
                 .lastVisitDate(lastVisitDate1)
+                .stackoverflowId(123)
                 .build();
         user.insert();
         try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
@@ -59,6 +60,7 @@ public class UserTest extends DatabaseTest {
             assertEquals("info1", resultSet.getString("additional_info"));
             assertEquals(registrationDate, resultSet.getTimestamp("registration_datetime"));
             assertEquals(lastVisitDate1, resultSet.getTimestamp("last_visit_datetime"));
+            assertEquals(123, resultSet.getInt("stackoverflow_id"));
 
             user.setLogin("login2");
             user.setPassword("password2");
@@ -67,6 +69,7 @@ public class UserTest extends DatabaseTest {
             user.setLastName("LastName2");
             user.setAdditionalInfo("info2");
             user.setLastVisitDate(lastVisitDate2);
+            user.setStackoverflowId(42);
             user.update();
 
             resultSet = statement.executeQuery();
@@ -79,6 +82,7 @@ public class UserTest extends DatabaseTest {
             assertEquals("info2", resultSet.getString("additional_info"));
             assertEquals(registrationDate, resultSet.getTimestamp("registration_datetime"));
             assertEquals(lastVisitDate2, resultSet.getTimestamp("last_visit_datetime"));
+            assertEquals(42, resultSet.getInt("stackoverflow_id"));
         }
     }
 
@@ -154,6 +158,13 @@ public class UserTest extends DatabaseTest {
         } catch (IllegalArgumentException e) {
             // pass
         }
+        try {
+            User.builder("login", "passwd").stackoverflowId(-10).build();
+            fail();
+        } catch (IllegalArgumentException e) {
+            // pass
+        }
+
     }
 
     @Test(expected = AssertionError.class)

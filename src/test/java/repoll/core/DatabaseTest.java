@@ -2,6 +2,7 @@ package repoll.core;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import repoll.TestUtil;
 
 import java.sql.Connection;
@@ -15,6 +16,11 @@ import static org.junit.Assert.assertTrue;
 public class DatabaseTest {
 
     protected static Connection testConnection = TestUtil.initializeTestDatabaseConnection();
+
+//    @BeforeClass
+//    public static void createDatabaseSchema() {
+//        TestUtil.createDatabaseSchema(testConnection);
+//    }
 
     @Before
     public void clearDatabaseBefore() {

@@ -13,8 +13,9 @@ public class Statements {
             "    last_name varchar(30) NOT NULL DEFAULT '',\n" +
             "    middle_name varchar(30) NOT NULL DEFAULT '',\n" +
             "    additional_info varchar(3000) NOT NULL DEFAULT '',\n" +
-            "    registration_datetime timestamp NOT NULL,\n" +
-            "    last_visit_datetime timestamp NOT NULL\n" +
+            "    stackoverflow_id int DEFAULT -1,\n" +
+            "    registration_datetime timestamp NOT NULL default CURRENT_TIMESTAMP,\n" +
+            "    last_visit_datetime timestamp NOT NULL default CURRENT_TIMESTAMP\n" +
             ")";
 
     public static final String CREATE_POLL_TABLE = "CREATE TABLE \"Poll\" (\n" +

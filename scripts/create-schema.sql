@@ -7,6 +7,7 @@ CREATE TABLE "User" (
     last_name varchar(30) NOT NULL DEFAULT '',
     middle_name varchar(30) NOT NULL DEFAULT '',
     additional_info varchar(3000) NOT NULL DEFAULT '',
+    stackoverflow_id int DEFAULT -1,
     registration_datetime timestamp NOT NULL default CURRENT_TIMESTAMP,
     last_visit_datetime timestamp NOT NULL default CURRENT_TIMESTAMP
 );
