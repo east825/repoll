@@ -60,6 +60,12 @@ public class LoginDialog extends JDialog {
     }
 
     private void onOK() {
+        if (loginField.getText().isEmpty()) {
+            // Testing backdoor
+            currentUser = SearchUtil.findUser("east825");
+            dispose();
+            return;
+        }
         if (!validateFields()) {
             return;
         }
