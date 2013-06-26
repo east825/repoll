@@ -18,11 +18,11 @@ public class SearchUtil {
         List<Poll> results = new ArrayList<>();
         String[] words = query.split("\\s+");
         try {
-        forAllPolls:
+        overPolls:
             for (Poll poll : Poll.getMapper().all()) {
                 for (String word : words) {
-                    if (!(poll.getTitle().contains(word)) || poll.getDescription().contains(word)) {
-                        continue forAllPolls;
+                    if (!(poll.getTitle().contains(word) || poll.getDescription().contains(word))) {
+                        continue overPolls;
                     }
                 }
                 results.add(poll);

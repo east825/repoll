@@ -117,6 +117,21 @@ public class User extends DomainObject {
     }
 
     @NotNull
+    public String getPresentableName() {
+        if (!firstName.isEmpty()) {
+            String name = firstName;
+            if (!middleName.isEmpty()) {
+                name += " " + middleName;
+            }
+            if (!lastName.isEmpty()) {
+                name += " " + lastName;
+            }
+            return name;
+        }
+        return login;
+    }
+
+    @NotNull
     public String getAdditionalInfo() {
         return additionalInfo;
     }

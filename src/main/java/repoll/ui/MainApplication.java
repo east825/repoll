@@ -3,6 +3,7 @@ package repoll.ui;
 import repoll.core.ConnectionProvider;
 import repoll.core.Poll;
 import repoll.core.User;
+import repoll.mappers.MapperException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +43,7 @@ public class MainApplication extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<Poll> polls = SearchUtil.findPolls(searchField.getText());
-                showInMainPanel(new SearchResults(polls, MainApplication.this));
+                showInMainPanel(new SearchResultsPage(polls));
             }
         });
 
@@ -82,7 +83,7 @@ public class MainApplication extends JFrame {
     }
 
     public void createAndShowGUI() {
-        displayedComponent = new SearchResults(this);
+        displayedComponent = new SearchResultsPage();
         contentPanel.add(displayedComponent, BorderLayout.CENTER);
         add(rootPanel);
         setTitle("Repoll UI");
@@ -95,6 +96,11 @@ public class MainApplication extends JFrame {
         currentUser = loginDialog.getUser();
         if (currentUser == null) {
             dispose();
+        }
+        try {
+            showInMainPanel(new SearchResultsPage(currentUser.getAuthoredPolls()));
+        } catch (MapperException e) {
+            LOG.throwing("MainApplication", "createAndShowGUI", e);
         }
     }
 }

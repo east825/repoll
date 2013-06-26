@@ -10,17 +10,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class PollPage {
     private static final Logger LOG = Logger.getLogger(PollPage.class.getName());
 
     private JPanel rootPanel;
-    private JTextPane descriptionPane;
     private JPanel answersPanel;
     private JPanel commentariesPanel;
-    private JLabel titleLabel;
+    private JLabel descriptionLabel;
     private JButton addCommentaryButton;
     private JPanel resultsPanel;
     private JButton voteButton;
@@ -35,8 +33,18 @@ public class PollPage {
         votingPanel.setLayout(new GridLayout(0, 1));
         resultsPanel.setLayout(new GridLayout(0, 1));
 
-        titleLabel.setText(poll.getTitle());
-        descriptionPane.setText(poll.getDescription());
+        final User author = poll.getAuthor();
+        String userName = author == null? "Anonymous" : author.getPresentableName();
+        String description = poll.getDescription().isEmpty()? "No description available" : poll.getDescription();
+        descriptionLabel.setText(
+                String.format(
+                        "<html>" +
+                        "<h1>%1$s</h1>" +
+                        "<h5><i>Asked by %2$s at %3$tD %3$tT<i><h5>" +
+                        "<p>%4$s</p>" +
+                        "</html>",
+                        poll.getTitle(), userName, poll.getCreationDate(), description)
+        );
         final ButtonGroup buttonGroup = new ButtonGroup();
         final CardLayout cardLayout = (CardLayout) answersPanel.getLayout();
         final User user = MainApplication.getInstance().getCurrentUser();
@@ -99,7 +107,6 @@ public class PollPage {
                 new SwingWorker<StackExchangeUser, Object>() {
                     @Override
                     protected StackExchangeUser doInBackground() throws Exception {
-                        User author = poll.getAuthor();
                         if (author == null || author.getStackoverflowId() == -1) {
                             return null;
                         }

@@ -9,17 +9,17 @@ import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchResults extends JPanel {
+public class SearchResultsPage extends JPanel {
     private JList<Poll> pollsList;
     private MainApplication mainPanel;
 
-    public SearchResults(MainApplication panel) {
-        new SearchResults(Collections.<Poll>emptyList(), panel);
+    public SearchResultsPage() {
+        this(Collections.<Poll>emptyList());
     }
 
-    public SearchResults(List<Poll> polls, MainApplication panel) {
+    public SearchResultsPage(List<Poll> polls) {
         super(new BorderLayout());
-        mainPanel = panel;
+        mainPanel = MainApplication.getInstance();
         pollsList = new JList<>();
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search results"));
         pollsList.setCellRenderer(new ListCellRenderer<Poll>() {
