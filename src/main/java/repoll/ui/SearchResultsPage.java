@@ -42,7 +42,7 @@ public class SearchResultsPage extends JPanel {
 
             }
         });
-        add(pollsList, BorderLayout.CENTER);
+        add(new JScrollPane(pollsList), BorderLayout.CENTER);
     }
 
     public static class PollTile extends JPanel {

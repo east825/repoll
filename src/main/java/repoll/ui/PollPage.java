@@ -17,21 +17,28 @@ public class PollPage {
 
     private JPanel rootPanel;
     private JPanel answersPanel;
-    private JPanel commentariesPanel;
+    private JPanel commentsPanel;
     private JLabel descriptionLabel;
     private JButton addCommentaryButton;
     private JPanel resultsPanel;
     private JButton voteButton;
     private JPanel votingPanel;
     private JButton viewProfileButton;
+    private JList<Commentary> commentsList;
     private Poll poll;
 
     public PollPage(final Poll poll) {
         this.poll = poll;
 
-        commentariesPanel.setLayout(new GridLayout(0, 1));
         votingPanel.setLayout(new GridLayout(0, 1));
         resultsPanel.setLayout(new GridLayout(0, 1));
+
+        commentsList.setCellRenderer(new ListCellRenderer<Commentary>() {
+            @Override
+            public Component getListCellRendererComponent(JList<? extends Commentary> list, Commentary value, int index, boolean isSelected, boolean cellHasFocus) {
+                return new CommentTile(value);
+            }
+        });
 
         final User author = poll.getAuthor();
         String userName = author == null? "Anonymous" : author.getPresentableName();
@@ -83,7 +90,7 @@ public class PollPage {
             } else {
                 cardLayout.show(answersPanel, "Voting");
             }
-            fillCommentariesPanel(poll);
+            fillCommentariesList(poll);
             addCommentaryButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent event) {
@@ -93,9 +100,8 @@ public class PollPage {
                     } catch (MapperException e) {
                         LOG.throwing("addCommentaryButton ActionListener", "actionPerformed", e);
                     }
-                    commentariesPanel.removeAll();
-                    fillCommentariesPanel(poll);
-                    commentariesPanel.revalidate();
+                    fillCommentariesList(poll);
+                    commentsPanel.revalidate();
                 }
             });
         } catch (MapperException e) {
@@ -133,13 +139,15 @@ public class PollPage {
         });
     }
 
-    private void fillCommentariesPanel(Poll poll) {
+    private void fillCommentariesList(Poll poll) {
+        DefaultListModel<Commentary> listModel = (DefaultListModel<Commentary>)commentsList.getModel();
         try {
+            listModel.clear();
             for (Commentary commentary : poll.getCommentaries()) {
-                commentariesPanel.add(new CommentTile(commentary));
+                listModel.addElement(commentary);
             }
         } catch (MapperException e) {
-            LOG.throwing("PollPage", "fillCommentariesPanel", e);
+            LOG.throwing("PollPage", "fillCommentariesList", e);
         }
     }
 
@@ -182,6 +190,10 @@ public class PollPage {
 
     public JPanel getRootPanel() {
         return rootPanel;
+    }
+
+    private void createUIComponents() {
+        commentsList = new JList<>(new DefaultListModel<Commentary>());
     }
 
     private static class CommentTile extends JPanel {
