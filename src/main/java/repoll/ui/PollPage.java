@@ -61,7 +61,7 @@ public class PollPage {
             for (Answer answer : answers) {
                 answersMap.put(answer.getDescription(), answer);
             }
-            resultsPanel.add(new PieChartDiagram(poll.getAnswers()));
+            resultsPanel.add(new PollResultsVisualization(poll.getAnswers()).getRootPanel());
             for (Answer answer : answers) {
                 JRadioButton button = new JRadioButton(answer.getDescription());
                 buttonGroup.add(button);
@@ -168,16 +168,6 @@ public class PollPage {
         return alreadyVoted;
     }
 
-    private void fillResultsPanel(Poll poll) {
-        try {
-            for (Answer answer : poll.getAnswers()) {
-                resultsPanel.add(new JLabel(String.format("%s: %d", answer.getDescription(), answer.getVotes().size())));
-            }
-        } catch (MapperException e) {
-            LOG.throwing("PollPage", "fillResultsPanel", e);
-        }
-    }
-
     private String getSelectedRadioButtonTest(ButtonGroup group) {
         for (AbstractButton button : Collections.list(group.getElements())) {
             if (button.isSelected()) {
@@ -198,6 +188,7 @@ public class PollPage {
     private static class CommentTile extends JPanel {
         private CommentTile(Commentary commentary) {
             super(new GridLayout(2, 0));
+            setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             add(new JLabel(commentary.getMessage(), SwingConstants.LEFT));
             String author = commentary.getAuthor() == null ? "Anonymous" : commentary.getAuthor().getLogin();
             add(new JLabel("Commented by: " + author, SwingConstants.RIGHT));

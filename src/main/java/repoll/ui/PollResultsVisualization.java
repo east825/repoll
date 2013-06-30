@@ -1,6 +1,5 @@
 package repoll.ui;
 
-import repoll.Repoll;
 import repoll.core.Answer;
 import repoll.mappers.MapperException;
 
@@ -16,22 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class PieChartDiagram extends JPanel {
-    static {
-        Logger rootLogger = Repoll.LOG;
-    }
+public class PollResultsVisualization {
+    private static final Logger LOG = Logger.getLogger(PollResultsVisualization.class.getName());
+    private JList<Answer> legendList;
+    private JPanel rootPanel;
+    private JPanel chartPanel;
 
-    private static final Logger LOG = Logger.getLogger(PieChartDiagram.class.getName());
     private final List<Answer> answers;
     private Answer selectedAnswer;
     private final DefaultListModel<Answer> legendListModel;
     private Map<Answer, Color> colorMap = new IdentityHashMap<>();
-    private final JPanel chartPanel;
 
-    public PieChartDiagram(List<Answer> answers) {
+    public PollResultsVisualization(List<Answer> answers) {
         this.answers = answers;
-        setLayout(new GridLayout(1, 2));
-        add(new JLabel(), BorderLayout.CENTER);
         legendListModel = new DefaultListModel<>();
         if (answers.isEmpty()) {
             legendListModel.addElement(null);
@@ -40,7 +36,7 @@ public class PieChartDiagram extends JPanel {
         for (Answer answer : answers) {
             legendListModel.addElement(answer);
         }
-        final JList<Answer> legendList = new JList<>(legendListModel);
+        legendList.setModel(legendListModel);
         legendList.setFixedCellWidth(150);
         legendList.setCellRenderer(new ListCellRenderer<Answer>() {
             @Override
@@ -58,38 +54,17 @@ public class PieChartDiagram extends JPanel {
             }
         });
         prepareColorMap(answers);
-        final JLabel chartLabel = new JLabel();
         legendList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        legendList.addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                selectedAnswer = legendList.getModel().getElementAt(e.getFirstIndex());
-////                chartPanel.revalidate();
-////                chartPanel.repaint();
-////                chartLabel.revalidate();
-//                chartLabel.repaint();
-//            }
-//        });
         legendList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int index = legendList.locationToIndex(e.getPoint());
                 selectedAnswer = legendListModel.elementAt(index);
-                chartLabel.repaint();
+                chartPanel.repaint();
             }
         });
-        chartPanel = new JPanel(new BorderLayout());
-//        chartPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        chartLabel.setIcon(new PieChartIcon());
-        chartPanel.add(chartLabel);
-//        add(chartPanel);
-        add(chartLabel);
-        add(new JScrollPane(legendList));
-        setMaximumSize(new Dimension(
-                (int)getMaximumSize().getWidth(),
-                (int)Math.max(legendList.getPreferredSize().getHeight(),
-                        chartPanel.getPreferredSize().getHeight())));
-        LOG.fine("" + getPreferredSize());
+        chartPanel.add(new PieChart());
+        chartPanel.setMinimumSize(new Dimension(300, 300));
     }
 
     private static class ColorFilledIcon implements Icon {
@@ -124,17 +99,19 @@ public class PieChartDiagram extends JPanel {
         }
     }
 
-    private class PieChartIcon implements Icon {
-
-        public static final int SIZE = 100;
+    private class PieChart extends JComponent {
+        private PieChart() { }
 
         @Override
-        public void paintIcon(Component c, Graphics g, int x, int y) {
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
             g2d.setPaint(Color.GRAY);
-            int xCenter = x + SIZE / 2;
-            int yCenter = y + SIZE / 2;
-            Arc2D fullCircle = new Arc2D.Double(xCenter, yCenter, SIZE, SIZE, 0, 360, Arc2D.PIE);
+            double size = Math.min(getWidth(), getHeight());
+            double x = getX() + size * 0.1;
+            double y = getY() + size * 0.1;
+            size = size * 0.8;
+            Arc2D fullCircle = new Arc2D.Double(x, y, size, size, 0, 360, Arc2D.PIE);
             g2d.fill(fullCircle);
             g2d.setStroke(new BasicStroke(2));
             g2d.draw(fullCircle);
@@ -147,22 +124,12 @@ public class PieChartDiagram extends JPanel {
                 for (Answer answer : answers) {
                     g2d.setPaint(answer == selectedAnswer ? Color.RED : colorMap.get(answer));
                     double extent = 360.0 * answer.getVotesNumber() / totalVotes;
-                    g2d.fill(new Arc2D.Double(xCenter, yCenter, SIZE, SIZE, startAngle, extent, Arc2D.PIE));
+                    g2d.fill(new Arc2D.Double(x, y, size, size, startAngle, extent, Arc2D.PIE));
                     startAngle += extent;
                 }
             } catch (MapperException e) {
                 LOG.throwing("PieChartIcon", "paintIcon", e);
             }
-        }
-
-        @Override
-        public int getIconWidth() {
-            return SIZE;
-        }
-
-        @Override
-        public int getIconHeight() {
-            return SIZE;
         }
     }
 
@@ -177,28 +144,20 @@ public class PieChartDiagram extends JPanel {
         }
     }
 
+    public JPanel getRootPanel() {
+        return rootPanel;
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 JFrame mainFrame = new JFrame("Sample");
-//                mainFrame.setLayout(new GridLayout(0, 16));
-//                for (int i = 0; i < 256; i++) {
-//                    Color color = new Color(i, i, i);
-//                    mainFrame.add(new JLabel(new ColorFilledIcon(16, 16, color)));
-//                }
-//                try {
-//                    mainFrame.add(new PieChartDiagram(Poll.getMapper().loadById(1).getAnswers()));
-                mainFrame.add(new PieChartDiagram(Collections.<Answer>emptyList()));
-//                } catch (MapperException e) {
-//                    throw new RuntimeException(e);
-//                }
+                mainFrame.add(new PollResultsVisualization(Collections.<Answer>emptyList()).getRootPanel());
                 mainFrame.pack();
                 mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 mainFrame.setVisible(true);
             }
         });
     }
-
-
 }
