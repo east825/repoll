@@ -115,8 +115,11 @@ public class UserMapper extends AbstractMapper<User> {
                 .additionalInfo(resultSet.getString("additional_info"))
                 .registrationDate(resultSet.getTimestamp("registration_datetime"))
                 .lastVisitDate(resultSet.getTimestamp("last_visit_datetime"))
-                .stackoverflowId(resultSet.getInt("stackoverflow_id"))
                 .build();
+        int stackoverflowId = resultSet.getInt("stackoverflow_id");
+        if (stackoverflowId != -1) {
+            user.setStackoverflowId(stackoverflowId);
+        }
         user.setId(resultSet.getLong("id"));
         return user;
     }

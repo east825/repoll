@@ -61,7 +61,7 @@ public class PollPage {
             for (Answer answer : answers) {
                 answersMap.put(answer.getDescription(), answer);
             }
-            fillResultsPanel(poll);
+            resultsPanel.add(new PieChartDiagram(poll.getAnswers()));
             for (Answer answer : answers) {
                 JRadioButton button = new JRadioButton(answer.getDescription());
                 buttonGroup.add(button);
@@ -79,8 +79,8 @@ public class PollPage {
                     } catch (MapperException e) {
                         LOG.throwing("voteButton ActionListener", "actionPerformed", e);
                     }
-                    resultsPanel.removeAll();
-                    fillResultsPanel(poll);
+//                    resultsPanel.removeAll();
+//                    fillResultsPanel(poll);
                     resultsPanel.revalidate();
                     cardLayout.show(answersPanel, "Results");
                 }

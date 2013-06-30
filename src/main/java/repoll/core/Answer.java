@@ -38,4 +38,8 @@ public class Answer extends DomainObject {
     public List<Vote> getVotes() throws MapperException {
         return Mappers.getForClass(Vote.class).selectRelated(this);
     }
+
+    public int getVotesNumber() throws MapperException {
+        return getVotes().size();
+    }
 }

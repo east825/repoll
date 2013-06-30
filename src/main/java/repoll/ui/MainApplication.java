@@ -97,6 +97,7 @@ public class MainApplication extends JFrame {
         currentUser = loginDialog.getUser();
         if (currentUser == null) {
             dispose();
+            return;
         }
         try {
             showInMainPanel(new SearchResultsPage(currentUser.getAuthoredPolls()));
