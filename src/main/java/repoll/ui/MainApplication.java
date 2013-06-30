@@ -39,6 +39,7 @@ public class MainApplication extends JFrame {
     private User currentUser;
 
     private MainApplication() {
+        getRootPane().setDefaultButton(searchButton);
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
