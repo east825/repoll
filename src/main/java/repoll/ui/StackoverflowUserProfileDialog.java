@@ -3,9 +3,10 @@ package repoll.ui;
 import repoll.service.StackExchangeUser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
-public class StackoverflowUserProfile extends JDialog {
+public class StackoverflowUserProfileDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -14,16 +15,16 @@ public class StackoverflowUserProfile extends JDialog {
     private JLabel ageLabel;
     private JLabel reputationLabel;
 
-    public StackoverflowUserProfile(StackExchangeUser user) {
+    public StackoverflowUserProfileDialog(StackExchangeUser user) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+        setTitle("User: " + user.getDisplayName());
 
         avatarLabel.setIcon(new ImageIcon(user.getProfileImageLink()));
-        avatarLabel.setText("");
         rateLabel.setText(String.valueOf(user.getAcceptRate()));
         ageLabel.setText(String.valueOf(user.getAge()));
-        reputationLabel.setText("" + user.getReputation());
+        reputationLabel.setText(String.valueOf(user.getReputation()));
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -61,5 +62,24 @@ public class StackoverflowUserProfile extends JDialog {
     private void onCancel() {
 // add your code here if necessary
         dispose();
+    }
+
+    /**
+     * Alternative way to create dialog with user info
+     * using single JLable with inline markup
+     */
+    public static JLabel buildLabel(StackExchangeUser user) {
+        String template = "<html><table>" +
+                "<tr><td><b>Profile image:</b></td><img src=\"%s\"/></tr>" +
+                "<tr><td><b>Age:</b></td>%d</tr>" +
+                "<tr><td><b>Accept rate:</b></td>%d</tr>" +
+                "<tr><td><b>Reputation:</b></td><td>%d</td></tr>" +
+                "</table></html>";
+        String markup = String.format(template,
+                user.getProfileImageLink(),
+                user.getAge(),
+                user.getReputation(),
+                user.getReputation());
+        return new JLabel(markup);
     }
 }

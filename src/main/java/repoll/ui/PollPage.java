@@ -124,8 +124,7 @@ public class PollPage {
                         try {
                             StackExchangeUser user = get();
                             if (user != null) {
-                                JDialog dialog = new StackoverflowUserProfile(user);
-                                dialog.setTitle("User: " + user.getDisplayName());
+                                JDialog dialog = new StackoverflowUserProfileDialog(user);
                                 dialog.pack();
                                 dialog.setModal(false);
                                 dialog.setVisible(true);
