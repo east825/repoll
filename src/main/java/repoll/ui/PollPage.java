@@ -85,7 +85,7 @@ public class PollPage {
                     cardLayout.show(answersPanel, "Results");
                 }
             });
-            if (userAlreadyVoted()) {
+            if (SearchUtil.userVotedInPoll(user, poll)) {
                 cardLayout.show(answersPanel, "Results");
             } else {
                 cardLayout.show(answersPanel, "Voting");
@@ -148,24 +148,6 @@ public class PollPage {
         } catch (MapperException e) {
             LOG.throwing("PollPage", "fillCommentariesList", e);
         }
-    }
-
-    private boolean userAlreadyVoted() {
-        User user = MainApplication.getInstance().getCurrentUser();
-        // TODO: extract to separate query
-        boolean alreadyVoted = false;
-        try {
-            for (Vote vote : user.getVotes()) {
-                if (vote.getAnswer().getPoll().equals(poll)) {
-                    alreadyVoted = true;
-                }
-
-            }
-        } catch (MapperException e) {
-            LOG.throwing("PollPage", "userAlreadyVoted", e);
-            return true;
-        }
-        return alreadyVoted;
     }
 
     private String getSelectedRadioButtonTest(ButtonGroup group) {

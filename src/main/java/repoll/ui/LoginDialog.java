@@ -62,14 +62,14 @@ public class LoginDialog extends JDialog {
     private void onOK() {
         if (loginField.getText().isEmpty()) {
             // Testing backdoor
-            currentUser = SearchUtil.findUser("east825");
+            currentUser = SearchUtil.findUserByLogin("east825");
             dispose();
             return;
         }
         if (!validateFields()) {
             return;
         }
-        currentUser = SearchUtil.findUser(loginField.getText());
+        currentUser = SearchUtil.findUserByLogin(loginField.getText());
         if (currentUser == null ||
                 !Arrays.equals(passwordField.getPassword(), currentUser.getPasswordHash().toCharArray())) {
             JOptionPane.showMessageDialog(contentPane, "Wrong credentials",
