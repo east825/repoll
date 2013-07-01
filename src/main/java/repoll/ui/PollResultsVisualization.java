@@ -63,8 +63,7 @@ public class PollResultsVisualization {
                 chartPanel.repaint();
             }
         });
-        chartPanel.add(new PieChart());
-        chartPanel.setMinimumSize(new Dimension(300, 300));
+        chartPanel.add(new PieChart(), BorderLayout.CENTER);
     }
 
     private static class ColorFilledIcon implements Icon {
