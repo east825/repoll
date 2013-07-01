@@ -82,14 +82,22 @@
               <text value="Description:"/>
             </properties>
           </component>
-          <component id="b2395" class="javax.swing.JTextArea" binding="descriptionText" default-binding="true">
+          <scrollpane id="e3e37">
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
-              </grid>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
-          </component>
+            <border type="none"/>
+            <children>
+              <component id="b2395" class="javax.swing.JTextArea" binding="descriptionText" default-binding="true">
+                <constraints/>
+                <properties>
+                  <columns value="40"/>
+                  <rows value="7"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
         </children>
       </grid>
       <grid id="f1eba" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -103,7 +111,7 @@
           <component id="d6f17" class="javax.swing.JList" binding="answersList">
             <constraints>
               <grid row="0" column="0" row-span="3" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
+                <preferred-size width="300" height="50"/>
               </grid>
             </constraints>
             <properties/>
@@ -113,6 +121,8 @@
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <alignmentX value="0.25"/>
+              <autoscrolls value="false"/>
               <text value="Add"/>
             </properties>
           </component>

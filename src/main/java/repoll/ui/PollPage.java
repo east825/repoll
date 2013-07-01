@@ -107,6 +107,7 @@ public class PollPage {
         } catch (MapperException e) {
             LOG.throwing("PollPage", "PollPage", e);
         }
+        viewProfileButton.setEnabled(poll.getAuthor() != null && poll.getAuthor().getStackoverflowId() >= 0);
         viewProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
