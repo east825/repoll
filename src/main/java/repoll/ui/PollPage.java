@@ -25,6 +25,7 @@ public class PollPage {
     private JPanel votingPanel;
     private JButton viewProfileButton;
     private JList<Commentary> commentsList;
+    private JButton editPollButton;
     private Poll poll;
 
     public PollPage(final Poll poll) {
@@ -54,7 +55,7 @@ public class PollPage {
         );
         final ButtonGroup buttonGroup = new ButtonGroup();
         final CardLayout cardLayout = (CardLayout) answersPanel.getLayout();
-        final User user = MainApplication.getInstance().getCurrentUser();
+        final User currentUser = MainApplication.getInstance().getCurrentUser();
         try {
             List<Answer> answers = poll.getAnswers();
             final Map<String, Answer> answersMap = new TreeMap<>();
@@ -75,7 +76,7 @@ public class PollPage {
                         return;
                     }
                     try {
-                        user.voteFor(answersMap.get(selectedAnswer));
+                        currentUser.voteFor(answersMap.get(selectedAnswer));
                     } catch (MapperException e) {
                         LOG.throwing("voteButton ActionListener", "actionPerformed", e);
                     }
@@ -85,7 +86,7 @@ public class PollPage {
                     cardLayout.show(answersPanel, "Results");
                 }
             });
-            if (SearchUtil.userVotedInPoll(user, poll)) {
+            if (SearchUtil.userVotedInPoll(currentUser, poll)) {
                 cardLayout.show(answersPanel, "Results");
             } else {
                 cardLayout.show(answersPanel, "Voting");
@@ -96,12 +97,21 @@ public class PollPage {
                 public void actionPerformed(ActionEvent event) {
                     String s = JOptionPane.showInputDialog("Enter commentary");
                     try {
-                        user.commentPoll(poll, s);
+                        currentUser.commentPoll(poll, s);
                     } catch (MapperException e) {
                         LOG.throwing("addCommentaryButton ActionListener", "actionPerformed", e);
                     }
                     fillCommentariesList(poll);
                     commentsPanel.revalidate();
+                }
+            });
+            editPollButton.setVisible(currentUser.equals(poll.getAuthor()));
+            editPollButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JDialog dialog = new PollEditDialog(poll);
+                    dialog.setVisible(true);
+                    MainApplication.getInstance().showInMainPanel(new PollPage(poll).getRootPanel());
                 }
             });
         } catch (MapperException e) {
@@ -131,7 +141,7 @@ public class PollPage {
                                 dialog.setVisible(true);
                             }
                         } catch (Exception e1) {
-                            LOG.finest("Error while loading user info: " + e1.getMessage());
+                            LOG.finest("Error while loading currentUser info: " + e1.getMessage());
                         }
                     }
                 }.execute();

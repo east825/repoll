@@ -21,6 +21,11 @@ public class Answer extends DomainObject {
         return Mappers.getForClass(Answer.class);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Answer(id=%d title='%s')", getId(), description);
+    }
+
     @NotNull
     public Poll getPoll() {
         return poll;

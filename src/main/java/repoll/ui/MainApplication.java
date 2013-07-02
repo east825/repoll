@@ -51,8 +51,7 @@ public class MainApplication extends JFrame {
         addPollButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PollCreationDialog dialog = new PollCreationDialog();
-                dialog.pack();
+                PollEditDialog dialog = new PollEditDialog();
                 dialog.setVisible(true);
             }
         });
