@@ -167,7 +167,7 @@ public class PollEditDialog extends JDialog {
         for (int i = 0; i < listModel.size(); i++) {
             answers.add(listModel.get(i).getDescription());
         }
-        if (new HashSet<>(answers).size() != answers.size()) {
+        if (answers.size() != listModel.size()) {
             JOptionPane.showMessageDialog(this, "Answers contain duplicate values", "Invalid answers", JOptionPane.ERROR_MESSAGE);
             return false;
         }
