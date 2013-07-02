@@ -1,4 +1,4 @@
-package repoll.ui;
+package repoll.service;
 
 import repoll.core.ConnectionProvider;
 import repoll.core.Poll;

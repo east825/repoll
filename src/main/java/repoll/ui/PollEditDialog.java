@@ -34,7 +34,7 @@ public class PollEditDialog extends JDialog {
                 listModel.addElement(answer);
             }
         } catch (MapperException e) {
-            LOG.throwing("PollCreationDialog", "PollCreationDialog", e);
+            LOG.throwing("PollEditDialog", "PollEditDialog", e);
         }
         initComponents();
     }

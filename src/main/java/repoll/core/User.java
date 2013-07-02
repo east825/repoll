@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import repoll.mappers.AbstractMapper;
 import repoll.mappers.MapperException;
 import repoll.mappers.Mappers;
+import repoll.service.SearchUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,9 @@ public class User extends DomainObject {
         stackoverflowId = builder.stackoverflowId;
     }
 
+    /**
+     * Create new user from his/her login and password pair and save it in database
+     */
     public static User newFromCredentials(String login, String password) throws MapperException {
         User user = new Builder(login, password).build();
         user.insert();
@@ -181,6 +185,10 @@ public class User extends DomainObject {
             throw new IllegalArgumentException("Stackoverflow id should be non-negative number");
         }
         this.stackoverflowId = id;
+    }
+
+    public boolean canVoteIn(Poll poll) {
+        return !SearchUtil.userVotedInPoll(this, poll);
     }
 
     public static class Builder {

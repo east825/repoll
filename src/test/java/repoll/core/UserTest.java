@@ -1,7 +1,6 @@
 package repoll.core;
 
 import org.junit.Test;
-import repoll.core.DatabaseTest;
 import repoll.mappers.MapperException;
 import repoll.mappers.UserMapper;
 
@@ -9,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -228,5 +228,15 @@ public class UserTest extends DatabaseTest {
         user2.voteFor(answer1);
         assertEquals(2, user1.getVotes().size());
         assertEquals(1, user2.getVotes().size());
+    }
+
+    @Test
+    public void userCanVote()throws MapperException{
+        User user = User.newFromCredentials("login", "password");
+        Poll poll = user.createPoll("New poll", "");
+        List<Answer> answers = poll.addAnswers("answer #1", "answer #2");
+        assertTrue(user.canVoteIn(poll));
+        user.voteFor(answers.get(0));
+        assertFalse(user.canVoteIn(poll));
     }
 }

@@ -2,6 +2,7 @@ package repoll.ui;
 
 import repoll.core.*;
 import repoll.mappers.MapperException;
+import repoll.service.SearchUtil;
 import repoll.service.StackExchangeUser;
 
 import javax.swing.*;
@@ -80,16 +81,14 @@ public class PollPage {
                     } catch (MapperException e) {
                         LOG.throwing("voteButton ActionListener", "actionPerformed", e);
                     }
-//                    resultsPanel.removeAll();
-//                    fillResultsPanel(poll);
                     resultsPanel.revalidate();
                     cardLayout.show(answersPanel, "Results");
                 }
             });
-            if (SearchUtil.userVotedInPoll(currentUser, poll)) {
-                cardLayout.show(answersPanel, "Results");
-            } else {
+            if (currentUser.canVoteIn(poll)) {
                 cardLayout.show(answersPanel, "Voting");
+            } else {
+                cardLayout.show(answersPanel, "Results");
             }
             fillCommentariesList(poll);
             addCommentaryButton.addActionListener(new ActionListener() {
