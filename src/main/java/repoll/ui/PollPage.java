@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,15 +45,15 @@ public class PollPage {
         });
 
         final User author = poll.getAuthor();
-        String userName = author == null? "Anonymous" : author.getPresentableName();
-        String description = poll.getDescription().isEmpty()? "No description available" : poll.getDescription();
+        String userName = author == null ? "Anonymous" : author.getPresentableName();
+        String description = poll.getDescription().isEmpty() ? "No description available" : poll.getDescription();
         descriptionLabel.setText(
                 String.format(
                         "<html>" +
-                        "<h1>%1$s</h1>" +
-                        "<h5><i>Asked by %2$s at %3$tD %3$tT<i><h5>" +
-                        "<p>%4$s</p>" +
-                        "</html>",
+                                "<h1>%1$s</h1>" +
+                                "<h5><i>Asked by %2$s at %3$tD %3$tT<i><h5>" +
+                                "<p>%4$s</p>" +
+                                "</html>",
                         poll.getTitle(), userName, poll.getCreationDate(), description)
         );
         final ButtonGroup buttonGroup = new ButtonGroup();
@@ -113,6 +115,33 @@ public class PollPage {
                     MainApplication.getInstance().showInMainPanel(new PollPage(poll).getRootPanel());
                 }
             });
+            final JPopupMenu popupMenu = new JPopupMenu();
+            final RemoveCommentAction removeComment = new RemoveCommentAction();
+            popupMenu.add(removeComment);
+            commentsList.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    showPopup(e);
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    showPopup(e);
+                }
+
+                private void showPopup(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        int index = commentsList.locationToIndex(e.getPoint());
+                        Commentary comment = commentsList.getModel().getElementAt(index);
+                        User currentUser = MainApplication.getInstance().getCurrentUser();
+                        boolean isEnabled = currentUser.equals(poll.getAuthor()) || currentUser.equals(comment.getAuthor());
+                        removeComment.setEnabled(isEnabled);
+                        removeComment.setComment(comment);
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            });
         } catch (MapperException e) {
             LOG.throwing("PollPage", "PollPage", e);
         }
@@ -149,7 +178,7 @@ public class PollPage {
     }
 
     private void fillCommentariesList(Poll poll) {
-        DefaultListModel<Commentary> listModel = (DefaultListModel<Commentary>)commentsList.getModel();
+        DefaultListModel<Commentary> listModel = (DefaultListModel<Commentary>) commentsList.getModel();
         try {
             listModel.clear();
             for (Commentary commentary : poll.getCommentaries()) {
@@ -186,4 +215,30 @@ public class PollPage {
             add(new JLabel("Commented by: " + author, SwingConstants.RIGHT));
         }
     }
+
+    private class RemoveCommentAction extends AbstractAction {
+        private RemoveCommentAction() {
+            super("Remove comment");
+        }
+
+        private Commentary comment;
+
+        private void setComment(Commentary comment) {
+            this.comment = comment;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (comment != null) {
+                try {
+                    comment.delete();
+                    fillCommentariesList(poll);
+                } catch (MapperException e1) {
+                    LOG.throwing("RemoveCommentAction", "actionPerformed", e1);
+                }
+            }
+
+        }
+    }
+
 }
