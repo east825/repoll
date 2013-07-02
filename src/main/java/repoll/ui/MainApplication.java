@@ -53,6 +53,10 @@ public class MainApplication extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 PollEditDialog dialog = new PollEditDialog();
                 dialog.setVisible(true);
+                Poll poll = dialog.getPoll();
+                if (poll != null) {
+                    showInMainPanel(new PollPage(poll).getRootPanel());
+                }
             }
         });
 
@@ -88,7 +92,7 @@ public class MainApplication extends JFrame {
         add(rootPanel);
         setTitle("Repoll UI");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        pack();
+        setSize(500, 600);
         setVisible(true);
         LoginDialog loginDialog = new LoginDialog();
         loginDialog.pack();

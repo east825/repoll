@@ -159,6 +159,10 @@ public class PollEditDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Title field can't be empty", "Invalid title", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        if (listModel.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No answers set", "No answers set", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         Set<String> answers = new HashSet<>();
         for (int i = 0; i < listModel.size(); i++) {
             answers.add(listModel.get(i).getDescription());
@@ -168,5 +172,9 @@ public class PollEditDialog extends JDialog {
             return false;
         }
         return true;
+    }
+
+    public Poll getPoll() {
+        return poll.isSaved()? poll : null;
     }
 }
