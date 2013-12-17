@@ -2,7 +2,7 @@ package repoll.server.ui;
 
 import repoll.models.*;
 import repoll.server.mappers.MapperException;
-import repoll.server.service.StackExchangeUser;
+import repoll.server.rest.StackExchangeUser;
 
 import javax.swing.*;
 import java.awt.*;

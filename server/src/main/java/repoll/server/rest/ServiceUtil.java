@@ -1,4 +1,4 @@
-package repoll.server.service;
+package repoll.server.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

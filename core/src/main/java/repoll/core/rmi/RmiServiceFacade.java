@@ -1,4 +1,4 @@
-package repoll.server.service.rmi;
+package repoll.core.rmi;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,9 @@ import java.util.List;
 /**
  * @author Mikhail Golubev
  */
-public interface RmiServiceFacade extends Remote {
+public interface  RmiServiceFacade extends Remote {
+    String SERVICE_URL = "//localhost/RmiServiceFacade";
+
     @NotNull
     List<String> getListOfStrings(@NotNull String firstItem) throws RemoteException;
 }

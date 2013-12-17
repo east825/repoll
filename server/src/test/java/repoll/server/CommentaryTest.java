@@ -1,5 +1,6 @@
 package repoll.server;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import repoll.models.Commentary;
 import repoll.models.Poll;
@@ -82,6 +83,7 @@ public class CommentaryTest extends DatabaseTest {
         new Commentary(null, poll, "message").insert();
     }
 
+    @Ignore
     @Test
     public void illegalParameters() {
         User user = User.builder("login", "passwd").build();

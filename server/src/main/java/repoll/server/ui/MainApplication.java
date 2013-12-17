@@ -4,7 +4,7 @@ import repoll.models.ConnectionProvider;
 import repoll.models.Poll;
 import repoll.models.User;
 import repoll.server.mappers.MapperException;
-import repoll.server.service.SearchUtil;
+import repoll.server.rest.SearchUtil;
 
 import javax.swing.*;
 import java.awt.*;

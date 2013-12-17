@@ -1,5 +1,6 @@
-package repoll.server.service.rmi;
+package repoll.server.rmi;
 
+import repoll.core.rmi.RmiServiceFacade;
 import org.jetbrains.annotations.NotNull;
 
 import java.rmi.RemoteException;

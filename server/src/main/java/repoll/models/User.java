@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
-import repoll.server.service.SearchUtil;
+import repoll.server.rest.SearchUtil;
 
 import java.util.Date;
 import java.util.List;

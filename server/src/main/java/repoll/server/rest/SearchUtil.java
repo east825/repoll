@@ -1,4 +1,4 @@
-package repoll.server.service;
+package repoll.server.rest;
 
 import repoll.models.ConnectionProvider;
 import repoll.models.Poll;

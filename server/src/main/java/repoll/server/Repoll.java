@@ -1,11 +1,12 @@
-package repoll;
+package repoll.server;
 
+import repoll.core.rmi.RmiServiceFacade;
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import repoll.server.service.PollsResource;
-import repoll.server.service.rmi.RmiServiceFacadeImpl;
+import repoll.server.rest.PollsResource;
+import repoll.server.rmi.RmiServiceFacadeImpl;
 import repoll.server.ui.MainApplication;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  * Server application main entry point
@@ -21,21 +23,11 @@ public class Repoll {
     // alternatively could call BasicConfigurator#configure()
     public final static Logger LOG = Logger.getLogger(Repoll.class);
 
-    public static final String RMI_SERVICE_URL = "//localhost/repoll";
     public static final String REST_SERVICE_URL = "http://localhost:8000";
 
     public static void main(String[] args) {
 
-        String action = args.length >= 1 ? args[0] : null;
-
-        if (action == null || action.equals("gui")) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    MainApplication.getInstance().createAndShowGUI();
-                }
-            });
-        }
+        String action = args.length >= 1 ? args[0] : "";
         try {
             switch (action) {
                 case "rest":
@@ -44,13 +36,26 @@ public class Repoll {
                 case "rmi":
                     runRmiServer();
                     break;
+                case "gui":
+                    runGraphicalClient();
+                    break;
                 default:
-                    LOG.error("Unknown command: " + args[0]);
+                    LOG.error("Unknown command: " + action);
                     System.exit(2);
             }
         } catch (Exception e) {
-            LOG.error(e);
+            e.printStackTrace();
+//            LOG.error(e);
         }
+    }
+
+    private static void runGraphicalClient() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MainApplication.getInstance().createAndShowGUI();
+            }
+        });
     }
 
     private static void runRestServer() throws Exception {
@@ -63,16 +68,21 @@ public class Repoll {
     }
 
     private static void runRmiServer() throws Exception {
+        RmiServiceFacadeImpl serviceFacade = new RmiServiceFacadeImpl();
         try {
             System.setSecurityManager(new RMISecurityManager());
-            RmiServiceFacadeImpl facade = new RmiServiceFacadeImpl();
-            Naming.rebind(RMI_SERVICE_URL, facade);
+            Naming.rebind(RmiServiceFacade.SERVICE_URL, serviceFacade);
             LOG.info("RMI server started");
+            waitKeyPressed();
         } finally {
-//            Naming.unbind(RMI_SERVICE_URL);
+            // unbind and unexport service to terminate RMI daemon thread
+            try {
+                Naming.unbind(RmiServiceFacade.SERVICE_URL);
+                UnicastRemoteObject.unexportObject(serviceFacade, true);
+            } catch (Exception ignored) {
+            }
         }
     }
-
 
     private static void waitKeyPressed() throws IOException {
         System.out.println("Press enter to stop");

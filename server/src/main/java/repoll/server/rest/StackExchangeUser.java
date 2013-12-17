@@ -1,4 +1,4 @@
-package repoll.server.service;
+package repoll.server.rest;
 
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-import static repoll.server.service.ServiceUtil.StackExchangeResponseWrapper;
+import static repoll.server.rest.ServiceUtil.StackExchangeResponseWrapper;
 
 public class StackExchangeUser {
     private static final String STACKEXCHAGE_USER_API_URI = "https://api.stackexchange.com/2.1/users/";

@@ -1,5 +1,6 @@
 package repoll.server;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import repoll.models.Answer;
 import repoll.models.Poll;
@@ -67,6 +68,7 @@ public class VoteTest extends DatabaseTest {
         new Vote(author, answer).insert();
     }
 
+    @Ignore
     @Test
     public void illegalParameters() throws MapperException {
         User author = User.builder("login", "passwd").build();

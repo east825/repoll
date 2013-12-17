@@ -7,6 +7,8 @@ import org.junit.*;
 import repoll.TestUtil;
 import repoll.models.Poll;
 import repoll.server.mappers.MapperException;
+import repoll.server.rest.PollsResource;
+import repoll.server.rest.ServiceUtil;
 
 import javax.ws.rs.core.Application;
 import java.lang.reflect.Type;

@@ -98,6 +98,7 @@ public class UserTest extends DatabaseTest {
         u2.insert();
     }
 
+    @Ignore
     @Test
     public void illegalParameters() throws MapperException {
         try {
