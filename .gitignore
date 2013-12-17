@@ -1,7 +1,9 @@
-/.idea/
-/target/
+.idea/
+*.iml
+
 /wiki/
-/db/
+/target/
+/db/main/
+/db/test/
 /lib/
 /derby.log
-/repoll.iml
