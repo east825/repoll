@@ -4,6 +4,7 @@ import repoll.models.*;
 import repoll.server.Statements;
 import repoll.server.mappers.ConnectionProvider;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,15 +18,11 @@ public class TestUtil {
     }
 
     public static Poll newAnonymousPoll(String title, String description) throws MapperException {
-        Poll poll = new Poll(null, title, description);
-        poll.insert();
-        return poll;
+        return Mappers.insert(new Poll(null, title, description));
     }
 
     public static Commentary newAnonymousCommentary(Poll poll, String message) throws MapperException {
-        Commentary commentary = new Commentary(null, poll, message);
-        commentary.insert();
-        return commentary;
+        return Mappers.insert(new Commentary(null, poll, message));
     }
 
     public static Connection initializeTestDatabaseConnection() {

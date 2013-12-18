@@ -5,7 +5,9 @@ import org.junit.Test;
 import repoll.models.Answer;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.server.mappers.Facade;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 import repoll.server.mappers.UserMapper;
 
 import java.sql.PreparedStatement;
@@ -22,14 +24,14 @@ public class UserTest extends DatabaseTest {
     @Test
     public void insertAndDeleteUser() throws MapperException, SQLException {
         User user = User.builder("someLogin", "somePassword").additionalInfo("It's just test user").build();
-        user.insert();
+        Mappers.insert(user);
         assertTrue(user.isSaved());
         try (PreparedStatement statement = testConnection.prepareStatement("select * from \"User\" where id = ?")) {
             statement.setLong(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
-            assertSame(user, User.getMapper().loadById(user.getId()));
-            user.delete();
+            assertSame(user, Mappers.loadById(User.class, user.getId()));
+            Mappers.delete(user);
             assertFalse(user.isSaved());
             resultSet = statement.executeQuery();
             assertFalse(resultSet.next());
@@ -51,7 +53,7 @@ public class UserTest extends DatabaseTest {
                 .lastVisitDate(lastVisitDate1)
                 .stackoverflowId(123)
                 .build();
-        user.insert();
+        Mappers.insert(user);
         try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
             statement.setLong(1, user.getId());
             ResultSet resultSet = statement.executeQuery();
@@ -74,7 +76,7 @@ public class UserTest extends DatabaseTest {
             user.setAdditionalInfo("info2");
             user.setLastVisitDate(lastVisitDate2);
             user.setStackoverflowId(42);
-            user.update();
+            Mappers.update(user);
 
             resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
@@ -94,8 +96,8 @@ public class UserTest extends DatabaseTest {
     public void conflictingLogin() throws MapperException {
         User u1 = User.builder("login", "foo").build();
         User u2 = User.builder("login", "bar").build();
-        u1.insert();
-        u2.insert();
+        Mappers.insert(u1);
+        Mappers.insert(u2);
     }
 
     @Ignore
@@ -175,74 +177,74 @@ public class UserTest extends DatabaseTest {
     @Test(expected = AssertionError.class)
     public void idModificationOutsideMapper() throws MapperException {
         User u = User.builder("foo", "bar").build();
-        u.insert();
+        Mappers.insert(u);
         u.setId(42);
     }
 
     @Test(expected = MapperException.class)
     public void userNotInsertedBeforeUpdate() throws MapperException {
-        User.builder("login", "passwd").build().update();
+        Mappers.update(User.newFromCredentials("login", "passwd"));
     }
 
     @Test(expected = MapperException.class)
     public void userNotInsertedBeforeDelete() throws MapperException {
-        User.builder("login", "passwd").build().delete();
+        Mappers.delete(User.newFromCredentials("login", "passwd"));
     }
 
     @Test(expected = MapperException.class)
     public void userInsertedTwice() throws MapperException {
         User u = User.builder("login", "passwd").build();
-        u.insert();
-        u.insert();
+        Mappers.insert(u);
+        Mappers.insert(u);
     }
 
     @Test
     public void authoredPolls() throws MapperException {
-        User user1 = User.newFromCredentials("login1", "passwd");
-        User user2 = User.newFromCredentials("login2", "passwd");
-        User user3 = User.newFromCredentials("login3", "passwd");
-        user1.createPoll("poll #1");
-        user1.createPoll("poll #2");
-        user2.createPoll("poll #3");
-        assertEquals(2, user1.getAuthoredPolls().size());
-        assertEquals(1, user2.getAuthoredPolls().size());
-        assertEquals(0, user3.getAuthoredPolls().size());
+        User user1 = Mappers.insert(User.newFromCredentials("login1", "passwd"));
+        User user2 = Mappers.insert(User.newFromCredentials("login2", "passwd"));
+        User user3 = Mappers.insert(User.newFromCredentials("login3", "passwd"));
+        Facade.Users.createPoll(user1, "poll #1");
+        Facade.Users.createPoll(user1, "poll #2");
+        Facade.Users.createPoll(user2, "poll #3");
+        assertEquals(2, Facade.Users.getAuthoredPolls(user1).size());
+        assertEquals(1, Facade.Users.getAuthoredPolls(user2).size());
+        assertEquals(0, Facade.Users.getAuthoredPolls(user3).size());
     }
 
     @Test
     public void authoredCommentaries() throws MapperException {
-        User user1 = User.newFromCredentials("login1", "passwd");
-        User user2 = User.newFromCredentials("login2", "passwd");
-        Poll poll = user1.createPoll("title");
-        user1.commentPoll(poll, "commentary #1");
-        user1.commentPoll(poll, "commentary #2");
-        user2.commentPoll(poll, "commentary #3");
-        assertEquals(2, user1.getCommentaries().size());
-        assertEquals(1, user2.getCommentaries().size());
+        User user1 = Mappers.insert(User.newFromCredentials("login1", "passwd"));
+        User user2 = Mappers.insert(User.newFromCredentials("login2", "passwd"));
+        Poll poll = Facade.Users.createPoll(user1, "title");
+        Facade.Users.commentPoll(user1, poll, "commentary #1");
+        Facade.Users.commentPoll(user1, poll, "commentary #2");
+        Facade.Users.commentPoll(user2, poll, "commentary #3");
+        assertEquals(2, Facade.Users.getCommentaries(user1).size());
+        assertEquals(1, Facade.Users.getCommentaries(user2).size());
     }
 
     @Test
     public void authoredVotes() throws MapperException {
-        User user1 = User.newFromCredentials("login1", "passwd");
-        User user2 = User.newFromCredentials("login2", "passwd");
-        Poll poll = user1.createPoll("title");
-        Answer answer1 = poll.addAnswer("answer #1");
-        Answer answer2 = poll.addAnswer("answer #2");
-        user1.voteFor(answer1);
-        user1.voteFor(answer2);
-        user2.voteFor(answer1);
-        assertEquals(2, user1.getVotes().size());
-        assertEquals(1, user2.getVotes().size());
+        User user1 = Mappers.insert(User.newFromCredentials("login1", "passwd"));
+        User user2 = Mappers.insert(User.newFromCredentials("login2", "passwd"));
+        Poll poll = Facade.Users.createPoll(user1, "title");
+        Answer answer1 = Facade.Polls.addAnswer(poll, "answer #1");
+        Answer answer2 = Facade.Polls.addAnswer(poll, "answer #2");
+        Facade.Users.vote(user1, answer1);
+        Facade.Users.vote(user1, answer2);
+        Facade.Users.vote(user2, answer1);
+        assertEquals(2, Facade.Users.getVotes(user1).size());
+        assertEquals(1, Facade.Users.getVotes(user2).size());
     }
 
     @Ignore
     @Test
-    public void userCanVote()throws MapperException{
+    public void userCanVote() throws MapperException {
         User user = User.newFromCredentials("login", "password");
-        Poll poll = user.createPoll("New poll", "");
-        List<Answer> answers = poll.addAnswers("answer #1", "answer #2");
-        assertTrue(user.canVoteIn(poll));
-        user.voteFor(answers.get(0));
-        assertFalse(user.canVoteIn(poll));
+        Poll poll = Facade.Users.createPoll(user, "New poll");
+        List<Answer> answers = Facade.Polls.addAnswers(poll, "answer #1", "answer #2");
+        assertTrue(Facade.Users.canVoteIn(user, poll));
+        Facade.Users.vote(user, answers.get(0));
+        assertFalse(Facade.Users.canVoteIn(user, poll));
     }
 }

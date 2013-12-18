@@ -5,7 +5,9 @@ import org.junit.Test;
 import repoll.TestUtil;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.server.mappers.Facade;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 
 import java.sql.*;
 import java.util.Date;
@@ -17,16 +19,14 @@ public class PollTest extends DatabaseTest {
 
     @Test
     public void insertAndDeletePoll() throws MapperException, SQLException {
-        User author = User.builder("login", "passwd").build();
-        author.insert();
-        Poll poll = new Poll(author, "title");
-        poll.insert();
+        User author = Mappers.insert(User.newFromCredentials("login", "passwd"));
+        Poll poll = Mappers.insert(new Poll(author, "title"));
         assertTrue(poll.isSaved());
         Statement statement = testConnection.createStatement();
         assertTrue(statement.executeQuery("select * from \"User\"").next());
         assertTrue(statement.executeQuery("select * from \"Poll\"").next());
-        author.delete();
-        poll.delete();
+        Mappers.delete(author);
+        Mappers.delete(poll);
         assertFalse(poll.isSaved());
         assertFalse(statement.executeQuery("select * from \"User\"").next());
         assertFalse(statement.executeQuery("select * from \"Poll\"").next());
@@ -35,8 +35,7 @@ public class PollTest extends DatabaseTest {
     @Test
     public void updatePoll() throws MapperException, SQLException {
         Date creationDate = new Date(100);
-        Poll poll = new Poll(null, "title1", "description1", creationDate);
-        poll.insert();
+        Poll poll = Mappers.insert(new Poll(null, "title1", "description1", creationDate));
         try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
             statement.setLong(1, poll.getId());
             ResultSet resultSet = statement.executeQuery();
@@ -47,7 +46,7 @@ public class PollTest extends DatabaseTest {
 
             poll.setTitle("title2");
             poll.setDescription("description2");
-            poll.update();
+            Mappers.update(poll);
 
             resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
@@ -60,13 +59,13 @@ public class PollTest extends DatabaseTest {
     @Test(expected = IllegalStateException.class)
     public void authorNotInsertedBeforePoll() throws MapperException {
         User author = User.builder("login", "passwd").build();
-        new Poll(author, "title").insert();
+        Mappers.insert(new Poll(author, "title"));
     }
 
     @Test(expected = MapperException.class)
     public void conflictingTitle() throws MapperException {
-        new Poll(null, "title").insert();
-        new Poll(null, "title").insert();
+        Mappers.insert(new Poll(null, "title"));
+        Mappers.insert(new Poll(null, "title"));
     }
 
     @Ignore
@@ -126,17 +125,17 @@ public class PollTest extends DatabaseTest {
         TestUtil.newAnonymousCommentary(poll1, "commentary #1");
         TestUtil.newAnonymousCommentary(poll1, "commentary #2");
         TestUtil.newAnonymousCommentary(poll2, "commentary #3");
-        assertEquals(2, poll1.getCommentaries().size());
-        assertEquals(1, poll2.getCommentaries().size());
+        assertEquals(2, Facade.Polls.getCommentaries(poll1).size());
+        assertEquals(1, Facade.Polls.getCommentaries(poll2).size());
     }
 
     @Test
     public void selectAnswers() throws MapperException {
         Poll poll1 = TestUtil.newAnonymousPoll("title1");
-        poll1.addAnswers("answer #1", "answer #2");
+        Facade.Polls.addAnswers(poll1, "answer #1", "answer #2");
         Poll poll2 = TestUtil.newAnonymousPoll("title2");
-        poll2.addAnswer("answer #3");
-        assertEquals(2, poll1.getAnswers().size());
-        assertEquals(1, poll2.getAnswers().size());
+        Facade.Polls.addAnswers(poll2, "answer #3");
+        assertEquals(2, Facade.Polls.getAnswers(poll1).size());
+        assertEquals(1, Facade.Polls.getAnswers(poll2).size());
     }
 }

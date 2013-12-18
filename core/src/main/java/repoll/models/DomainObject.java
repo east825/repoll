@@ -19,7 +19,7 @@ public abstract class DomainObject implements Serializable {
      * Setter for primary key should be called only once - from corresponding mapper
      */
     public final void setId(long id) {
-        if (isSaved()) {
+        if (isSaved() && id != UNSAVED_OBJECT_ID) {
             throw new AssertionError("setId() called twice for object " + this);
         }
         this.id = id;

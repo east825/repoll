@@ -8,6 +8,7 @@ import repoll.models.User;
 import repoll.models.Vote;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -21,29 +22,29 @@ public class VoteTest extends DatabaseTest {
     @Test
     public void insertAndDeleteVote() throws MapperException, SQLException {
         User user1 = User.builder("login1", "passwd").build();
-        user1.insert();
+        Mappers.insert(user1);
         User user2 = User.builder("login2", "passwd").build();
-        user2.insert();
+        Mappers.insert(user2);
         Poll poll = new Poll(null, "title");
-        poll.insert();
+        Mappers.insert(poll);
         Answer answer1 = new Answer(poll, "answer #1");
-        answer1.insert();
+        Mappers.insert(answer1);
         Answer answer2 = new Answer(poll, "answer #2");
-        answer2.insert();
+        Mappers.insert(answer2);
         Vote vote1 = new Vote(user1, answer1);
-        vote1.insert();
-        AbstractMapper<Vote> mapper = Vote.getMapper();
+        Mappers.insert(vote1);
+        AbstractMapper<Vote> mapper = Mappers.getForClass(Vote.class);
         assertSame(vote1, mapper.loadById(vote1.getId()));
         assertTrue(vote1.isSaved());
         Vote vote2 = new Vote(user2, answer2);
-        vote2.insert();
+        Mappers.insert(vote2);
         assertTrue(vote2.isSaved());
         assertSame(vote2, mapper.loadById(vote2.getId()));
         executeCountQueryAndCheckResult(COUNT_VOTES_QUERY, 2);
-        vote1.delete();
+        Mappers.delete(vote1);
         assertFalse(vote1.isSaved());
         executeCountQueryAndCheckResult(COUNT_VOTES_QUERY, 1);
-        vote2.delete();
+        Mappers.delete(vote2);
         assertFalse(vote2.isSaved());
         executeCountQueryAndCheckResult(COUNT_VOTES_QUERY, 0);
     }
@@ -52,20 +53,20 @@ public class VoteTest extends DatabaseTest {
     public void authorNotInsertedBeforeVote() throws MapperException {
         User author = User.builder("login", "passwd").build();
         Poll poll = new Poll(null, "title");
-        poll.insert();
+        Mappers.insert(poll);
         Answer answer = new Answer(poll, "answer1");
-        answer.insert();
-        new Vote(author, answer).insert();
+        Mappers.insert(answer);
+        Mappers.insert(new Vote(author, answer));
     }
 
     @Test(expected = IllegalStateException.class)
     public void answerNotInsertedBeforeVote() throws MapperException {
         User author = User.builder("login", "passwd").build();
-        author.insert();
+        Mappers.insert(author);
         Poll poll = new Poll(null, "title");
-        poll.insert();
+        Mappers.insert(poll);
         Answer answer = new Answer(poll, "answer1");
-        new Vote(author, answer).insert();
+        Mappers.insert(new Vote(author, answer));
     }
 
     @Ignore

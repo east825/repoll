@@ -1,5 +1,6 @@
 package repoll.server.mappers;
 
+import com.sun.java.browser.plugin2.DOM;
 import org.jetbrains.annotations.NotNull;
 import repoll.models.*;
 
@@ -47,6 +48,7 @@ public class Mappers {
     @SuppressWarnings("unchecked")
     public static <T extends DomainObject> void delete(@NotNull T object) throws MapperException {
         ((AbstractMapper<T>) getForClass(object.getClass())).delete(object);
+        object.setId(DomainObject.UNSAVED_OBJECT_ID);
     }
 
     @NotNull

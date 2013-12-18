@@ -6,6 +6,8 @@ import repoll.models.Commentary;
 import repoll.models.Poll;
 import repoll.models.User;
 import repoll.server.mappers.AbstractMapper;
+import repoll.server.mappers.Facade;
+import repoll.server.mappers.Mappers;
 import repoll.util.DatabaseUtil;
 import repoll.server.mappers.MapperException;
 
@@ -23,21 +25,19 @@ public class CommentaryTest extends DatabaseTest {
 
     @Test
     public void insertAndDeleteCommentary() throws MapperException, SQLException {
-        Poll poll = new Poll(null, "title");
-        poll.insert();
+        Poll poll = Mappers.insert(new Poll(null, "title"));
         Commentary c1 = new Commentary(null, poll, "message1");
         Commentary c2 = new Commentary(null, poll, "message2");
-        AbstractMapper<Commentary> mapper = Commentary.getMapper();
-        c1.insert();
+        Mappers.insert(c1);
         assertTrue(c1.isSaved());
-        assertSame(c1, mapper.loadById(c1.getId()));
-        c2.insert();
+        assertSame(c1, Mappers.loadById(Commentary.class, c1.getId()));
+        Mappers.insert(c2);
         assertTrue(c2.isSaved());
-        assertSame(c2, mapper.loadById(c2.getId()));
+        assertSame(c2, Mappers.loadById(Commentary.class, c2.getId()));
         executeCountQueryAndCheckResult(COUNT_COMMENTARIES_QUERY, 2);
-        c1.delete();
+        Mappers.delete(c1);
         executeCountQueryAndCheckResult(COUNT_COMMENTARIES_QUERY, 1);
-        c2.delete();
+        Mappers.delete(c2);
         executeCountQueryAndCheckResult(COUNT_COMMENTARIES_QUERY, 0);
     }
 
@@ -45,9 +45,9 @@ public class CommentaryTest extends DatabaseTest {
     public void updateCommentary() throws MapperException, SQLException {
         Date creationDate = new Date(100);
         Poll poll = new Poll(null, "title");
-        poll.insert();
+        Mappers.insert(poll);
         Commentary commentary = new Commentary(null, poll, "message1", creationDate);
-        commentary.insert();
+        Mappers.insert(commentary);
         try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
             statement.setLong(1, commentary.getId());
             ResultSet resultSet = statement.executeQuery();
@@ -58,7 +58,7 @@ public class CommentaryTest extends DatabaseTest {
             assertEquals(resultSet.getTimestamp("creation_datetime"), DatabaseUtil.dateToTimestamp(creationDate));
 
             commentary.setMessage("message2");
-            commentary.update();
+            Mappers.update(commentary);
 
             resultSet = statement.executeQuery();
             assertTrue(resultSet.next());
@@ -72,15 +72,15 @@ public class CommentaryTest extends DatabaseTest {
     @Test(expected = IllegalStateException.class)
     public void authorNotInsertedBeforeCommentary() throws MapperException {
         Poll poll = new Poll(null, "title");
-        poll.insert();
+        Mappers.insert(poll);
         User author = User.builder("login", "passwd").build();
-        new Commentary(author, poll, "message").insert();
+        Mappers.insert(new Commentary(author, poll, "message"));
     }
 
     @Test(expected = IllegalStateException.class)
     public void pollNotInsertedBeforeCommentary() throws MapperException {
         Poll poll = new Poll(null, "title");
-        new Commentary(null, poll, "message").insert();
+        Facade.Users.commentPoll(null, poll, "message");
     }
 
     @Ignore
