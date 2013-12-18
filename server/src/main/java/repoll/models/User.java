@@ -1,15 +1,17 @@
 package repoll.models;
 
 import org.jetbrains.annotations.NotNull;
+import repoll.models.views.UserView;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
-import repoll.server.rest.SearchUtil;
+import repoll.util.SearchUtil;
+import repoll.util.AuthenticationUtil;
 
 import java.util.Date;
 import java.util.List;
 
-public class User extends DomainObject {
+public class User extends DomainObject implements UserView {
     private String firstName, middleName, lastName;
     private String additionalInfo;
     private String login, passwordHash;
@@ -44,11 +46,6 @@ public class User extends DomainObject {
 
     public static AbstractMapper<User> getMapper() {
         return Mappers.getForClass(User.class);
-    }
-
-    // TODO: calculate actual hash here
-    private static String calculatePasswordHash(@NotNull String password) {
-        return password;
     }
 
     public Vote voteFor(Answer answer) throws MapperException {
@@ -93,6 +90,7 @@ public class User extends DomainObject {
         return Mappers.getForClass(Vote.class).selectRelated(this);
     }
 
+    @Override
     @NotNull
     public String getFirstName() {
         return firstName;
@@ -102,6 +100,7 @@ public class User extends DomainObject {
         this.firstName = firstName;
     }
 
+    @Override
     @NotNull
     public String getMiddleName() {
         return middleName;
@@ -111,6 +110,7 @@ public class User extends DomainObject {
         this.middleName = middleName;
     }
 
+    @Override
     @NotNull
     public String getLastName() {
         return lastName;
@@ -120,6 +120,7 @@ public class User extends DomainObject {
         this.lastName = lastName;
     }
 
+    @Override
     @NotNull
     public String getPresentableName() {
         if (!firstName.isEmpty()) {
@@ -135,6 +136,7 @@ public class User extends DomainObject {
         return login;
     }
 
+    @Override
     @NotNull
     public String getAdditionalInfo() {
         return additionalInfo;
@@ -144,6 +146,7 @@ public class User extends DomainObject {
         this.additionalInfo = additionalInfo;
     }
 
+    @Override
     @NotNull
     public String getLogin() {
         return login;
@@ -153,20 +156,27 @@ public class User extends DomainObject {
         this.login = login;
     }
 
+    @Override
     @NotNull
     public String getPasswordHash() {
         return passwordHash;
     }
 
     public void setPassword(@NotNull String password) {
-        this.passwordHash = calculatePasswordHash(password);
+        this.passwordHash = AuthenticationUtil.hashPassword(password);
     }
 
+    public boolean authenticate(@NotNull String password) {
+        return AuthenticationUtil.checkPassword(password, passwordHash);
+    }
+
+    @Override
     @NotNull
     public Date getRegistrationDate() {
         return registrationDate;
     }
 
+    @Override
     @NotNull
     public Date getLastVisitDate() {
         return lastVisitDate;
@@ -176,6 +186,7 @@ public class User extends DomainObject {
         this.lastVisitDate = lastVisitDate;
     }
 
+    @Override
     public int getStackoverflowId() {
         return stackoverflowId;
     }
@@ -204,7 +215,7 @@ public class User extends DomainObject {
 
         public Builder(@NotNull String login, @NotNull String password) {
             this.login = login;
-            this.passwordHash = calculatePasswordHash(password);
+            this.passwordHash = AuthenticationUtil.hashPassword(password);
         }
 
         public Builder firstName(@NotNull String firstName) {

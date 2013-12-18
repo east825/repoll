@@ -2,6 +2,7 @@ package repoll.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.models.views.VoteView;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.Mappers;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 /*
  * This object should be considered immutable
  */
-public class Vote extends DomainObject {
+public class Vote extends DomainObject implements VoteView {
     private final User author;
     private final Answer answer;
     private final Date creationDate;
@@ -37,16 +38,19 @@ public class Vote extends DomainObject {
         );
     }
 
+    @Override
     @Nullable
     public User getAuthor() {
         return author;
     }
 
+    @Override
     @NotNull
     public Answer getAnswer() {
         return answer;
     }
 
+    @Override
     @NotNull
     public Date getCreationDate() {
         return creationDate;

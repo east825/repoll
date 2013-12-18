@@ -2,6 +2,7 @@ package repoll.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.models.views.PollView;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
@@ -9,7 +10,7 @@ import repoll.server.mappers.Mappers;
 import java.util.Date;
 import java.util.List;
 
-public class Poll extends DomainObject {
+public class Poll extends DomainObject implements PollView {
     private final User author;
     private String title, description;
     private final Date creationDate;
@@ -61,16 +62,19 @@ public class Poll extends DomainObject {
         return Mappers.getForClass(Answer.class).selectRelated(this);
     }
 
+    @Override
     @Nullable
     public User getAuthor() {
         return author;
     }
 
+    @Override
     @NotNull
     public Date getCreationDate() {
         return creationDate;
     }
 
+    @Override
     @NotNull
     public String getDescription() {
         return description;
@@ -80,6 +84,7 @@ public class Poll extends DomainObject {
         this.description = description;
     }
 
+    @Override
     @NotNull
     public String getTitle() {
         return title;

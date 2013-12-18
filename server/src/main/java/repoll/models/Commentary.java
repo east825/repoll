@@ -2,6 +2,7 @@ package repoll.models;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.models.views.CommentaryView;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.Mappers;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * Only message field modification is legal
  */
 
-public class Commentary extends DomainObject {
+public class Commentary extends DomainObject implements CommentaryView {
     private final User author;
     private final Poll poll;
     private String message;
@@ -37,11 +38,13 @@ public class Commentary extends DomainObject {
         return String.format("Commentary(id=%d message=%s)", getId(), message);
     }
 
+    @Override
     @Nullable
     public User getAuthor() {
         return author;
     }
 
+    @Override
     @NotNull
     public String getMessage() {
         return message;
@@ -56,6 +59,7 @@ public class Commentary extends DomainObject {
         return poll;
     }
 
+    @Override
     @NotNull
     public Date getCreationDate() {
         return creationDate;

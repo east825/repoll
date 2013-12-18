@@ -39,6 +39,9 @@ public class Repoll {
                 case "gui":
                     runGraphicalClient();
                     break;
+                case "user":
+                    runCustom();
+                    break;
                 default:
                     LOG.error("Unknown command: " + action);
                     System.exit(2);
@@ -47,6 +50,10 @@ public class Repoll {
             e.printStackTrace();
 //            LOG.error(e);
         }
+    }
+
+    private static void runCustom() {
+        throw new UnsupportedOperationException();
     }
 
     private static void runGraphicalClient() {
@@ -68,7 +75,7 @@ public class Repoll {
     }
 
     private static void runRmiServer() throws Exception {
-        RmiServiceFacadeImpl serviceFacade = new RmiServiceFacadeImpl();
+        RmiServiceFacade serviceFacade = RmiServiceFacadeImpl.getInstance();
         try {
             System.setSecurityManager(new RMISecurityManager());
             Naming.rebind(RmiServiceFacade.SERVICE_URL, serviceFacade);

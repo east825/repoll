@@ -1,7 +1,7 @@
 package repoll.server.ui;
 
 import repoll.models.User;
-import repoll.server.rest.SearchUtil;
+import repoll.util.SearchUtil;
 
 import javax.swing.*;
 import java.awt.event.*;

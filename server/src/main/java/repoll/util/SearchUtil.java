@@ -1,21 +1,34 @@
-package repoll.server.rest;
+package repoll.util;
 
+import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import repoll.models.ConnectionProvider;
 import repoll.models.Poll;
 import repoll.models.User;
 import repoll.server.mappers.MapperException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class SearchUtil {
-    private static final Logger LOG = Logger.getLogger(SearchUtil.class.getName());
+    private static final Logger LOG = Logger.getLogger(SearchUtil.class);
     public static final Connection CONNECTION = ConnectionProvider.connection();
     private static final String COUNT_VOTES_QUERY = "select count(V.id) from \"Vote\" V join \"Answer\" A on V.answer_id = A.id where V.user_id = ? and A.poll_id = ?";
 
-    public static List<Poll> findPolls(String query) {
+    /**
+     * Service class
+     */
+    private SearchUtil() {
+        // empty
+    }
+
+    @NotNull
+    public static List<Poll> findPolls(@NotNull String query) {
         List<Poll> results = new ArrayList<>();
         String[] words = query.split("\\s+");
         try {
@@ -32,12 +45,13 @@ public class SearchUtil {
                 results.add(poll);
             }
         } catch (MapperException e) {
-            LOG.throwing("SearchUtil", "findPolls", e);
+            LOG.error(e);
         }
         return results;
     }
 
-    public static User findUserByLogin(String login) {
+    @Nullable
+    public static User findUserByLogin(@NotNull String login) {
         try {
             try (PreparedStatement statement = CONNECTION.prepareStatement("select id from \"User\" where login = ?")) {
                 statement.setString(1, login);
@@ -48,7 +62,7 @@ public class SearchUtil {
                 return User.getMapper().loadById(resultSet.getLong("id"));
             }
         } catch (SQLException|MapperException e) {
-            LOG.throwing("SearchUtil", "findUserByLogin", e);
+            LOG.error(e);
             return null;
         }
     }
@@ -69,7 +83,7 @@ public class SearchUtil {
                 return resultSet.getInt(1) > 0;
             }
         } catch (SQLException e) {
-            LOG.throwing("SearchUtil", "userVotedInPoll", e);
+            LOG.error(e);
             return false;
         }
     }

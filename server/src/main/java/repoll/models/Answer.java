@@ -1,13 +1,14 @@
 package repoll.models;
 
 import org.jetbrains.annotations.NotNull;
+import repoll.models.views.AnswerView;
 import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
 
 import java.util.List;
 
-public class Answer extends DomainObject {
+public class Answer extends DomainObject implements AnswerView {
 
     private final Poll poll;
     private String description;
@@ -26,11 +27,13 @@ public class Answer extends DomainObject {
         return String.format("Answer(id=%d title='%s')", getId(), description);
     }
 
+    @Override
     @NotNull
     public Poll getPoll() {
         return poll;
     }
 
+    @Override
     @NotNull
     public String getDescription() {
         return description;

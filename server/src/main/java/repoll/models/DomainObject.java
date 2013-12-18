@@ -4,7 +4,9 @@ import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
 
-public abstract class DomainObject implements DatabasePersistent {
+import java.io.Serializable;
+
+public abstract class DomainObject implements DatabasePersistent, Serializable {
     public final static long UNSAVED_OBJECT_ID = -1;
 
     private long id = UNSAVED_OBJECT_ID;
