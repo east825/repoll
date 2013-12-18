@@ -6,8 +6,8 @@ import repoll.models.Commentary;
 import repoll.models.Poll;
 import repoll.models.User;
 import repoll.server.mappers.AbstractMapper;
+import repoll.util.DatabaseUtil;
 import repoll.server.mappers.MapperException;
-import repoll.server.mappers.Util;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,7 +55,7 @@ public class CommentaryTest extends DatabaseTest {
             assertEquals(resultSet.getObject("user_id"), null);
             assertEquals(resultSet.getString("message"), "message1");
             assertEquals(resultSet.getLong("poll_id"), poll.getId());
-            assertEquals(resultSet.getTimestamp("creation_datetime"), Util.dateToTimestamp(creationDate));
+            assertEquals(resultSet.getTimestamp("creation_datetime"), DatabaseUtil.dateToTimestamp(creationDate));
 
             commentary.setMessage("message2");
             commentary.update();
@@ -65,7 +65,7 @@ public class CommentaryTest extends DatabaseTest {
             assertEquals(resultSet.getObject("user_id"), null);
             assertEquals(resultSet.getString("message"), "message2");
             assertEquals(resultSet.getLong("poll_id"), poll.getId());
-            assertEquals(resultSet.getTimestamp("creation_datetime"), Util.dateToTimestamp(creationDate));
+            assertEquals(resultSet.getTimestamp("creation_datetime"), DatabaseUtil.dateToTimestamp(creationDate));
         }
     }
 

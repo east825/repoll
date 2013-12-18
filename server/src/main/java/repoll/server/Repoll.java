@@ -1,16 +1,10 @@
 package repoll.server;
 
-import repoll.core.rmi.RmiServiceFacade;
 import org.apache.log4j.Logger;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
-import repoll.server.rest.PollsResource;
+import repoll.core.rmi.RmiServiceFacade;
 import repoll.server.rmi.RmiServiceFacadeImpl;
-import repoll.server.ui.MainApplication;
 
 import javax.swing.*;
-import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
@@ -60,18 +54,18 @@ public class Repoll {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                MainApplication.getInstance().createAndShowGUI();
+//                MainApplication.getInstance().createAndShowGUI();
             }
         });
     }
 
     private static void runRestServer() throws Exception {
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(
-                UriBuilder.fromUri(REST_SERVICE_URL).build(),
-                new ResourceConfig(PollsResource.class));
-        LOG.info("REST server started");
-        waitKeyPressed();
-        server.stop();
+//        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(
+//                UriBuilder.fromUri(REST_SERVICE_URL).build(),
+//                new ResourceConfig(PollsResource.class));
+//        LOG.info("REST server started");
+//        waitKeyPressed();
+//        server.stop();
     }
 
     private static void runRmiServer() throws Exception {

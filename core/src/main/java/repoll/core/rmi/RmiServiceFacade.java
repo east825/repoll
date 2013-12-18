@@ -2,7 +2,7 @@ package repoll.core.rmi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import repoll.models.views.*;
+import repoll.models.*;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,44 +19,44 @@ public interface RmiServiceFacade extends Remote {
      */
 
     @Nullable
-    UserView findUser(@NotNull String login, @NotNull String password) throws RemoteException;
+    User findUser(@NotNull String login, @NotNull String password) throws RemoteException;
 
     @NotNull
-    UserView createUser(@NotNull String login, @NotNull String password) throws RemoteException;
+    User createUser(@NotNull String login, @NotNull String password) throws RemoteException;
 
     @NotNull
-    List<PollView> getUserPolls(@NotNull UserView user) throws RemoteException;
+    List<Poll> getUserPolls(@NotNull User user) throws RemoteException;
 
     @NotNull
-    List<VoteView> getUserVotes(@NotNull UserView user) throws RemoteException;
+    List<Vote> getUserVotes(@NotNull User user) throws RemoteException;
 
     @NotNull
-    List<CommentaryView> getUserCommentaries(@NotNull UserView user) throws RemoteException;
+    List<Commentary> getUserCommentaries(@NotNull User user) throws RemoteException;
 
     /*
      * Poll actions
      */
 
-    List<PollView> findPolls(@NotNull String query) throws RemoteException;
+    List<Poll> findPolls(@NotNull String query) throws RemoteException;
 
     @NotNull
-    PollView createPoll(@NotNull UserView author, @NotNull String title, @NotNull String description) throws RemoteException;
+    Poll createPoll(@NotNull User author, @NotNull String title, @NotNull String description) throws RemoteException;
 
     @NotNull
-    List<CommentaryView> getPollCommentaries(@NotNull PollView poll) throws RemoteException;
+    List<Commentary> getPollCommentaries(@NotNull Poll poll) throws RemoteException;
 
     @NotNull
-    List<AnswerView> getPollAnswers(@NotNull PollView poll) throws RemoteException;
+    List<Answer> getPollAnswers(@NotNull Poll poll) throws RemoteException;
 
     /*
      * Answer actions
      */
 
     @NotNull
-    AnswerView addAnswerToPoll(@NotNull String description, @NotNull PollView poll) throws RemoteException;
+    Answer addAnswerToPoll(@NotNull String description, @NotNull Poll poll) throws RemoteException;
 
     @NotNull
-    List<VoteView> getAnswerVotes(@NotNull AnswerView answer) throws RemoteException;
+    List<Vote> getAnswerVotes(@NotNull Answer answer) throws RemoteException;
 
 
     /*
@@ -64,12 +64,12 @@ public interface RmiServiceFacade extends Remote {
      */
 
     @NotNull
-    CommentaryView addCommentaryToPoll(@NotNull String message, @NotNull UserView author, @NotNull PollView poll) throws RemoteException;
+    Commentary addCommentaryToPoll(@NotNull String message, @NotNull User author, @NotNull Poll poll) throws RemoteException;
 
     /*
      * Vote actions
      */
 
     @NotNull
-    VoteView leftVote(@NotNull UserView author, @NotNull AnswerView answer) throws RemoteException;
+    Vote leftVote(@NotNull User author, @NotNull Answer answer) throws RemoteException;
 }

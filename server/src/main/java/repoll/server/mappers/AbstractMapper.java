@@ -1,6 +1,5 @@
 package repoll.server.mappers;
 
-import repoll.models.ConnectionProvider;
 import repoll.models.DomainObject;
 
 import java.sql.*;

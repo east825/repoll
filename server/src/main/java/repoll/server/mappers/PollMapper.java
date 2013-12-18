@@ -3,6 +3,7 @@ package repoll.server.mappers;
 import repoll.models.DomainObject;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.util.DatabaseUtil;
 
 import java.sql.*;
 
@@ -52,7 +53,7 @@ public class PollMapper extends AbstractMapper<Poll> {
             }
             statement.setString(2, poll.getTitle());
             statement.setString(3, poll.getDescription());
-            statement.setTimestamp(4, Util.dateToTimestamp(poll.getCreationDate()));
+            statement.setTimestamp(4, DatabaseUtil.dateToTimestamp(poll.getCreationDate()));
             statement.setLong(5, poll.getId());
             return statement;
         } catch (SQLException e) {
@@ -74,7 +75,7 @@ public class PollMapper extends AbstractMapper<Poll> {
             }
             statement.setString(2, poll.getTitle());
             statement.setString(3, poll.getDescription());
-            statement.setTimestamp(4, Util.dateToTimestamp(poll.getCreationDate()));
+            statement.setTimestamp(4, DatabaseUtil.dateToTimestamp(poll.getCreationDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();

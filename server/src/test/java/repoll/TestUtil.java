@@ -2,6 +2,7 @@ package repoll;
 
 import repoll.models.*;
 import repoll.server.Statements;
+import repoll.server.mappers.ConnectionProvider;
 import repoll.server.mappers.MapperException;
 
 import java.sql.Connection;

@@ -1,17 +1,11 @@
 package repoll.models;
 
 import org.jetbrains.annotations.NotNull;
-import repoll.models.views.UserView;
-import repoll.server.mappers.AbstractMapper;
-import repoll.server.mappers.MapperException;
-import repoll.server.mappers.Mappers;
-import repoll.util.SearchUtil;
 import repoll.util.AuthenticationUtil;
 
 import java.util.Date;
-import java.util.List;
 
-public class User extends DomainObject implements UserView {
+public final class User extends DomainObject {
     private String firstName, middleName, lastName;
     private String additionalInfo;
     private String login, passwordHash;
@@ -34,40 +28,12 @@ public class User extends DomainObject implements UserView {
     /**
      * Create new user from his/her login and password pair and save it in database
      */
-    public static User newFromCredentials(String login, String password) throws MapperException {
-        User user = new Builder(login, password).build();
-        user.insert();
-        return user;
+    public static User newFromCredentials(String login, String password) {
+        return new Builder(login, password).build();
     }
 
     public static Builder builder(String login, String password) {
         return new Builder(login, password);
-    }
-
-    public static AbstractMapper<User> getMapper() {
-        return Mappers.getForClass(User.class);
-    }
-
-    public Vote voteFor(Answer answer) throws MapperException {
-        Vote vote = new Vote(this, answer);
-        vote.insert();
-        return vote;
-    }
-
-    public Commentary commentPoll(Poll poll, String message) throws MapperException {
-        Commentary commentary = new Commentary(this, poll, message);
-        commentary.insert();
-        return commentary;
-    }
-
-    public Poll createPoll(String title) throws MapperException {
-        return createPoll(title, "");
-    }
-
-    public Poll createPoll(String title, String description) throws MapperException {
-        Poll poll = new Poll(this, title, description);
-        poll.insert();
-        return poll;
     }
 
     @Override
@@ -75,22 +41,6 @@ public class User extends DomainObject implements UserView {
         return String.format("User(id=%d, login='%s')", getId(), login);
     }
 
-    @NotNull
-    public List<Poll> getAuthoredPolls() throws MapperException {
-        return Mappers.getForClass(Poll.class).selectRelated(this);
-    }
-
-    @NotNull
-    public List<Commentary> getCommentaries() throws MapperException {
-        return Mappers.getForClass(Commentary.class).selectRelated(this);
-    }
-
-    @NotNull
-    public List<Vote> getVotes() throws MapperException {
-        return Mappers.getForClass(Vote.class).selectRelated(this);
-    }
-
-    @Override
     @NotNull
     public String getFirstName() {
         return firstName;
@@ -100,7 +50,6 @@ public class User extends DomainObject implements UserView {
         this.firstName = firstName;
     }
 
-    @Override
     @NotNull
     public String getMiddleName() {
         return middleName;
@@ -110,7 +59,6 @@ public class User extends DomainObject implements UserView {
         this.middleName = middleName;
     }
 
-    @Override
     @NotNull
     public String getLastName() {
         return lastName;
@@ -120,7 +68,6 @@ public class User extends DomainObject implements UserView {
         this.lastName = lastName;
     }
 
-    @Override
     @NotNull
     public String getPresentableName() {
         if (!firstName.isEmpty()) {
@@ -136,7 +83,6 @@ public class User extends DomainObject implements UserView {
         return login;
     }
 
-    @Override
     @NotNull
     public String getAdditionalInfo() {
         return additionalInfo;
@@ -146,7 +92,6 @@ public class User extends DomainObject implements UserView {
         this.additionalInfo = additionalInfo;
     }
 
-    @Override
     @NotNull
     public String getLogin() {
         return login;
@@ -156,7 +101,6 @@ public class User extends DomainObject implements UserView {
         this.login = login;
     }
 
-    @Override
     @NotNull
     public String getPasswordHash() {
         return passwordHash;
@@ -170,13 +114,11 @@ public class User extends DomainObject implements UserView {
         return AuthenticationUtil.checkPassword(password, passwordHash);
     }
 
-    @Override
     @NotNull
     public Date getRegistrationDate() {
         return registrationDate;
     }
 
-    @Override
     @NotNull
     public Date getLastVisitDate() {
         return lastVisitDate;
@@ -186,7 +128,6 @@ public class User extends DomainObject implements UserView {
         this.lastVisitDate = lastVisitDate;
     }
 
-    @Override
     public int getStackoverflowId() {
         return stackoverflowId;
     }
@@ -196,10 +137,6 @@ public class User extends DomainObject implements UserView {
             throw new IllegalArgumentException("Stackoverflow id should be non-negative number");
         }
         this.stackoverflowId = id;
-    }
-
-    public boolean canVoteIn(Poll poll) {
-        return !SearchUtil.userVotedInPoll(this, poll);
     }
 
     public static class Builder {

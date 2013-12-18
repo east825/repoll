@@ -4,6 +4,7 @@ import repoll.models.Commentary;
 import repoll.models.DomainObject;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.util.DatabaseUtil;
 
 import java.sql.*;
 
@@ -53,7 +54,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
             }
             statement.setLong(2, commentary.getPoll().getId());
             statement.setString(3, commentary.getMessage());
-            statement.setTimestamp(4, Util.dateToTimestamp(commentary.getCreationDate()));
+            statement.setTimestamp(4, DatabaseUtil.dateToTimestamp(commentary.getCreationDate()));
             statement.setLong(5, commentary.getId());
             return statement;
         } catch (SQLException e) {
@@ -75,7 +76,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
             }
             statement.setLong(2, commentary.getPoll().getId());
             statement.setString(3, commentary.getMessage());
-            statement.setTimestamp(4, Util.dateToTimestamp(commentary.getCreationDate()));
+            statement.setTimestamp(4, DatabaseUtil.dateToTimestamp(commentary.getCreationDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();

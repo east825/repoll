@@ -2,6 +2,7 @@ package repoll.server.mappers;
 
 import repoll.models.DomainObject;
 import repoll.models.User;
+import repoll.util.DatabaseUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,8 +64,8 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(4, user.getMiddleName());
             statement.setString(5, user.getLastName());
             statement.setString(6, user.getAdditionalInfo());
-            statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
-            statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
+            statement.setTimestamp(7, DatabaseUtil.dateToTimestamp(user.getRegistrationDate()));
+            statement.setTimestamp(8, DatabaseUtil.dateToTimestamp(user.getLastVisitDate()));
             statement.setInt(9, user.getStackoverflowId());
             statement.setLong(10, user.getId());
             return statement;
@@ -84,8 +85,8 @@ public class UserMapper extends AbstractMapper<User> {
             statement.setString(4, user.getMiddleName());
             statement.setString(5, user.getLastName());
             statement.setString(6, user.getAdditionalInfo());
-            statement.setTimestamp(7, Util.dateToTimestamp(user.getRegistrationDate()));
-            statement.setTimestamp(8, Util.dateToTimestamp(user.getLastVisitDate()));
+            statement.setTimestamp(7, DatabaseUtil.dateToTimestamp(user.getRegistrationDate()));
+            statement.setTimestamp(8, DatabaseUtil.dateToTimestamp(user.getLastVisitDate()));
             statement.setInt(9, user.getStackoverflowId());
             return statement;
         } catch (SQLException e) {

@@ -3,10 +3,11 @@ package repoll.util;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import repoll.models.ConnectionProvider;
+import repoll.server.mappers.ConnectionProvider;
 import repoll.models.Poll;
 import repoll.models.User;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,7 +34,7 @@ public class SearchUtil {
         String[] words = query.split("\\s+");
         try {
         overPolls:
-            for (Poll poll : Poll.getMapper().all()) {
+            for (Poll poll : Mappers.getForClass(Poll.class).all()) {
                 for (String word : words) {
                     String title = poll.getTitle().toLowerCase();
                     String description = poll.getDescription().toLowerCase();
@@ -59,7 +60,7 @@ public class SearchUtil {
                 if (!resultSet.next()) {
                     return null;
                 }
-                return User.getMapper().loadById(resultSet.getLong("id"));
+                return Mappers.getForClass(User.class).loadById(resultSet.getLong("id"));
             }
         } catch (SQLException|MapperException e) {
             LOG.error(e);

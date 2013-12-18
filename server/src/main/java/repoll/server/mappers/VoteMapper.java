@@ -4,6 +4,7 @@ import repoll.models.Answer;
 import repoll.models.DomainObject;
 import repoll.models.User;
 import repoll.models.Vote;
+import repoll.util.DatabaseUtil;
 
 import java.sql.*;
 
@@ -50,7 +51,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
                 statement.setLong(1, author.getId());
             }
             statement.setLong(2, vote.getAnswer().getId());
-            statement.setTimestamp(3, Util.dateToTimestamp(vote.getCreationDate()));
+            statement.setTimestamp(3, DatabaseUtil.dateToTimestamp(vote.getCreationDate()));
             statement.setLong(4, vote.getId());
             return statement;
         } catch (SQLException e) {
@@ -71,7 +72,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
                 statement.setLong(1, author.getId());
             }
             statement.setLong(2, vote.getAnswer().getId());
-            statement.setTimestamp(3, Util.dateToTimestamp(vote.getCreationDate()));
+            statement.setTimestamp(3, DatabaseUtil.dateToTimestamp(vote.getCreationDate()));
             return statement;
         } catch (SQLException e) {
             statement.close();

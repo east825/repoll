@@ -1,4 +1,4 @@
-package repoll.models;
+package repoll.server.mappers;
 
 import org.apache.log4j.Logger;
 
