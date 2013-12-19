@@ -2,14 +2,17 @@ package repoll.server.ui;
 
 import repoll.models.Answer;
 import repoll.models.Poll;
+import repoll.server.mappers.Facade;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class PollEditDialog extends JDialog {
@@ -22,7 +25,7 @@ public class PollEditDialog extends JDialog {
     private JList<Answer> answersList;
     private JButton addAnswerButton;
     private JButton removeAnswerButton;
-    private DefaultListModel<Answer> listModel = new DefaultListModel<>();;
+    private DefaultListModel<Answer> listModel = new DefaultListModel<>();
     private Poll poll;
 
     public PollEditDialog(Poll existingPoll) {
@@ -30,7 +33,7 @@ public class PollEditDialog extends JDialog {
         titleField.setText(poll.getTitle());
         descriptionText.setText(poll.getDescription());
         try {
-            for (Answer answer : poll.getAnswers()) {
+            for (Answer answer : Facade.Polls.getAnswers(poll)) {
                 listModel.addElement(answer);
             }
         } catch (MapperException e) {
@@ -130,14 +133,14 @@ public class PollEditDialog extends JDialog {
         poll.setDescription(descriptionText.getText());
         try {
             if (poll.isSaved()) {
-                poll.update();
+                Mappers.update(poll);
             } else {
-                poll.insert();
+                Mappers.insert(poll);
             }
             for (int i = 0; i < listModel.size(); i++) {
                 Answer answer = listModel.elementAt(i);
                 if (!answer.isSaved()) {
-                    answer.insert();
+                    Mappers.insert(answer);
                 }
             }
             return poll;

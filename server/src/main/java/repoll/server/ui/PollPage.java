@@ -1,7 +1,11 @@
 package repoll.server.ui;
 
-import repoll.models.*;
+import repoll.models.Answer;
+import repoll.models.Commentary;
+import repoll.models.Poll;
+import repoll.models.User;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 import repoll.server.rest.StackExchangeUser;
 
 import javax.swing.*;
@@ -10,9 +14,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
+
+import static repoll.server.mappers.Facade.Polls;
+import static repoll.server.mappers.Facade.Users;
 
 public class PollPage {
     private static final Logger LOG = Logger.getLogger(PollPage.class.getName());
@@ -59,12 +68,12 @@ public class PollPage {
         final CardLayout cardLayout = (CardLayout) answersPanel.getLayout();
         final User currentUser = MainApplication.getInstance().getCurrentUser();
         try {
-            List<Answer> answers = poll.getAnswers();
+            List<Answer> answers = Polls.getAnswers(poll);
             final Map<String, Answer> answersMap = new TreeMap<>();
             for (Answer answer : answers) {
                 answersMap.put(answer.getDescription(), answer);
             }
-            resultsPanel.add(new PollResultsVisualization(poll.getAnswers()).getRootPanel());
+            resultsPanel.add(new PollResultsVisualization(Polls.getAnswers(poll)).getRootPanel());
             for (Answer answer : answers) {
                 JRadioButton button = new JRadioButton(answer.getDescription());
                 buttonGroup.add(button);
@@ -78,7 +87,7 @@ public class PollPage {
                         return;
                     }
                     try {
-                        currentUser.voteFor(answersMap.get(selectedAnswer));
+                        Users.vote(currentUser, answersMap.get(selectedAnswer));
                     } catch (MapperException e) {
                         LOG.throwing("voteButton ActionListener", "actionPerformed", e);
                     }
@@ -86,7 +95,7 @@ public class PollPage {
                     cardLayout.show(answersPanel, "Results");
                 }
             });
-            if (currentUser.canVoteIn(poll)) {
+            if (Users.canVoteIn(currentUser, poll)) {
                 cardLayout.show(answersPanel, "Voting");
             } else {
                 cardLayout.show(answersPanel, "Results");
@@ -97,7 +106,7 @@ public class PollPage {
                 public void actionPerformed(ActionEvent event) {
                     String s = JOptionPane.showInputDialog("Enter commentary");
                     try {
-                        currentUser.commentPoll(poll, s);
+                        Users.commentPoll(currentUser, poll, s);
                     } catch (MapperException e) {
                         LOG.throwing("addCommentaryButton ActionListener", "actionPerformed", e);
                     }
@@ -180,7 +189,7 @@ public class PollPage {
         DefaultListModel<Commentary> listModel = (DefaultListModel<Commentary>) commentsList.getModel();
         try {
             listModel.clear();
-            for (Commentary commentary : poll.getCommentaries()) {
+            for (Commentary commentary : Polls.getCommentaries(poll)) {
                 listModel.addElement(commentary);
             }
         } catch (MapperException e) {
@@ -230,7 +239,7 @@ public class PollPage {
         public void actionPerformed(ActionEvent e) {
             if (comment != null) {
                 try {
-                    comment.delete();
+                    Mappers.delete(comment);
                     fillCommentariesList(poll);
                 } catch (MapperException e1) {
                     LOG.throwing("RemoveCommentAction", "actionPerformed", e1);

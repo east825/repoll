@@ -21,8 +21,12 @@ public class Facade {
 
     public static final class Users {
 
+        public static User createFromCredentials(@NotNull String login, @NotNull String password) throws MapperException {
+            return Mappers.insert(User.builder(login, password).build());
+        }
+
         @NotNull
-        public static Poll createPoll(@NotNull User user, @NotNull String title) throws MapperException{
+        public static Poll createPoll(@Nullable User user, @NotNull String title) throws MapperException{
             return Mappers.insert(new Poll(user, title));
         }
 

@@ -2,6 +2,7 @@ package repoll.server.ui;
 
 import repoll.models.User;
 import repoll.server.mappers.MapperException;
+import repoll.server.mappers.Mappers;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -77,7 +78,7 @@ public class RegistrationDialog extends JDialog {
             user.setStackoverflowId(Integer.parseInt(stackoverflowIdField.getText()));
         }
         try {
-            user.insert();
+            Mappers.insert(user);
             return user;
         } catch (MapperException e) {
             JOptionPane.showMessageDialog(this, "Can't save user: " + e.getMessage(),

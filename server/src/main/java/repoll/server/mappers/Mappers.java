@@ -1,6 +1,5 @@
 package repoll.server.mappers;
 
-import com.sun.java.browser.plugin2.DOM;
 import org.jetbrains.annotations.NotNull;
 import repoll.models.*;
 

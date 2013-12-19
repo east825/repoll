@@ -17,14 +17,14 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static repoll.server.mappers.Facade.Users;
 
 public class UserTest extends DatabaseTest {
     private static final String SELECT_ALL_FIELDS_QUERY = "select * from \"User\" where id = ?";
 
     @Test
     public void insertAndDeleteUser() throws MapperException, SQLException {
-        User user = User.builder("someLogin", "somePassword").additionalInfo("It's just test user").build();
-        Mappers.insert(user);
+        User user = Users.createFromCredentials("someLogin", "somePassword");
         assertTrue(user.isSaved());
         try (PreparedStatement statement = testConnection.prepareStatement("select * from \"User\" where id = ?")) {
             statement.setLong(1, user.getId());
@@ -94,12 +94,11 @@ public class UserTest extends DatabaseTest {
 
     @Test(expected = MapperException.class)
     public void conflictingLogin() throws MapperException {
-        User u1 = User.builder("login", "foo").build();
-        User u2 = User.builder("login", "bar").build();
-        Mappers.insert(u1);
-        Mappers.insert(u2);
+        Users.createFromCredentials("login", "foo");
+        Users.createFromCredentials("login", "bar");
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Ignore
     @Test
     public void illegalParameters() throws MapperException {
@@ -176,9 +175,8 @@ public class UserTest extends DatabaseTest {
 
     @Test(expected = AssertionError.class)
     public void idModificationOutsideMapper() throws MapperException {
-        User u = User.builder("foo", "bar").build();
-        Mappers.insert(u);
-        u.setId(42);
+        User user = Users.createFromCredentials("foo", "bar");
+        user.setId(42);
     }
 
     @Test(expected = MapperException.class)
@@ -200,51 +198,51 @@ public class UserTest extends DatabaseTest {
 
     @Test
     public void authoredPolls() throws MapperException {
-        User user1 = Mappers.insert(User.newFromCredentials("login1", "passwd"));
-        User user2 = Mappers.insert(User.newFromCredentials("login2", "passwd"));
-        User user3 = Mappers.insert(User.newFromCredentials("login3", "passwd"));
-        Facade.Users.createPoll(user1, "poll #1");
-        Facade.Users.createPoll(user1, "poll #2");
-        Facade.Users.createPoll(user2, "poll #3");
-        assertEquals(2, Facade.Users.getAuthoredPolls(user1).size());
-        assertEquals(1, Facade.Users.getAuthoredPolls(user2).size());
-        assertEquals(0, Facade.Users.getAuthoredPolls(user3).size());
+        User user1 = Users.createFromCredentials("login1", "passwd");
+        User user2 = Users.createFromCredentials("login2", "passwd");
+        User user3 = Users.createFromCredentials("login3", "passwd");
+        Users.createPoll(user1, "poll #1");
+        Users.createPoll(user1, "poll #2");
+        Users.createPoll(user2, "poll #3");
+        assertEquals(2, Users.getAuthoredPolls(user1).size());
+        assertEquals(1, Users.getAuthoredPolls(user2).size());
+        assertEquals(0, Users.getAuthoredPolls(user3).size());
     }
 
     @Test
     public void authoredCommentaries() throws MapperException {
-        User user1 = Mappers.insert(User.newFromCredentials("login1", "passwd"));
-        User user2 = Mappers.insert(User.newFromCredentials("login2", "passwd"));
-        Poll poll = Facade.Users.createPoll(user1, "title");
-        Facade.Users.commentPoll(user1, poll, "commentary #1");
-        Facade.Users.commentPoll(user1, poll, "commentary #2");
-        Facade.Users.commentPoll(user2, poll, "commentary #3");
-        assertEquals(2, Facade.Users.getCommentaries(user1).size());
-        assertEquals(1, Facade.Users.getCommentaries(user2).size());
+        User user1 = Users.createFromCredentials("login1", "passwd");
+        User user2 = Users.createFromCredentials("login2", "passwd");
+        Poll poll = Users.createPoll(user1, "title");
+        Users.commentPoll(user1, poll, "commentary #1");
+        Users.commentPoll(user1, poll, "commentary #2");
+        Users.commentPoll(user2, poll, "commentary #3");
+        assertEquals(2, Users.getCommentaries(user1).size());
+        assertEquals(1, Users.getCommentaries(user2).size());
     }
 
     @Test
     public void authoredVotes() throws MapperException {
-        User user1 = Mappers.insert(User.newFromCredentials("login1", "passwd"));
-        User user2 = Mappers.insert(User.newFromCredentials("login2", "passwd"));
-        Poll poll = Facade.Users.createPoll(user1, "title");
+        User user1 = Users.createFromCredentials("login1", "passwd");
+        User user2 = Users.createFromCredentials("login2", "passwd");
+        Poll poll = Users.createPoll(user1, "title");
         Answer answer1 = Facade.Polls.addAnswer(poll, "answer #1");
         Answer answer2 = Facade.Polls.addAnswer(poll, "answer #2");
-        Facade.Users.vote(user1, answer1);
-        Facade.Users.vote(user1, answer2);
-        Facade.Users.vote(user2, answer1);
-        assertEquals(2, Facade.Users.getVotes(user1).size());
-        assertEquals(1, Facade.Users.getVotes(user2).size());
+        Users.vote(user1, answer1);
+        Users.vote(user1, answer2);
+        Users.vote(user2, answer1);
+        assertEquals(2, Users.getVotes(user1).size());
+        assertEquals(1, Users.getVotes(user2).size());
     }
 
     @Ignore
     @Test
     public void userCanVote() throws MapperException {
-        User user = User.newFromCredentials("login", "password");
-        Poll poll = Facade.Users.createPoll(user, "New poll");
+        User user = Users.createFromCredentials("login", "password");
+        Poll poll = Users.createPoll(user, "New poll");
         List<Answer> answers = Facade.Polls.addAnswers(poll, "answer #1", "answer #2");
-        assertTrue(Facade.Users.canVoteIn(user, poll));
-        Facade.Users.vote(user, answers.get(0));
-        assertFalse(Facade.Users.canVoteIn(user, poll));
+        assertTrue(Users.canVoteIn(user, poll));
+        Users.vote(user, answers.get(0));
+        assertFalse(Users.canVoteIn(user, poll));
     }
 }

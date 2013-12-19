@@ -1,8 +1,9 @@
 package repoll.server.ui;
 
-import repoll.models.ConnectionProvider;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.server.mappers.ConnectionProvider;
+import repoll.server.mappers.Facade;
 import repoll.server.mappers.MapperException;
 import repoll.util.SearchUtil;
 
@@ -104,7 +105,7 @@ public class MainApplication extends JFrame {
             return;
         }
         try {
-            showInMainPanel(new SearchResultsPage(currentUser.getAuthoredPolls()));
+            showInMainPanel(new SearchResultsPage(Facade.Users.getAuthoredPolls(currentUser)));
         } catch (MapperException e) {
             LOG.throwing("MainApplication", "createAndShowGUI", e);
         }

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static repoll.server.mappers.Facade.Answers;
+
 public class PollResultsVisualization {
     private static final Logger LOG = Logger.getLogger(PollResultsVisualization.class.getName());
     private JList<Answer> legendList;
@@ -46,7 +48,7 @@ public class PollResultsVisualization {
                 }
                 String description = null;
                 try {
-                    description = String.format("%s: %d votes", value.getDescription(), value.getVotesNumber());
+                    description = String.format("%s: %d votes", value.getDescription(), Answers.getVotesNumber(value));
                 } catch (MapperException e) {
                     LOG.throwing("PieChartDiagram", "getListCellRendererComponent", e);
                 }
@@ -117,12 +119,12 @@ public class PollResultsVisualization {
             try {
                 int totalVotes = 0;
                 for (Answer answer : answers) {
-                    totalVotes += answer.getVotesNumber();
+                    totalVotes += Answers.getVotesNumber(answer);
                 }
                 double startAngle = 0;
                 for (Answer answer : answers) {
                     g2d.setPaint(answer == selectedAnswer ? Color.RED : colorMap.get(answer));
-                    double extent = 360.0 * answer.getVotesNumber() / totalVotes;
+                    double extent = 360.0 * Answers.getVotesNumber(answer) / totalVotes;
                     g2d.fill(new Arc2D.Double(x, y, size, size, startAngle, extent, Arc2D.PIE));
                     startAngle += extent;
                 }

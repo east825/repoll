@@ -2,7 +2,6 @@ package repoll.server;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import repoll.TestUtil;
 
 import java.sql.Connection;

@@ -5,11 +5,10 @@ import org.junit.Test;
 import repoll.models.Commentary;
 import repoll.models.Poll;
 import repoll.models.User;
-import repoll.server.mappers.AbstractMapper;
 import repoll.server.mappers.Facade;
+import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
 import repoll.util.DatabaseUtil;
-import repoll.server.mappers.MapperException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,10 +43,8 @@ public class CommentaryTest extends DatabaseTest {
     @Test
     public void updateCommentary() throws MapperException, SQLException {
         Date creationDate = new Date(100);
-        Poll poll = new Poll(null, "title");
-        Mappers.insert(poll);
-        Commentary commentary = new Commentary(null, poll, "message1", creationDate);
-        Mappers.insert(commentary);
+        Poll poll = Mappers.insert(new Poll(null, "title"));
+        Commentary commentary = Mappers.insert(new Commentary(null, poll, "message1", creationDate));
         try (PreparedStatement statement = testConnection.prepareStatement(SELECT_ALL_FIELDS_QUERY)) {
             statement.setLong(1, commentary.getId());
             ResultSet resultSet = statement.executeQuery();
@@ -71,18 +68,20 @@ public class CommentaryTest extends DatabaseTest {
 
     @Test(expected = IllegalStateException.class)
     public void authorNotInsertedBeforeCommentary() throws MapperException {
-        Poll poll = new Poll(null, "title");
-        Mappers.insert(poll);
-        User author = User.builder("login", "passwd").build();
-        Mappers.insert(new Commentary(author, poll, "message"));
+        Poll poll = Mappers.insert(new Poll(null, "title"));
+        // Not inserted
+        User author = User.newFromCredentials("login", "passwd");
+        Facade.Users.commentPoll(author, poll, "message");
     }
 
     @Test(expected = IllegalStateException.class)
     public void pollNotInsertedBeforeCommentary() throws MapperException {
+        // Not inserted
         Poll poll = new Poll(null, "title");
         Facade.Users.commentPoll(null, poll, "message");
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Ignore
     @Test
     public void illegalParameters() {

@@ -9,7 +9,10 @@ import repoll.server.mappers.Facade;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -58,6 +61,7 @@ public class PollTest extends DatabaseTest {
 
     @Test(expected = IllegalStateException.class)
     public void authorNotInsertedBeforePoll() throws MapperException {
+        // Not inserted
         User author = User.builder("login", "passwd").build();
         Mappers.insert(new Poll(author, "title"));
     }
@@ -68,6 +72,7 @@ public class PollTest extends DatabaseTest {
         Mappers.insert(new Poll(null, "title"));
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Ignore
     @Test
     public void illegalParameters() {
