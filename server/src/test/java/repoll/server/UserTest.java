@@ -214,9 +214,9 @@ public class UserTest extends DatabaseTest {
         User user1 = Users.createFromCredentials("login1", "passwd");
         User user2 = Users.createFromCredentials("login2", "passwd");
         Poll poll = Users.createPoll(user1, "title");
-        Users.commentPoll(user1, poll, "commentary #1");
-        Users.commentPoll(user1, poll, "commentary #2");
-        Users.commentPoll(user2, poll, "commentary #3");
+        Users.comment(user1, poll, "commentary #1");
+        Users.comment(user1, poll, "commentary #2");
+        Users.comment(user2, poll, "commentary #3");
         assertEquals(2, Users.getCommentaries(user1).size());
         assertEquals(1, Users.getCommentaries(user2).size());
     }

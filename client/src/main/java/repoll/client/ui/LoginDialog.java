@@ -1,11 +1,9 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
 import repoll.models.User;
-import repoll.util.SearchUtil;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Arrays;
 
 public class LoginDialog extends JDialog {
     private JPanel contentPane;
@@ -63,19 +61,16 @@ public class LoginDialog extends JDialog {
     private void onOK() {
         if (loginField.getText().isEmpty()) {
             // Testing backdoor
-            currentUser = SearchUtil.findUserByLogin("east825");
+            currentUser = MainApplication.getFacade().findUser("east825", "");
             dispose();
             return;
         }
         if (!validateFields()) {
             return;
         }
-        currentUser = SearchUtil.findUserByLogin(loginField.getText());
-        if (currentUser == null ||
-                !Arrays.equals(passwordField.getPassword(), currentUser.getPasswordHash().toCharArray())) {
-            JOptionPane.showMessageDialog(contentPane, "Wrong credentials",
-                    "Wrong credentials", JOptionPane.ERROR_MESSAGE);
-
+        currentUser = MainApplication.getFacade().findUser(loginField.getText(), passwordField.getText());
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(contentPane, "Wrong credentials", "Wrong login or password", JOptionPane.ERROR_MESSAGE);
         } else {
             dispose();
         }

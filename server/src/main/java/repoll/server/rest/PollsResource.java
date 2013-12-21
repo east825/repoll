@@ -1,5 +1,7 @@
 package repoll.server.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import repoll.models.Poll;
 import repoll.server.mappers.Mappers;
 
@@ -14,10 +16,15 @@ import static repoll.server.mappers.Facade.Polls;
 @Path("/polls")
 public class PollsResource {
 
+    public static final Gson GSON = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+            .setPrettyPrinting()
+            .create();
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String allPolls() throws Exception {
-        return ServiceUtil.GSON.toJson(Mappers.getForClass(Poll.class).all());
+        return GSON.toJson(Mappers.getForClass(Poll.class).all());
     }
 
     @GET
@@ -34,6 +41,6 @@ public class PollsResource {
                 mostCommented = poll;
             }
         }
-        return ServiceUtil.GSON.toJson(mostCommented);
+        return GSON.toJson(mostCommented);
     }
 }

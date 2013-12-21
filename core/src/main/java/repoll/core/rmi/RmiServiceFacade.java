@@ -15,6 +15,15 @@ public interface RmiServiceFacade extends Remote {
     String SERVICE_URL = "//localhost/RmiServiceFacade";
 
     /*
+     * Common actions
+     */
+    @NotNull
+    <T extends DomainObject> T save(@NotNull T object) throws RemoteException;
+
+    <T extends DomainObject> void delete(@NotNull T object) throws RemoteException;
+
+
+    /*
      * User actions
      */
 
@@ -32,6 +41,12 @@ public interface RmiServiceFacade extends Remote {
 
     @NotNull
     List<Commentary> getUserCommentaries(@NotNull User user) throws RemoteException;
+
+    boolean userCanVoteIn(@NotNull User user, @NotNull Poll poll) throws RemoteException;
+
+    void vote(@NotNull User user, @NotNull Answer answer) throws RemoteException;
+
+    void comment(@NotNull User user, @NotNull Poll poll, @NotNull String message) throws RemoteException;
 
     /*
      * Poll actions
@@ -65,11 +80,4 @@ public interface RmiServiceFacade extends Remote {
 
     @NotNull
     Commentary addCommentaryToPoll(@NotNull String message, @NotNull User author, @NotNull Poll poll) throws RemoteException;
-
-    /*
-     * Vote actions
-     */
-
-    @NotNull
-    Vote leftVote(@NotNull User author, @NotNull Answer answer) throws RemoteException;
 }

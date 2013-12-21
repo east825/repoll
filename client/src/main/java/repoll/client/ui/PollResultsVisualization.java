@@ -1,7 +1,7 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
+import org.jetbrains.annotations.NotNull;
 import repoll.models.Answer;
-import repoll.server.mappers.MapperException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,13 +9,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static repoll.server.mappers.Facade.Answers;
 
 public class PollResultsVisualization {
     private static final Logger LOG = Logger.getLogger(PollResultsVisualization.class.getName());
@@ -47,11 +44,7 @@ public class PollResultsVisualization {
                     return new JLabel("No answers");
                 }
                 String description = null;
-                try {
-                    description = String.format("%s: %d votes", value.getDescription(), Answers.getVotesNumber(value));
-                } catch (MapperException e) {
-                    LOG.throwing("PieChartDiagram", "getListCellRendererComponent", e);
-                }
+                description = String.format("%s: %d votes", value.getDescription(), countVotes(value));
                 return new JLabel(description, new ColorFilledIcon(16, 16, colorMap.get(value)), SwingConstants.LEFT);
             }
         });
@@ -101,7 +94,8 @@ public class PollResultsVisualization {
     }
 
     private class PieChart extends JComponent {
-        private PieChart() { }
+        private PieChart() {
+        }
 
         @Override
         public void paintComponent(Graphics g) {
@@ -116,20 +110,18 @@ public class PollResultsVisualization {
             g2d.fill(fullCircle);
             g2d.setStroke(new BasicStroke(2));
             g2d.draw(fullCircle);
-            try {
-                int totalVotes = 0;
-                for (Answer answer : answers) {
-                    totalVotes += Answers.getVotesNumber(answer);
-                }
+            int totalVotes = 0;
+            for (Answer answer : answers) {
+                totalVotes += countVotes(answer);
+            }
+            if (totalVotes != 0) {
                 double startAngle = 0;
                 for (Answer answer : answers) {
                     g2d.setPaint(answer == selectedAnswer ? Color.RED : colorMap.get(answer));
-                    double extent = 360.0 * Answers.getVotesNumber(answer) / totalVotes;
+                    double extent = 360.0 * countVotes(answer) / totalVotes;
                     g2d.fill(new Arc2D.Double(x, y, size, size, startAngle, extent, Arc2D.PIE));
                     startAngle += extent;
                 }
-            } catch (MapperException e) {
-                LOG.throwing("PieChartIcon", "paintIcon", e);
             }
         }
     }
@@ -149,16 +141,8 @@ public class PollResultsVisualization {
         return rootPanel;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame mainFrame = new JFrame("Sample");
-                mainFrame.add(new PollResultsVisualization(Collections.<Answer>emptyList()).getRootPanel());
-                mainFrame.pack();
-                mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                mainFrame.setVisible(true);
-            }
-        });
+    private int countVotes(@NotNull Answer answer) {
+        return MainApplication.getFacade().getAnswerVotes(answer).size();
     }
+
 }

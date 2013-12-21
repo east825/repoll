@@ -1,12 +1,10 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
+import repoll.client.rest.StackExchangeUser;
 import repoll.models.Answer;
 import repoll.models.Commentary;
 import repoll.models.Poll;
 import repoll.models.User;
-import repoll.server.mappers.MapperException;
-import repoll.server.mappers.Mappers;
-import repoll.server.rest.StackExchangeUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-
-import static repoll.server.mappers.Facade.Polls;
-import static repoll.server.mappers.Facade.Users;
 
 public class PollPage {
     private static final Logger LOG = Logger.getLogger(PollPage.class.getName());
@@ -67,92 +62,80 @@ public class PollPage {
         final ButtonGroup buttonGroup = new ButtonGroup();
         final CardLayout cardLayout = (CardLayout) answersPanel.getLayout();
         final User currentUser = MainApplication.getInstance().getCurrentUser();
-        try {
-            List<Answer> answers = Polls.getAnswers(poll);
-            final Map<String, Answer> answersMap = new TreeMap<>();
-            for (Answer answer : answers) {
-                answersMap.put(answer.getDescription(), answer);
-            }
-            resultsPanel.add(new PollResultsVisualization(Polls.getAnswers(poll)).getRootPanel());
-            for (Answer answer : answers) {
-                JRadioButton button = new JRadioButton(answer.getDescription());
-                buttonGroup.add(button);
-                votingPanel.add(button);
-            }
-            voteButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    String selectedAnswer = getSelectedRadioButtonTest(buttonGroup);
-                    if (selectedAnswer == null) {
-                        return;
-                    }
-                    try {
-                        Users.vote(currentUser, answersMap.get(selectedAnswer));
-                    } catch (MapperException e) {
-                        LOG.throwing("voteButton ActionListener", "actionPerformed", e);
-                    }
-                    resultsPanel.revalidate();
-                    cardLayout.show(answersPanel, "Results");
+        List<Answer> answers = MainApplication.getFacade().getPollAnswers(poll);
+        final Map<String, Answer> answersMap = new TreeMap<>();
+        for (Answer answer : answers) {
+            answersMap.put(answer.getDescription(), answer);
+        }
+        resultsPanel.add(new PollResultsVisualization(answers).getRootPanel());
+        for (Answer answer : answers) {
+            JRadioButton button = new JRadioButton(answer.getDescription());
+            buttonGroup.add(button);
+            votingPanel.add(button);
+        }
+        voteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                String selectedAnswer = getSelectedRadioButtonTest(buttonGroup);
+                if (selectedAnswer == null) {
+                    return;
                 }
-            });
-            if (Users.canVoteIn(currentUser, poll)) {
-                cardLayout.show(answersPanel, "Voting");
-            } else {
+                MainApplication.getFacade().vote(currentUser, answersMap.get(selectedAnswer));
+                resultsPanel.revalidate();
                 cardLayout.show(answersPanel, "Results");
             }
-            fillCommentariesList(poll);
-            addCommentaryButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    String s = JOptionPane.showInputDialog("Enter commentary");
-                    try {
-                        Users.commentPoll(currentUser, poll, s);
-                    } catch (MapperException e) {
-                        LOG.throwing("addCommentaryButton ActionListener", "actionPerformed", e);
-                    }
-                    fillCommentariesList(poll);
-                    commentsPanel.revalidate();
-                }
-            });
-            editPollButton.setVisible(currentUser.equals(poll.getAuthor()));
-            editPollButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JDialog dialog = new PollEditDialog(poll);
-                    dialog.setVisible(true);
-                    MainApplication.getInstance().showInMainPanel(new PollPage(poll).getRootPanel());
-                }
-            });
-            final JPopupMenu popupMenu = new JPopupMenu();
-            final RemoveCommentAction removeComment = new RemoveCommentAction();
-            popupMenu.add(removeComment);
-            commentsList.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    showPopup(e);
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    showPopup(e);
-                }
-
-                private void showPopup(MouseEvent e) {
-                    if (e.isPopupTrigger()) {
-                        int index = commentsList.locationToIndex(e.getPoint());
-                        Commentary comment = commentsList.getModel().getElementAt(index);
-                        User currentUser = MainApplication.getInstance().getCurrentUser();
-                        boolean isEnabled = currentUser.equals(poll.getAuthor()) || currentUser.equals(comment.getAuthor());
-                        removeComment.setEnabled(isEnabled);
-                        removeComment.setComment(comment);
-                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                    }
-                }
-            });
-        } catch (MapperException e) {
-            LOG.throwing("PollPage", "PollPage", e);
+        });
+        if (MainApplication.getFacade().canVoteIn(currentUser, poll)) {
+            cardLayout.show(answersPanel, "Voting");
+        } else {
+            cardLayout.show(answersPanel, "Results");
         }
+        fillCommentariesList(poll);
+        addCommentaryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                String s = JOptionPane.showInputDialog("Enter commentary");
+                MainApplication.getFacade().comment(currentUser, poll, s);
+                fillCommentariesList(poll);
+                commentsPanel.revalidate();
+            }
+        });
+        editPollButton.setVisible(currentUser.equals(poll.getAuthor()));
+        editPollButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new PollEditDialog(poll);
+                dialog.setVisible(true);
+                MainApplication.getInstance().showInMainPanel(new PollPage(poll).getRootPanel());
+            }
+        });
+        final JPopupMenu popupMenu = new JPopupMenu();
+        final RemoveCommentAction removeComment = new RemoveCommentAction();
+        popupMenu.add(removeComment);
+        commentsList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    int index = commentsList.locationToIndex(e.getPoint());
+                    Commentary comment = commentsList.getModel().getElementAt(index);
+                    User currentUser = MainApplication.getInstance().getCurrentUser();
+                    boolean isEnabled = currentUser.equals(poll.getAuthor()) || currentUser.equals(comment.getAuthor());
+                    removeComment.setEnabled(isEnabled);
+                    removeComment.setComment(comment);
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
         viewProfileButton.setEnabled(poll.getAuthor() != null && poll.getAuthor().getStackoverflowId() >= 0);
         viewProfileButton.addActionListener(new ActionListener() {
             @Override
@@ -187,13 +170,9 @@ public class PollPage {
 
     private void fillCommentariesList(Poll poll) {
         DefaultListModel<Commentary> listModel = (DefaultListModel<Commentary>) commentsList.getModel();
-        try {
-            listModel.clear();
-            for (Commentary commentary : Polls.getCommentaries(poll)) {
-                listModel.addElement(commentary);
-            }
-        } catch (MapperException e) {
-            LOG.throwing("PollPage", "fillCommentariesList", e);
+        listModel.clear();
+        for (Commentary commentary : MainApplication.getFacade().getPollCommentaries(poll)) {
+            listModel.addElement(commentary);
         }
     }
 
@@ -238,12 +217,8 @@ public class PollPage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (comment != null) {
-                try {
-                    Mappers.delete(comment);
-                    fillCommentariesList(poll);
-                } catch (MapperException e1) {
-                    LOG.throwing("RemoveCommentAction", "actionPerformed", e1);
-                }
+                MainApplication.getFacade().delete(comment);
+                fillCommentariesList(poll);
             }
 
         }

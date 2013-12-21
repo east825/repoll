@@ -44,6 +44,15 @@ public class Mappers {
         ((AbstractMapper<T>) getForClass(object.getClass())).update(object);
     }
 
+    public static <T extends DomainObject> T save(@NotNull T object) throws MapperException {
+        if (object.isSaved()) {
+            update(object);
+            return object;
+        } else {
+            return insert(object);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T extends DomainObject> void delete(@NotNull T object) throws MapperException {
         ((AbstractMapper<T>) getForClass(object.getClass())).delete(object);

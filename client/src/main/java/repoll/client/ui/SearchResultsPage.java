@@ -1,4 +1,4 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
 import repoll.models.Poll;
 

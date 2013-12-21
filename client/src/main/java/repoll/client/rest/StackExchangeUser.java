@@ -1,6 +1,9 @@
-package repoll.server.rest;
+package repoll.client.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -8,15 +11,18 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.logging.Logger;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import static repoll.server.rest.ServiceUtil.StackExchangeResponseWrapper;
-
 public class StackExchangeUser {
+    private static final Gson GSON = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+            .setPrettyPrinting()
+            .create();
+    public static final Type WRAPPER_TYPE = new TypeToken<ResponseWrapper<StackExchangeUser>>() {}.getType();
     private static final String STACKEXCHAGE_USER_API_URI = "https://api.stackexchange.com/2.1/users/";
-    private static Logger LOG = Logger.getLogger(StackExchangeUser.class.getName());
 
     @Nullable
     public static StackExchangeUser loadById(int id) throws IOException {
@@ -27,8 +33,7 @@ public class StackExchangeUser {
                 .acceptEncoding("utf-8")
                 .get(InputStream.class);
         InputStreamReader decodedStream = new InputStreamReader(new GZIPInputStream(response));
-        String json = ServiceUtil.consumeStream(decodedStream);
-        StackExchangeResponseWrapper<StackExchangeUser> wrapper = ServiceUtil.GSON.fromJson(json, ServiceUtil.WRAPPER_TYPE);
+        ResponseWrapper<StackExchangeUser> wrapper = GSON.fromJson(decodedStream, WRAPPER_TYPE);
         return wrapper.hasItems() ? wrapper.getItems().get(0) : null;
     }
 
@@ -89,4 +94,19 @@ public class StackExchangeUser {
         System.out.println(loadById(1013522));
     }
 
+    /**
+     * Auxiliary response holder for StackExchange services
+     */
+    public static class ResponseWrapper<T> {
+        @SuppressWarnings("UnusedDeclaration")
+        private List<T> items;
+
+        public boolean hasItems() {
+            return !items.isEmpty();
+        }
+
+        public List<T> getItems() {
+            return items;
+        }
+    }
 }

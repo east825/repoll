@@ -8,7 +8,6 @@ import repoll.TestUtil;
 import repoll.models.Poll;
 import repoll.server.mappers.MapperException;
 import repoll.server.rest.PollsResource;
-import repoll.server.rest.ServiceUtil;
 
 import javax.ws.rs.core.Application;
 import java.lang.reflect.Type;
@@ -19,9 +18,11 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static repoll.server.rest.PollsResource.GSON;
 
 public class PollResourceTest extends JerseyTest {
-    private static final Type LIST_OF_POLLS_TYPE = new TypeToken<List<Poll>>() {}.getType();
+    private static final Type LIST_OF_POLLS_TYPE = new TypeToken<List<Poll>>() {
+    }.getType();
     private static Connection testConnection;
 
     @BeforeClass
@@ -59,7 +60,7 @@ public class PollResourceTest extends JerseyTest {
         Poll poll2 = TestUtil.newAnonymousPoll("title2");
         Poll poll3 = TestUtil.newAnonymousPoll("title3");
         String response = getAllPollsAsJsonString();
-        List<Poll> receivedPolls = ServiceUtil.GSON.fromJson(response, LIST_OF_POLLS_TYPE);
+        List<Poll> receivedPolls = GSON.fromJson(response, LIST_OF_POLLS_TYPE);
         assertEquals(Arrays.asList(poll1, poll2, poll3), receivedPolls);
     }
 
@@ -74,13 +75,13 @@ public class PollResourceTest extends JerseyTest {
         TestUtil.newAnonymousCommentary(poll1, "comment #4");
         TestUtil.newAnonymousCommentary(poll2, "comment #5");
         String response = getMostCommentedPollAsJsonString();
-        assertEquals(mostCommented, ServiceUtil.GSON.fromJson(response, Poll.class));
+        assertEquals(mostCommented, GSON.fromJson(response, Poll.class));
     }
 
     @Test
     public void noPolls() {
         String allPollsAsJsonString = getAllPollsAsJsonString();
-        List<Poll> allPolls = ServiceUtil.GSON.fromJson(allPollsAsJsonString, LIST_OF_POLLS_TYPE);
+        List<Poll> allPolls = GSON.fromJson(allPollsAsJsonString, LIST_OF_POLLS_TYPE);
         assertTrue(allPolls.isEmpty());
         assertEquals("no polls", getMostCommentedPollAsJsonString());
     }

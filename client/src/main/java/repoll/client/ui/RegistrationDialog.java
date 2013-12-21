@@ -1,8 +1,6 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
 import repoll.models.User;
-import repoll.server.mappers.MapperException;
-import repoll.server.mappers.Mappers;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -77,15 +75,8 @@ public class RegistrationDialog extends JDialog {
         if (!stackoverflowIdField.getText().isEmpty()) {
             user.setStackoverflowId(Integer.parseInt(stackoverflowIdField.getText()));
         }
-        try {
-            Mappers.insert(user);
-            return user;
-        } catch (MapperException e) {
-            JOptionPane.showMessageDialog(this, "Can't save user: " + e.getMessage(),
-                    "User creation error", JOptionPane.ERROR_MESSAGE);
-            LOG.throwing("RegistrationDialog", "createUser", e);
-        }
-        return null;
+        MainApplication.getFacade().save(user);
+        return user;
     }
 
     private boolean validateFields() {

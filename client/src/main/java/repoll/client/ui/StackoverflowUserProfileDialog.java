@@ -1,6 +1,7 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
-import repoll.server.rest.StackExchangeUser;
+
+import repoll.client.rest.StackExchangeUser;
 
 import javax.swing.*;
 import java.awt.event.*;

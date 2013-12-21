@@ -71,14 +71,14 @@ public class CommentaryTest extends DatabaseTest {
         Poll poll = Mappers.insert(new Poll(null, "title"));
         // Not inserted
         User author = User.newFromCredentials("login", "passwd");
-        Facade.Users.commentPoll(author, poll, "message");
+        Facade.Users.comment(author, poll, "message");
     }
 
     @Test(expected = IllegalStateException.class)
     public void pollNotInsertedBeforeCommentary() throws MapperException {
         // Not inserted
         Poll poll = new Poll(null, "title");
-        Facade.Users.commentPoll(null, poll, "message");
+        Facade.Users.comment(null, poll, "message");
     }
 
     @SuppressWarnings("ConstantConditions")

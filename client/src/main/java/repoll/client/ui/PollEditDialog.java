@@ -1,10 +1,7 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
 import repoll.models.Answer;
 import repoll.models.Poll;
-import repoll.server.mappers.Facade;
-import repoll.server.mappers.MapperException;
-import repoll.server.mappers.Mappers;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,10 +10,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class PollEditDialog extends JDialog {
-    private static final Logger LOG = Logger.getLogger(PollEditDialog.class.getName());
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -32,12 +27,8 @@ public class PollEditDialog extends JDialog {
         poll = existingPoll;
         titleField.setText(poll.getTitle());
         descriptionText.setText(poll.getDescription());
-        try {
-            for (Answer answer : Facade.Polls.getAnswers(poll)) {
-                listModel.addElement(answer);
-            }
-        } catch (MapperException e) {
-            LOG.throwing("PollEditDialog", "PollEditDialog", e);
+        for (Answer answer : MainApplication.getFacade().getPollAnswers(poll)) {
+            listModel.addElement(answer);
         }
         initComponents();
     }
@@ -54,7 +45,7 @@ public class PollEditDialog extends JDialog {
         getRootPane().setDefaultButton(buttonOK);
         pack();
 
-        buttonOK.setText(poll.isSaved()? "Update" : "Create");
+        buttonOK.setText(poll.isSaved() ? "Update" : "Create");
 
         answersList.setModel(listModel);
         addAnswerButton.addActionListener(new ActionListener() {
@@ -121,35 +112,24 @@ public class PollEditDialog extends JDialog {
 
     private void onOK() {
         if (validateFields()) {
-            poll = updateOrUpdatePoll();
+            poll = createOrUpdatePoll();
             if (poll != null) {
                 dispose();
             }
         }
     }
 
-    private Poll updateOrUpdatePoll() {
+    private Poll createOrUpdatePoll() {
         poll.setTitle(titleField.getText());
         poll.setDescription(descriptionText.getText());
-        try {
-            if (poll.isSaved()) {
-                Mappers.update(poll);
-            } else {
-                Mappers.insert(poll);
+        MainApplication.getFacade().save(poll);
+        for (int i = 0; i < listModel.size(); i++) {
+            Answer answer = listModel.elementAt(i);
+            if (!answer.isSaved()) {
+                MainApplication.getFacade().save(answer);
             }
-            for (int i = 0; i < listModel.size(); i++) {
-                Answer answer = listModel.elementAt(i);
-                if (!answer.isSaved()) {
-                    Mappers.insert(answer);
-                }
-            }
-            return poll;
-        } catch (MapperException e) {
-            JOptionPane.showMessageDialog(this, "Can't save poll: " + e.getMessage(),
-                    "Poll creation error", JOptionPane.ERROR_MESSAGE);
-            LOG.throwing("PollCreationDialog", "savePoll", e);
         }
-        return null;
+        return poll;
     }
 
     private void onCancel() {
@@ -178,6 +158,6 @@ public class PollEditDialog extends JDialog {
     }
 
     public Poll getPoll() {
-        return poll.isSaved()? poll : null;
+        return poll.isSaved() ? poll : null;
     }
 }

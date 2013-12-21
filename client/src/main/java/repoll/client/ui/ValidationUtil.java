@@ -1,4 +1,4 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
 import javax.swing.*;
 import java.util.regex.Pattern;

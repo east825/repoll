@@ -7,9 +7,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import repoll.core.rmi.RmiServiceFacade;
 import repoll.server.rest.PollsResource;
 import repoll.server.rmi.RmiServiceFacadeImpl;
-import repoll.server.ui.MainApplication;
 
-import javax.swing.*;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.rmi.Naming;
@@ -36,9 +34,6 @@ public class Repoll {
                 case "rmi":
                     runRmiServer();
                     break;
-                case "gui":
-                    runGraphicalClient();
-                    break;
                 case "user":
                     runCustom();
                     break;
@@ -54,15 +49,6 @@ public class Repoll {
 
     private static void runCustom() {
         throw new UnsupportedOperationException();
-    }
-
-    private static void runGraphicalClient() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MainApplication.getInstance().createAndShowGUI();
-            }
-        });
     }
 
     private static void runRestServer() throws Exception {

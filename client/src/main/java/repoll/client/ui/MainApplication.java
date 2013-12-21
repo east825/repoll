@@ -1,11 +1,10 @@
-package repoll.server.ui;
+package repoll.client.ui;
 
+import org.apache.log4j.Logger;
+import repoll.client.rmi.RmiFacadeWrapper;
+import repoll.core.rmi.RmiServiceFacade;
 import repoll.models.Poll;
 import repoll.models.User;
-import repoll.server.mappers.ConnectionProvider;
-import repoll.server.mappers.Facade;
-import repoll.server.mappers.MapperException;
-import repoll.util.SearchUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,15 +12,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Logger;
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 
 public class MainApplication extends JFrame {
-    private static final Logger LOG = Logger.getLogger(MainApplication.class.getName());
-    static {
-        // initialize default connection
-        ConnectionProvider.connection();
+    private static final Logger LOG = Logger.getLogger(MainApplication.class);
+    private static RmiFacadeWrapper FACADE;
+    public static synchronized RmiFacadeWrapper getFacade() {
+        if (FACADE == null) {
+            try {
+                System.setSecurityManager(new RMISecurityManager());
+                FACADE = new RmiFacadeWrapper((RmiServiceFacade) Naming.lookup(RmiServiceFacade.SERVICE_URL));
+            } catch (Exception e) {
+                throw new AssertionError("", e);
+            }
+        }
+        return FACADE;
+
     }
 
     private static MainApplication APPLICATION = null;
@@ -45,8 +52,7 @@ public class MainApplication extends JFrame {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Poll> polls = SearchUtil.findPolls(searchField.getText());
-                showInMainPanel(new SearchResultsPage(polls));
+                showInMainPanel(new SearchResultsPage(FACADE.findPolls(searchField.getText())));
             }
         });
 
@@ -65,13 +71,7 @@ public class MainApplication extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent event) {
-                LOG.finest("Main window was closed");
-                try {
-                    LOG.finest("Database connection will be closed");
-                    ConnectionProvider.connection().close();
-                } catch (SQLException e) {
-                    LOG.fine("Error while closing database connection: " + e.getMessage());
-                }
+                // TODO: close RMI connection here somehow
             }
         });
     }
@@ -104,10 +104,31 @@ public class MainApplication extends JFrame {
             dispose();
             return;
         }
-        try {
-            showInMainPanel(new SearchResultsPage(Facade.Users.getAuthoredPolls(currentUser)));
-        } catch (MapperException e) {
-            LOG.throwing("MainApplication", "createAndShowGUI", e);
+        showInMainPanel(new SearchResultsPage(FACADE.getUserPolls(currentUser)));
+    }
+
+    public static void main(String[] args) {
+        installExceptionHandler();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                APPLICATION = new MainApplication();
+                APPLICATION.createAndShowGUI();
+            }
+        });
+    }
+
+    private static void installExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler());
+        System.setProperty( "sun.awt.exception.handler", MyExceptionHandler.class.getName());
+    }
+
+    private static class MyExceptionHandler implements Thread.UncaughtExceptionHandler {
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(),
+                    "Error on server side", JOptionPane.ERROR_MESSAGE);
+            LOG.error(e);
         }
     }
 }

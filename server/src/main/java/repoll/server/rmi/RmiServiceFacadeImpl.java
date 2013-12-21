@@ -81,6 +81,29 @@ public class RmiServiceFacadeImpl extends UnicastRemoteObject implements RmiServ
     }
 
     @Override
+    public void vote(@NotNull User user, @NotNull Answer answer) throws RemoteException {
+        try {
+            Facade.Users.vote(user, answer);
+        } catch (MapperException e) {
+            throw wrap(e);
+        }
+    }
+
+    @Override
+    public void comment(@NotNull User user, @NotNull Poll poll, @NotNull String message) throws RemoteException {
+        try {
+            Facade.Users.comment(user, poll, message);
+        } catch (MapperException e) {
+            throw wrap(e);
+        }
+    }
+
+    @Override
+    public boolean userCanVoteIn(@NotNull User user, @NotNull Poll poll) throws RemoteException {
+        return Facade.Users.canVoteIn(user, poll);
+    }
+
+    @Override
     public List<Poll> findPolls(@NotNull String query) throws RemoteException {
         return Collections.unmodifiableList(SearchUtil.findPolls(query));
     }
@@ -152,22 +175,25 @@ public class RmiServiceFacadeImpl extends UnicastRemoteObject implements RmiServ
 
     @NotNull
     @Override
-    public Vote leftVote(@NotNull User author, @NotNull Answer answer) throws RemoteException {
-        Vote vote = new Vote(author, answer);
+    public <T extends DomainObject> T save(@NotNull T object) throws RemoteException {
         try {
-            Mappers.insert(vote);
-            return vote;
+            return Mappers.save(object);
+        } catch (MapperException e) {
+            throw wrap(e);
+        }
+    }
+
+    @Override
+    public <T extends DomainObject> void delete(@NotNull T object) throws RemoteException {
+        try {
+            Mappers.delete(object);
         } catch (MapperException e) {
             throw wrap(e);
         }
     }
 
     private static RemoteException wrap(Exception e) throws RemoteException {
-        return new RemoteException("Internal server error", e);
-    }
-
-    public static void main(String[] args) throws RemoteException {
-        RmiServiceFacade facade = getInstance();
-        System.out.println(facade.findPolls("bed"));
+        // MapperException is not accessible at client: so I can't use exception chaining
+        return new RemoteException("Internal server error: " + e.getMessage());
     }
 }

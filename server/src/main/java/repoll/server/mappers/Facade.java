@@ -31,7 +31,7 @@ public class Facade {
         }
 
         @NotNull
-        public static Commentary commentPoll(@Nullable User user, @NotNull Poll poll, @NotNull String message) throws MapperException {
+        public static Commentary comment(@Nullable User user, @NotNull Poll poll, @NotNull String message) throws MapperException {
             return Mappers.insert(new Commentary(user, poll, message));
         }
 
@@ -41,7 +41,7 @@ public class Facade {
         }
 
         public static boolean canVoteIn(@NotNull User user, @NotNull Poll poll) {
-            return SearchUtil.userVotedInPoll(user, poll);
+            return !SearchUtil.userVotedInPoll(user, poll);
         }
 
         @NotNull
@@ -90,10 +90,6 @@ public class Facade {
         @NotNull
         public static List<Vote> getVotes(@NotNull Answer answer) throws MapperException {
             return Mappers.selectRelated(Vote.class, answer);
-        }
-
-        public static int getVotesNumber(@NotNull Answer answer) throws MapperException {
-            return getVotes(answer).size();
         }
     }
 }
