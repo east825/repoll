@@ -5,10 +5,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
-/*
+/**
  * This object should be considered immutable
  */
 public final class Vote extends DomainObject {
+    static final long serialVersionUID = 8923894830609306979L;
+
     private final User author;
     private final Answer answer;
     private final Date creationDate;

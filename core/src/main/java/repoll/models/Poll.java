@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Date;
 
 public final class Poll extends DomainObject {
+    static final long serialVersionUID = -3138422298275829885L;
+
     private final User author;
     private String title, description;
     private final Date creationDate;

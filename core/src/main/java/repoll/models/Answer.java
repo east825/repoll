@@ -3,6 +3,7 @@ package repoll.models;
 import org.jetbrains.annotations.NotNull;
 
 public final class Answer extends DomainObject {
+    static final long serialVersionUID = 6534468183505541126L;
 
     private final Poll poll;
     private String description;

@@ -6,6 +6,8 @@ import repoll.util.AuthenticationUtil;
 import java.util.Date;
 
 public final class User extends DomainObject {
+    static final long serialVersionUID = -7259410422969435768L;
+
     private String firstName, middleName, lastName;
     private String additionalInfo;
     private String login, passwordHash;

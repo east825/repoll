@@ -3,6 +3,8 @@ package repoll.models;
 import java.io.Serializable;
 
 public abstract class DomainObject implements Serializable {
+    static final long serialVersionUID = -4744463096497717706L;
+
     public final static long UNSAVED_OBJECT_ID = -1;
 
     private long id = UNSAVED_OBJECT_ID;

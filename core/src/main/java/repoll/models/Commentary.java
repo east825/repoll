@@ -10,6 +10,8 @@ import java.util.Date;
  */
 
 public final class Commentary extends DomainObject {
+    static final long serialVersionUID = -4487226248286314795L;
+
     private User author;
     private Poll poll;
     private String message;
