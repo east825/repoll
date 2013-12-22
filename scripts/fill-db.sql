@@ -1,8 +1,9 @@
 insert into "User" (login, password, registration_datetime, last_visit_datetime) values 
-    ('east825', '7&^%*&^b', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('east825', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('Amanda34', 'sdjflkn', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('bill-g', 'JHDfjfn', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('sue.js', '7&sdf^b', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('sue.js', '7&sdf^b', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Bob', 'bob', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 insert into "Poll" (user_id, title, description, creation_datetime) values (
     (select id from "User" where login = 'east825'),

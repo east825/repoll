@@ -127,8 +127,8 @@ public class MainApplication extends JFrame {
         @Override
         public void uncaughtException(Thread t, Throwable e) {
             JOptionPane.showMessageDialog(null, e.getMessage(),
-                    "Error on server side", JOptionPane.ERROR_MESSAGE);
-            LOG.error(e);
+                    "Server error", JOptionPane.ERROR_MESSAGE);
+            LOG.error("Error occurred on server side", e);
         }
     }
 }

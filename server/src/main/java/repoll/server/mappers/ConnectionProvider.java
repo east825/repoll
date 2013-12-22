@@ -1,7 +1,9 @@
 package repoll.server.mappers;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,31 +14,32 @@ import java.sql.SQLException;
  */
 public class ConnectionProvider {
     private static final Logger LOG = Logger.getLogger(ConnectionProvider.class);
+    private static final String DEFAULT_DB_PATH = "db/main";
 
-    private static ConnectionProvider instance = defaultConnectionProvider();
+    private static ConnectionProvider INSTANCE = new ConnectionProvider(DEFAULT_DB_PATH, false);
 
-    private static ConnectionProvider defaultConnectionProvider() {
-        try {
-            return new ConnectionProvider(DriverManager.getConnection("jdbc:derby:db/main"));
-//            return new ConnectionProvider(DriverManager.getConnection("jdbc:derby://localhost:1527//home/east825/development/repos/repoll/db/main"));
-        } catch (SQLException e) {
-            LOG.error("CWD: " + Paths.get(".").toAbsolutePath());
-            throw new AssertionError("Default connection can't be established", e);
-        }
+    public static synchronized Connection connection() {
+        return INSTANCE.getConnection();
     }
 
-    public static Connection connection() {
-        return instance.getConnection();
-    }
-
-    public static void registerConnection(Connection connection) {
-        instance = new ConnectionProvider(connection);
+    /**
+     * @param path - path to Derby database directory. It MUST NOT contain protocol part and any additional parameters.
+     * @param create - whether 'create=true' parameter should be added to database URL
+     */
+    public static synchronized void registerConnection(@NotNull String path, boolean create) {
+        INSTANCE = new ConnectionProvider(path, create);
     }
 
     private final Connection connection;
 
-    protected ConnectionProvider(Connection connection) {
-        this.connection = connection;
+    protected ConnectionProvider(@NotNull String path, boolean create) {
+        try {
+            this.connection = DriverManager.getConnection("jdbc:derby:" + DEFAULT_DB_PATH + (create ? ";create=true" : ""));
+        } catch (SQLException e) {
+            Path absolute = Paths.get(path).toAbsolutePath();
+            LOG.error("Failed connection to " + absolute, e);
+            throw new AssertionError(String.format("Connection to database '%s' can't be established.", absolute), e);
+        }
     }
 
     protected Connection getConnection() {

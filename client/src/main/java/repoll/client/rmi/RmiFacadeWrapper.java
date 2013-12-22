@@ -24,15 +24,18 @@ public class RmiFacadeWrapper {
     @NotNull
     public <T extends DomainObject> T save(@NotNull T object) {
         try {
-            return facade.save(object);
+            T saved = facade.save(object);
+            object.setId(saved.getId());
+            return object;
         } catch (RemoteException e) {
             throw propagate(e);
         }
     }
 
-    public <T extends DomainObject> void delete(T comment) {
+    public <T extends DomainObject> void delete(T object) {
         try {
-            facade.delete(comment);
+            facade.delete(object);
+            object.setId(DomainObject.UNSAVED_OBJECT_ID);
         } catch (RemoteException e) {
             throw propagate(e);
         }

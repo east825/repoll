@@ -1,5 +1,11 @@
 package repoll.util;
 
+import org.jetbrains.annotations.NotNull;
+import repoll.server.mappers.ConnectionProvider;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,5 +28,22 @@ public class DatabaseUtil {
 
     public static Date sqlDateToDate(java.sql.Date date) {
         return date;
+    }
+
+    @NotNull
+    public static String formatQueryResult(@NotNull String query) throws Exception {
+        Connection connection = ConnectionProvider.connection();
+        try (Statement statement = connection.createStatement()) {
+            ResultSet result = statement.executeQuery(query);
+            int nColumns = result.getMetaData().getColumnCount();
+            StringBuilder buffer = new StringBuilder();
+            while (result.next()) {
+                for (int i = 1; i <= nColumns; i++) {
+                    buffer.append(result.getObject(i)).append('\t');
+                }
+                buffer.setCharAt(buffer.length() - 1, '\n');
+            }
+            return buffer.toString();
+        }
     }
 }

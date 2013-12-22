@@ -1,17 +1,19 @@
 package repoll;
 
-import repoll.models.*;
+import repoll.models.Commentary;
+import repoll.models.Poll;
 import repoll.server.Statements;
 import repoll.server.mappers.ConnectionProvider;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class TestUtil {
+
+    private static final String TEST_DB_PATH = "db/test";
 
     public static Poll newAnonymousPoll(String title) throws MapperException {
         return newAnonymousPoll(title, "");
@@ -26,13 +28,8 @@ public class TestUtil {
     }
 
     public static Connection initializeTestDatabaseConnection() {
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:derby:db/test;create=true");
-            ConnectionProvider.registerConnection(connection);
-            return connection;
-        } catch (SQLException e) {
-            throw new AssertionError("Error while connecting to test database", e);
-        }
+        ConnectionProvider.registerConnection(TEST_DB_PATH, true);
+        return ConnectionProvider.connection();
     }
 
     public static void createDatabaseSchema(Connection connection) {

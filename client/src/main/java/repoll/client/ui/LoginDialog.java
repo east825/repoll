@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class LoginDialog extends JDialog {
+    private static final String DEV_USER = "east825";
+    private static final String DEV_PASSWORD = "";
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -61,7 +63,10 @@ public class LoginDialog extends JDialog {
     private void onOK() {
         if (loginField.getText().isEmpty()) {
             // Testing backdoor
-            currentUser = MainApplication.getFacade().findUser("east825", "");
+            currentUser = MainApplication.getFacade().findUser(DEV_USER, DEV_PASSWORD);
+            if (currentUser == null) {
+                throw new AssertionError("Test user 'east825' was not found");
+            }
             dispose();
             return;
         }
