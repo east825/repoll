@@ -1,5 +1,6 @@
 package repoll.server;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -19,6 +20,9 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Repoll {
     // alternatively could call BasicConfigurator#configure()
+    static {
+        BasicConfigurator.configure();
+    }
     public final static Logger LOG = Logger.getLogger(Repoll.class);
 
     public static final String REST_SERVICE_URL = "http://localhost:8000";

@@ -41,7 +41,6 @@ run_server() {
     java -Djava.security.policy=policy \
         -Dlog4j.configuration=file:logging.properties \
         -Djava.rmi.server.codebase="file:${SERVER_JAR}" \
-        -cp server/lib/derby.jar \
         -jar "$SERVER_JAR" rmi
 }
 
