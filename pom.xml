@@ -23,6 +23,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- Local repository: inherited by child modules -->
+    <repositories>
+        <repository>
+            <id>locals</id>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
+    </repositories>
+
     <!-- Common dependencies -->
     <dependencies>
         <dependency>

@@ -12,15 +12,6 @@
     <artifactId>client</artifactId>
     <packaging>jar</packaging>
 
-    <!-- Local repository -->
-    <repositories>
-        <repository>
-            <id>locals</id>
-            <url>file://${project.basedir}/lib</url>
-        </repository>
-    </repositories>
-
-
     <!-- Client-only dependencies -->
     <dependencies>
         <dependency>
