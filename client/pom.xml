@@ -12,6 +12,15 @@
     <artifactId>client</artifactId>
     <packaging>jar</packaging>
 
+    <!-- Local repository -->
+    <repositories>
+        <repository>
+            <id>locals</id>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
+    </repositories>
+
+
     <!-- Client-only dependencies -->
     <dependencies>
         <dependency>
@@ -25,14 +34,15 @@
             <version>2.5</version>
         </dependency>
         <dependency>
-            <groupId>com.intellij</groupId>
+            <groupId>locals</groupId>
             <artifactId>forms_rt</artifactId>
-            <version>7.0.3</version>
+            <version>1</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Required for compiling forms, created with UI designer -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>ideauidesigner-maven-plugin</artifactId>

@@ -12,6 +12,15 @@
     <artifactId>server</artifactId>
     <packaging>jar</packaging>
 
+    <!-- Local repository -->
+    <repositories>
+        <repository>
+            <id>locals</id>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
         <dependency>
             <groupId>repoll</groupId>
@@ -20,23 +29,20 @@
         </dependency>
 
         <!-- Server-only dependencies -->
-        <!-- Database driver: derby.jar is distributed with server module -->
-        <!-- Such dependency isn't included in assembly's fat JAR -->
-<!--
+        <!-- Database driver derby.jar is distributed with server module -->
         <dependency>
-            <groupId>lib</groupId>
+            <groupId>locals</groupId>
             <artifactId>derby</artifactId>
             <version>1</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/derby.jar</systemPath>
         </dependency>
--->
+        <!--
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <!--The same version as of JavaDB-->
+            &lt;!&ndash;The same version as of JavaDB&ndash;&gt;
             <version>10.8.3.0</version>
         </dependency>
+        -->
 
         <!-- Jersey based REST service -->
         <dependency>
