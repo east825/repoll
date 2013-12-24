@@ -28,13 +28,14 @@ public class ConnectionProvider {
      */
     public static synchronized void registerConnection(@NotNull String path, boolean create) {
         INSTANCE = new ConnectionProvider(path, create);
+        LOG.debug("Registered connection to database " + path);
     }
 
     private final Connection connection;
 
     protected ConnectionProvider(@NotNull String path, boolean create) {
         try {
-            this.connection = DriverManager.getConnection("jdbc:derby:" + DEFAULT_DB_PATH + (create ? ";create=true" : ""));
+            this.connection = DriverManager.getConnection("jdbc:derby:" + path + (create ? ";create=true" : ""));
         } catch (SQLException e) {
             Path absolute = Paths.get(path).toAbsolutePath();
             LOG.error("Failed connection to " + absolute, e);
