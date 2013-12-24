@@ -25,7 +25,9 @@ public class RmiFacadeWrapper {
     public <T extends DomainObject> T save(@NotNull T object) {
         try {
             T saved = facade.save(object);
-            object.setId(saved.getId());
+            if (!object.isSaved()) {
+                object.setId(saved.getId());
+            }
             return object;
         } catch (RemoteException e) {
             throw propagate(e);
