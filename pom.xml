@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>repoll</groupId>
-    <artifactId>repoll</artifactId>
+    <artifactId>repoll-rmi</artifactId>
     <packaging>pom</packaging>
     <version>0.1</version>
 
@@ -16,7 +16,7 @@
     </modules>
 
     <!-- General project info -->
-    <name>repoll</name>
+    <name>${project.artifactId}</name>
     <description>Simple polling service</description>
 
     <properties>
