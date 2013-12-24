@@ -1,12 +1,10 @@
 package repoll.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import repoll.server.mappers.ConnectionProvider;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,6 +42,15 @@ public class DatabaseUtil {
                 buffer.setCharAt(buffer.length() - 1, '\n');
             }
             return buffer.toString();
+        }
+    }
+
+    @Nullable
+    public static String getUrl(@NotNull Connection connection) {
+        try {
+            return connection.getMetaData().getURL();
+        } catch (SQLException e) {
+            return null;
         }
     }
 }

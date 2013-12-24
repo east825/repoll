@@ -12,7 +12,6 @@ import repoll.server.rest.PollsResource;
 import javax.ws.rs.core.Application;
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,11 +31,7 @@ public class PollResourceTest extends JerseyTest {
 
     @AfterClass
     public static void closeConnection() {
-        try {
-            testConnection.close();
-        } catch (SQLException e) {
-            throw new AssertionError("Error while closing connection to test database", e);
-        }
+        TestUtil.closeConnection(testConnection);
     }
 
     @Before

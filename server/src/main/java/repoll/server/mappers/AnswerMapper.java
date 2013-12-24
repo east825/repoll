@@ -28,7 +28,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SEARCH_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(SEARCH_QUERY);
         try {
             statement.setLong(1, id);
             return statement;
@@ -41,7 +41,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
     @Override
     protected PreparedStatement getUpdateStatement(Answer answer) throws SQLException {
         validate(answer);
-        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(UPDATE_QUERY);
         try {
             statement.setLong(1, answer.getPoll().getId());
             statement.setString(2, answer.getDescription());
@@ -56,7 +56,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
     @Override
     protected PreparedStatement getInsertStatement(Answer answer) throws SQLException {
         validate(answer);
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
             statement.setLong(1, answer.getPoll().getId());
             statement.setString(2, answer.getDescription());
@@ -69,7 +69,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
 
     @Override
     protected PreparedStatement getDeleteStatement(Answer answer) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(DELETE_QUERY);
         try {
             statement.setLong(1, answer.getId());
             return statement;
@@ -92,7 +92,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
     @Override
     protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
         if (object instanceof Poll) {
-            PreparedStatement statement = connection.prepareStatement(SELECT_BY_POLL_QUERY);
+            PreparedStatement statement = getConnection().prepareStatement(SELECT_BY_POLL_QUERY);
             try {
                 statement.setLong(1, object.getId());
                 return statement;
@@ -106,7 +106,7 @@ public class AnswerMapper extends AbstractMapper<Answer> {
 
     @Override
     protected PreparedStatement getSelectAllStatement() throws SQLException {
-        return connection.prepareStatement(SELECT_ALL_QUERY);
+        return getConnection().prepareStatement(SELECT_ALL_QUERY);
     }
 
     private void validate(Answer answer) {

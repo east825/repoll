@@ -1,11 +1,11 @@
 package repoll.client.ui;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import repoll.client.rmi.RmiFacadeWrapper;
 import repoll.core.rmi.RmiServiceFacade;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.util.LoggingUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +41,7 @@ public class MainApplication extends JFrame {
     }
 
     static {
-        BasicConfigurator.configure();
+        LoggingUtil.configure();
     }
 
     private JTextField searchField;

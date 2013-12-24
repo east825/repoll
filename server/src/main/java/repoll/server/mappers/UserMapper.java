@@ -44,7 +44,7 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SEARCH_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(SEARCH_QUERY);
         try {
             statement.setLong(1, id);
             return statement;
@@ -56,7 +56,7 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected PreparedStatement getUpdateStatement(User user) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(UPDATE_QUERY);
         try {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPasswordHash());
@@ -77,7 +77,7 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected PreparedStatement getInsertStatement(User user) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPasswordHash());
@@ -97,7 +97,7 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected PreparedStatement getDeleteStatement(User user) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(DELETE_QUERY);
         try {
             statement.setLong(1, user.getId());
             return statement;
@@ -127,7 +127,7 @@ public class UserMapper extends AbstractMapper<User> {
 
     @Override
     protected PreparedStatement getSelectAllStatement() throws SQLException {
-        return connection.prepareStatement(SELECT_ALL_QUERY);
+        return getConnection().prepareStatement(SELECT_ALL_QUERY);
     }
 
     /*

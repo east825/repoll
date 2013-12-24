@@ -29,7 +29,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SEARCH_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(SEARCH_QUERY);
         try {
             statement.setLong(1, id);
             return statement;
@@ -42,7 +42,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
     @Override
     protected PreparedStatement getUpdateStatement(Vote vote) throws SQLException {
         validate(vote);
-        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(UPDATE_QUERY);
         try {
             User author = vote.getAuthor();
             if (author == null) {
@@ -63,7 +63,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
     @Override
     protected PreparedStatement getInsertStatement(Vote vote) throws SQLException {
         validate(vote);
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
             User author = vote.getAuthor();
             if (author == null) {
@@ -82,7 +82,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
 
     @Override
     protected PreparedStatement getDeleteStatement(Vote vote) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(DELETE_QUERY);
         try {
             statement.setLong(1, vote.getId());
             return statement;
@@ -107,9 +107,9 @@ public class VoteMapper extends AbstractMapper<Vote> {
     protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
         PreparedStatement statement;
         if (object instanceof User) {
-            statement = connection.prepareStatement(SELECT_BY_USER_QUERY);
+            statement = getConnection().prepareStatement(SELECT_BY_USER_QUERY);
         } else if (object instanceof Answer) {
-            statement = connection.prepareStatement(SELECT_BY_ANSWER_QUERY);
+            statement = getConnection().prepareStatement(SELECT_BY_ANSWER_QUERY);
         } else {
             return null;
         }
@@ -124,7 +124,7 @@ public class VoteMapper extends AbstractMapper<Vote> {
 
     @Override
     protected PreparedStatement getSelectAllStatement() throws SQLException {
-        return connection.prepareStatement(SELECT_ALL_QUERY);
+        return getConnection().prepareStatement(SELECT_ALL_QUERY);
     }
 
     private void validate(Vote vote) {

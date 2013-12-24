@@ -1,6 +1,5 @@
 package repoll.server;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -8,6 +7,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import repoll.core.rmi.RmiServiceFacade;
 import repoll.server.rest.PollsResource;
 import repoll.server.rmi.RmiServiceFacadeImpl;
+import repoll.util.LoggingUtil;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class Repoll {
     // alternatively could call BasicConfigurator#configure()
     static {
-        BasicConfigurator.configure();
+        LoggingUtil.configure();
     }
     public final static Logger LOG = Logger.getLogger(Repoll.class);
 

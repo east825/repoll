@@ -2,6 +2,7 @@ package repoll.server.mappers;
 
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import repoll.util.DatabaseUtil;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,8 +28,18 @@ public class ConnectionProvider {
      * @param create - whether 'create=true' parameter should be added to database URL
      */
     public static synchronized void registerConnection(@NotNull String path, boolean create) {
+        try {
+            // clean up just to be sure, that no open connection with embedded driver left
+            INSTANCE.connection.close();
+        } catch (SQLException e) {
+            LOG.error("Error while closing connection " + DatabaseUtil.getUrl(INSTANCE.connection));
+        }
         INSTANCE = new ConnectionProvider(path, create);
-        LOG.debug("Registered connection to database " + path);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static synchronized void reset() {
+        registerConnection(DEFAULT_DB_PATH, false);
     }
 
     private final Connection connection;
@@ -38,7 +49,7 @@ public class ConnectionProvider {
             this.connection = DriverManager.getConnection("jdbc:derby:" + path + (create ? ";create=true" : ""));
         } catch (SQLException e) {
             Path absolute = Paths.get(path).toAbsolutePath();
-            LOG.error("Failed connection to " + absolute, e);
+            LOG.error("Error while connecting to " + path);
             throw new AssertionError(String.format("Connection to database '%s' can't be established.", absolute), e);
         }
     }

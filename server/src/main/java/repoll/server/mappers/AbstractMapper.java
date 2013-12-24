@@ -2,7 +2,10 @@ package repoll.server.mappers;
 
 import repoll.models.DomainObject;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +13,17 @@ import java.util.Map;
 
 public abstract class AbstractMapper<T extends DomainObject> {
 
-    protected final Connection connection;
     private final Map<Long, T> loadedMap = new HashMap<>();
 
-    /*
+    /**
      * All mapper objects are singletons and can't be instantiated directly
      */
     protected AbstractMapper() {
-        connection = ConnectionProvider.connection();
+        // empty
+    }
+
+    protected Connection getConnection() {
+        return ConnectionProvider.connection();
     }
 
     protected abstract PreparedStatement getLoadByIdStatement(long id) throws SQLException;

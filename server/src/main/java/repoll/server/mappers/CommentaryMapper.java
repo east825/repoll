@@ -31,7 +31,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
 
     @Override
     protected PreparedStatement getLoadByIdStatement(long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SEARCH_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(SEARCH_QUERY);
         try {
             statement.setLong(1, id);
             return statement;
@@ -44,7 +44,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     @Override
     protected PreparedStatement getUpdateStatement(Commentary commentary) throws SQLException {
         validate(commentary);
-        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(UPDATE_QUERY);
         try {
             User author = commentary.getAuthor();
             if (author != null) {
@@ -66,7 +66,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     @Override
     protected PreparedStatement getInsertStatement(Commentary commentary) throws SQLException {
         validate(commentary);
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         try {
             User author = commentary.getAuthor();
             if (author != null) {
@@ -86,7 +86,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
 
     @Override
     protected PreparedStatement getDeleteStatement(Commentary domainObject) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+        PreparedStatement statement = getConnection().prepareStatement(DELETE_QUERY);
         try {
             statement.setLong(1, domainObject.getId());
             return statement;
@@ -112,9 +112,9 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
     protected PreparedStatement getSelectByStatement(DomainObject object) throws SQLException {
         PreparedStatement statement;
         if (object instanceof User) {
-            statement = connection.prepareStatement(SELECT_BY_USER_QUERY);
+            statement = getConnection().prepareStatement(SELECT_BY_USER_QUERY);
         } else if (object instanceof Poll) {
-            statement = connection.prepareStatement(SELECT_BY_POLL_QUERY);
+            statement = getConnection().prepareStatement(SELECT_BY_POLL_QUERY);
         } else {
             return null;
         }
@@ -129,7 +129,7 @@ public class CommentaryMapper extends AbstractMapper<Commentary> {
 
     @Override
     protected PreparedStatement getSelectAllStatement() throws SQLException {
-        return connection.prepareStatement(SELECT_ALL_QUERY);
+        return getConnection().prepareStatement(SELECT_ALL_QUERY);
     }
 
     private void validate(Commentary commentary) {
