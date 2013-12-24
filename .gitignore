@@ -1,8 +1,9 @@
 .idea/
 target/
+
 *.iml
+*.log
 
 /wiki/
-/db/main/
-/db/test/
-/derby.log
+/repoll-rmi/db/main/
+/repoll-rmi/db/test/

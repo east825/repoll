@@ -3,9 +3,9 @@ package repoll.util;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import repoll.server.mappers.ConnectionProvider;
 import repoll.models.Poll;
 import repoll.models.User;
+import repoll.server.mappers.ConnectionProvider;
 import repoll.server.mappers.MapperException;
 import repoll.server.mappers.Mappers;
 
