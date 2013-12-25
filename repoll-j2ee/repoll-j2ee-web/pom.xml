@@ -10,6 +10,14 @@
 
     <artifactId>repoll-j2ee-web</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>repoll</groupId>
+            <artifactId>repoll-j2ee-ejb</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

@@ -16,7 +16,7 @@
         <!-- This one contains enterprise beans and JAR as artifact -->
         <dependency>
             <groupId>repoll</groupId>
-            <artifactId>ejb</artifactId>
+            <artifactId>repoll-j2ee-ejb</artifactId>
             <version>0.1</version>
             <type>ejb</type>
         </dependency>
@@ -24,7 +24,7 @@
         <!-- This one contains JSF pages, static files and WAR as artifact -->
         <dependency>
             <groupId>repoll</groupId>
-            <artifactId>web</artifactId>
+            <artifactId>repoll-j2ee-web</artifactId>
             <version>0.1</version>
             <type>war</type>
         </dependency>
@@ -38,9 +38,23 @@
                 <version>2.9</version>
                 <configuration>
                     <finalName>repoll</finalName>
+
+                    <!-- TODO: for some reason it's not included by default -->
+                    <applicationXml>${project.basedir}/src/main/application/META-INF/application.xml</applicationXml>
+
+                    <!-- application.xml generation can be configured from pom.xml -->
+                    <!--
+                    <displayName>repoll</displayName>
+                    <modules>
+                        <webModule>
+                            <groupId>repoll</groupId>
+                            <artifactId>repoll-j2ee-web</artifactId>
+                            <contextRoot>/repoll</contextRoot>
+                        </webModule>
+                    </modules>
+                    -->
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

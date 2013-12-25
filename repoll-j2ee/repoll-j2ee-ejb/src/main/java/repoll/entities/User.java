@@ -1,16 +1,21 @@
 package repoll.entities;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
  * @author Mikhail Golubev
  */
 @Entity
+@Table(name = "User")
+@NamedQueries({
+        @NamedQuery(name = User.FIND_ALL_Q, query = "select u from \"User\""),
+        @NamedQuery(name = User.FIND_BY_ID_Q, query = "select u from \"User\" where id = :id")
+})
 public class User extends DomainObject {
+    public static final String FIND_ALL_Q = "User.findAll";
+    public static final String FIND_BY_ID_Q = "User.findById";
+
     private Integer id;
     private String login;
     private String password;
