@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>repoll-j2ee</artifactId>
+        <groupId>repoll</groupId>
+        <version>0.1</version>
+    </parent>
+    <packaging>ear</packaging>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>repoll-j2ee-ear</artifactId>
+
+    <dependencies>
+        <!-- This one contains enterprise beans and JAR as artifact -->
+        <dependency>
+            <groupId>repoll</groupId>
+            <artifactId>ejb</artifactId>
+            <version>0.1</version>
+            <type>ejb</type>
+        </dependency>
+
+        <!-- This one contains JSF pages, static files and WAR as artifact -->
+        <dependency>
+            <groupId>repoll</groupId>
+            <artifactId>web</artifactId>
+            <version>0.1</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <finalName>repoll</finalName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
