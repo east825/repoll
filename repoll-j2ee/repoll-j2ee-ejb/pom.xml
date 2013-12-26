@@ -7,7 +7,7 @@
         <groupId>repoll</groupId>
         <version>0.1</version>
     </parent>
-    <packaging>ejb</packaging>
+    <packaging>war</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>repoll-j2ee-ejb</artifactId>
@@ -56,14 +56,27 @@
     <build>
         <plugins>
             <!--Run as mvn ear:ear-->
+            <!--
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <ejbVersion>3.2</ejbVersion>
+                    </configuration>
+                </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ejb-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <ejbVersion>3.2</ejbVersion>
-                </configuration>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <!--
+                    <configuration>
+                        <webappDirectory>/sample/servlet/container/deploy/directory</webappDirectory>
+                    </configuration>
+                -->
             </plugin>
+
         </plugins>
     </build>
 

@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -15,10 +14,10 @@ import java.util.List;
 @Named
 @Stateless
 public class UserListBean {
-    @PersistenceContext
+    @PersistenceContext(unitName = "repoll-main")
     private EntityManager manager;
 
     public List<User> selectAllUsers() {
-        return manager.createNamedQuery(User.FIND_BY_ID_Q, User.class).getResultList();
+        return manager.createQuery("select a from User", User.class).getResultList();
     }
 }

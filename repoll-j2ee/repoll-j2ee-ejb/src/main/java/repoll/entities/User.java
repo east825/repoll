@@ -1,18 +1,18 @@
 package repoll.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * @author Mikhail Golubev
  */
 @Entity
-@Table(name = "User")
 @NamedQueries({
-        @NamedQuery(name = User.FIND_ALL_Q, query = "select u from \"User\""),
-        @NamedQuery(name = User.FIND_BY_ID_Q, query = "select u from \"User\" where id = :id")
+//        @NamedQuery(name = User.FIND_ALL_Q, query = "select u from \"User\""),
+//        @NamedQuery(name = User.FIND_BY_ID_Q, query = "select u from \"User\" where id = :id")
 })
-public class User extends DomainObject {
+public class User extends DomainObject implements Serializable {
     public static final String FIND_ALL_Q = "User.findAll";
     public static final String FIND_BY_ID_Q = "User.findById";
 

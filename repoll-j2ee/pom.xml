@@ -10,8 +10,6 @@
     <version>0.1</version>
     <modules>
         <module>repoll-j2ee-ejb</module>
-        <module>repoll-j2ee-web</module>
-        <module>repoll-j2ee-ear</module>
     </modules>
 
 <!--    <repositories>
