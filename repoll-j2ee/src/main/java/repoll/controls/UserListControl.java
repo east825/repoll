@@ -1,24 +1,22 @@
 package repoll.controls;
 
-import repoll.beans.UserListBean;
+import repoll.beans.UserBean;
 import repoll.entities.User;
 
 import javax.ejb.EJB;
 import javax.enterprise.inject.Model;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
  * @author Mikhail Golubev
  */
 @Model
-public class ListUsersControl {
+public class UserListControl {
 
     @EJB
-    UserListBean bean;
+    UserBean bean;
 
     public List<User> findAllUsers() {
-        return bean.selectAllUsers();
+        return bean.findAll();
     }
 }

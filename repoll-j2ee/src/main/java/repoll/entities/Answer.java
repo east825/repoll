@@ -1,6 +1,5 @@
 package repoll.entities;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,22 +9,21 @@ import javax.persistence.Id;
  */
 @Entity
 public class Answer extends DomainObject {
-    private Integer id;
+    private long id;
     private String description;
 
     @Override
     @Id
-    @Column(name = "ID")
-    public Integer getId() {
+    @Column(nullable = false)
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "DESCRIPTION")
+    @Column(nullable = false, length = 100)
     public String getDescription() {
         return description;
     }

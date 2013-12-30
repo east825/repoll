@@ -13,11 +13,11 @@ import java.util.List;
  */
 @Named
 @Stateless
-public class UserListBean {
-    @PersistenceContext(unitName = "repoll-main")
+public class UserBean {
+    @PersistenceContext
     private EntityManager manager;
 
-    public List<User> selectAllUsers() {
-        return manager.createQuery("select a from User", User.class).getResultList();
+    public List<User> findAll() {
+        return manager.createNamedQuery(User.FIND_ALL, User.class).getResultList();
     }
 }

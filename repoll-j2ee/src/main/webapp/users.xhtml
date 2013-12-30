@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core">
+
+<h:head>
+    <h:outputStylesheet name="style.css" library="css"/>
+    <title>All users</title>
+</h:head>
+
+<h:body>
+    <table>
+        <tbody>
+        <c:forEach var="user" items="#{userBean.findAll()}">
+            <tr>
+                <th>#{user.login}</th>
+                <td>#{user.password}</td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+    <!--<h:dataTable value="#{userBean.findAll()}" var="user">
+        <h:column>
+            <h:outputText>#{user.getFirstName()}</h:outputText>
+        </h:column>
+        <h:column>
+            <h:outputText>#{user.getLastName()}</h:outputText>
+        </h:column>
+    </h:dataTable>-->
+</h:body>
+</html>
