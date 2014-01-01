@@ -4,6 +4,25 @@ body {
 #content {
   margin-top: 20px;
 }
-ul.errorMessages {
-  color: salmon;
+ul.messages {
+  padding-left: 0;
+  list-style: none;
+}
+ul.messages li.has-error {
+  color: #e44944;
+  background: #f4cbca;
+  border-left: solid 8px #d9534f;
+}
+ul.messages li.has-warning {
+  color: #faaf44;
+  background: #fbe6ca;
+  border-left: solid 8px #f0ad4e;
+}
+ul.messages li {
+  text-indent: 0.5em;
+  padding: 0.5em;
+}
+form {
+  width: 400px;
+  margin: 0 auto;
 }

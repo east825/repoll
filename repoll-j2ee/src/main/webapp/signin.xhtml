@@ -5,30 +5,31 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
-
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
 <ui:composition template="templates/layout.xhtml">
     <ui:define name="title">Sign in</ui:define>
-    <ui:define name="includes">
-        <h:outputStylesheet library="css" name="signin.css"/>
-    </ui:define>
     <ui:define name="content">
-
-        <h:form id="signinForm">
+        <h:form id="signInForm">
             <h2>Sign in</h2>
-            <h:messages class="errorMessages"/>
-            <h:panelGroup layout="block" class="form-group">
-                <h:outputLabel for="login">Login:</h:outputLabel>
-                <h:inputText class="form-control" id="login" value="#{signInControl.login}" placeholder="Login"/>
-            </h:panelGroup>
-            <h:panelGroup layout="block" class="form-group">
-                <h:outputLabel for="password">Password:</h:outputLabel>
-                <h:inputSecret class="form-control" id="password" value="#{signInControl.password}" placeholder="Password"/>
-            </h:panelGroup>
-            <h:panelGroup layout="block" class="form-group">
-                <p>Do not have account? <h:link value="Sign up" outcome="/users/create.xhtml"/></p>
-            </h:panelGroup>
-            <h:commandButton class="btn btn-primary btn-block" value="Sign in" action="#{signInControl.signIn}"/>
+            <h:messages class="messages" errorClass="has-error" warnClass="has-warning"/>
+            <div class="form-group #{login.valid? '' : 'has-error'}" >
+                <h:message for="login" errorClass="has-error"/>
+                <label class="sr-only" for="login">Login</label>
+                <input type="text" class="form-control" id="login" jsf:value="#{signInControl.login}"
+                       placeholder="Login"/>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="password">Password</label>
+                <input type="password" class="form-control" id="password" jsf:value="#{signInControl.password}"
+                       placeholder="Password"/>
+            </div>
+            <div class="form-group">
+                <!--<h:outputLink value="/users/create.xhtml">Sign up.</h:outputLink>-->
+                <p>Do not have account? <h:link outcome="/users/create.xhtml" value="Sign up."/></p>
+            </div>
+            <input type="submit" class="btn btn-primary btn-block" value="Sign in"
+                   jsf:action="#{signInControl.signIn}"/>
             <!--<h:outputLink class="btn btn-default" value="/users/create.xhtml">Sign up</h:outputLink>-->
         </h:form>
     </ui:define>

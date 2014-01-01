@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Mikhail Golubev
@@ -15,7 +16,10 @@ public class SignInControl {
     @EJB
     UserLookup lookup;
 
+    @NotNull
     private String login;
+
+    @NotNull
     private String password;
 
     public String getLogin() {

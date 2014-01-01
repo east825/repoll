@@ -1,5 +1,7 @@
 package repoll.beans;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import repoll.entities.User;
 
 import javax.ejb.Stateless;
@@ -16,15 +18,28 @@ public class UserLookup {
     @PersistenceContext
     private EntityManager manager;
 
+    @NotNull
     public List<User> findAll() {
         return manager.createNamedQuery(User.FIND_ALL, User.class).getResultList();
     }
 
-    public User findByCredentials(String login, String password) {
+    @Nullable
+    public User findByCredentials(@NotNull String login, @NotNull String password) {
         try {
             return manager.createNamedQuery(User.FIND_BY_CREDENTIALS, User.class)
                     .setParameter("login", login)
                     .setParameter("password", password)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public User findByLogin(@NotNull String login) {
+        try {
+            return manager.createNamedQuery(User.FIND_BY_LOGIN, User.class)
+                    .setParameter("login", login)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;

@@ -5,34 +5,67 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 
 <ui:composition template="../templates/layout.xhtml">
-    <ui:define name="includes">
-        <h:outputStylesheet library="css" name="signin.css"/>
-    </ui:define>
     <ui:define name="content">
-        <h:form id="signinForm">
-            <h:panelGroup layout="block" class="form-group">
-                <h:outputLabel for="login">Login:</h:outputLabel>
-                <h:inputText class="form-control" id="login" placeholder="Login"/>
-            </h:panelGroup>
+        <h:form id="signUpForm" prependId="false">
+            <h2>Sign up</h2>
+            <h:messages class="messages" errorClass="has-error" warnClass="has-warning"/>
+
+            <p class="text-info">Field marked with * are <b>required</b>.</p>
+
+            <div class="form-group #{!login.valid? 'has-error' : ''}">
+                <label for="login" class="sr-only">Login</label>
+                <h:inputText class="form-control" id="login" p:placeholder="Login*"
+                             value="#{signUpControl.user.login}" binding="#{login}"
+                             required="true" requiredMessage="Login field is mandatory"/>
+
+                <p class="small text-info">Login can contain only letters, numbers, underscores and hyphens.</p>
+            </div>
+
+            <div class="form-group #{firstName.valid? '' : 'has-error'}">
+                <label for="firstName" class="sr-only">First Name</label>
+                <h:inputText type="text" class="form-control" id="firstName" p:placeholder="First name"
+                             value="#{signUpControl.user.firstName}" binding="#{firstName}"/>
+            </div>
+            <div class="form-group #{middleName.valid? '' : 'has-error'}">
+                <label for="middleName" class="sr-only">Middle Name</label>
+                <h:inputText type="text" class="form-control" id="middleName" p:placeholder="Middle name"
+                             value="#{signUpControl.user.middleName}" binding="#{middleName}"/>
+            </div>
+            <div class="form-group #{lastName.valid? '' : 'has-error'}">
+                <label for="lastName" class="sr-only">Last Name</label>
+                <h:inputText type="text" class="form-control" id="lastName" p:placeholder="Last name"
+                             value="#{signUpControl.user.lastName}" binding="#{lastName}"/>
+            </div>
+
+            <div class="form-group #{dob.valid? '' : 'has-error'}">
+                <label for="dob" class="sr-only">Date of birth</label>
+                <h:inputText p:type="date" class="form-control" id="dob" p:placeholder="Date of birth"
+                        binding="#{dob}"/>
+            </div>
+
             <fieldset>
                 <legend>Password</legend>
-                <h:panelGroup layout="block" class="form-group">
-                    <h:outputLabel for="password">Password:</h:outputLabel>
-                    <h:inputSecret class="form-control" id="password" placeholder="Password"/>
-                </h:panelGroup>
-                <h:panelGroup layout="block" class="form-group">
-                    <h:outputLabel for="password-repeat">Repeat password:</h:outputLabel>
-                    <h:inputSecret class="form-control" id="password-repeat" placeholder="Password"/>
-                </h:panelGroup>
+                <div class="form-group #{password.valid? '' : 'has-error'}">
+                    <label for="password" class="sr-only">Password</label>
+                    <h:inputSecret class="form-control" id="password" p:placeholder="Password*"
+                                 value="#{signUpControl.user.password}" binding="#{password}"/>
+                </div>
+                <div class="form-group #{passwordRepeat.valid? '' : 'has-error'}">
+                    <label for="passwordRepeat" class="sr-only">Repeat password</label>
+                    <h:inputSecret class="form-control" id="passwordRepeat" p:placeholder="Repeat*"
+                                 value="#{signUpControl.passwordRepeat}" binding="#{passwordRepeat}"/>
+                </div>
             </fieldset>
-            <h:panelGroup layout="block" class="form-group">
-                <h:outputLabel for="additionalInfo">Additional Info:</h:outputLabel>
-                <h:inputTextarea rows="5" id="additionalInfo" class="form-control"/>
-            </h:panelGroup>
-            <h:commandButton class="btn btn-default" value="Submit"/>
+            <div class="form-group #{additionalInfo.valid? '' : 'has-error'}">
+                <label for="additionalInfo" class="sr-only">Additional Info:</label>
+                <h:inputTextarea rows="5" id="additionalInfo" class="form-control"
+                                 value="#{signUpControl.user.additionalInfo}" binding="#{additionalInfo}"/>
+            </div>
+            <h:commandButton class="btn btn-default" value="Submit" action="#{signUpControl.signUp}"/>
         </h:form>
     </ui:define>
 </ui:composition>

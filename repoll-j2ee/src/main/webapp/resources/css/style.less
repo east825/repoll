@@ -1,3 +1,14 @@
+// Taken from boostrap sources and thus may be subject of change in future.
+@brand-danger: #d9534f;
+@brand-warning: #f0ad4e;
+@brand-info: #5bc0de;
+
+@font-size-base: 14px;
+@line-height-base: 1.428571429;
+// 20/14
+@line-height-computed: floor(@font-size-base * @line-height-base);
+// ~20px
+
 body {
   padding-top: 50px;
 }
@@ -6,6 +17,31 @@ body {
   margin-top: 20px;
 }
 
-ul.errorMessages {
-  color: salmon;
+ul.messages {
+  .message-box(@base-color) {
+    color: saturate(@base-color, 10%);
+    background: tint(@base-color, 70%);
+    border-left: solid 8px @base-color;
+  }
+  li.has-error {
+    .message-box(@brand-danger)
+  }
+  li.has-warning {
+    .message-box(@brand-warning)
+  }
+  li {
+    text-indent: 0.5em;
+    padding: 0.5em;
+    //    line-height: 30px;
+    //    height: 30px;
+  }
+  // the same as "list-unstyled" bootstrap class
+  padding-left: 0;
+  list-style: none;
+}
+
+// Forms
+form {
+  width: 400px;
+  margin: 0 auto;
 }

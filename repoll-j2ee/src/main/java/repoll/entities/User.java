@@ -1,6 +1,7 @@
 package repoll.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -12,21 +13,34 @@ import java.util.Date;
 @Table(name = "\"User\"")
 @NamedQueries({
         @NamedQuery(name = User.FIND_ALL, query = "select u from User u"),
-        @NamedQuery(name = User.FIND_BY_CREDENTIALS, query = "select u from User u where u.login = :login and u.password = :password")
+        @NamedQuery(name = User.FIND_BY_CREDENTIALS, query = "select u from User u where u.login = :login and u.password = :password"),
+        @NamedQuery(name = User.FIND_BY_LOGIN, query = "select u from User u where u.login = :login")
 })
 public class User extends DomainObject {
     public static final String FIND_ALL = "User.findAll";
     public static final String FIND_BY_CREDENTIALS = "User.findByCredentials";
+    public static final String FIND_BY_LOGIN = "User.findByLogin";
 
     private long id;
+//    @NotNull
+    @Pattern(regexp = "[\\w-]+", message = "Login is empty or contains illegal symbols")
     private String login;
+    @Pattern(regexp = ".+", message = "Password can't be empty")
+//    @NotNull
     private String password;
-    private String firstName;
-    private String lastName;
-    private String middleName;
-    private String additionalInfo;
-    private Long stackoverflowId;
+//    @NotNull
+    private String firstName = "";
+//    @NotNull
+    private String lastName = "";
+//    @NotNull
+    private String middleName = "";
+//    @NotNull
+    private String additionalInfo = "";
+//    @NotNull
+    private Long stackoverflowId = 0L;
+//    @NotNull
     private Date registrationDate;
+//    @NotNull
     private Date lastVisitDate;
 
     @Override
