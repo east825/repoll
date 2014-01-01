@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../templates/layout.xhtml">
+    <ui:define name="includes">
+        <h:outputStylesheet library="css" name="signin.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="signinForm">
+            <h:panelGroup layout="block" class="form-group">
+                <h:outputLabel for="login">Login:</h:outputLabel>
+                <h:inputText class="form-control" id="login" placeholder="Login"/>
+            </h:panelGroup>
+            <fieldset>
+                <legend>Password</legend>
+                <h:panelGroup layout="block" class="form-group">
+                    <h:outputLabel for="password">Password:</h:outputLabel>
+                    <h:inputSecret class="form-control" id="password" placeholder="Password"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" class="form-group">
+                    <h:outputLabel for="password-repeat">Repeat password:</h:outputLabel>
+                    <h:inputSecret class="form-control" id="password-repeat" placeholder="Password"/>
+                </h:panelGroup>
+            </fieldset>
+            <h:panelGroup layout="block" class="form-group">
+                <h:outputLabel for="additionalInfo">Additional Info:</h:outputLabel>
+                <h:inputTextarea rows="5" id="additionalInfo" class="form-control"/>
+            </h:panelGroup>
+            <h:commandButton class="btn btn-default" value="Submit"/>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

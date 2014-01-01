@@ -1,6 +1,6 @@
 package repoll.controls;
 
-import repoll.beans.UserBean;
+import repoll.beans.UserLookup;
 import repoll.entities.User;
 
 import javax.ejb.EJB;
@@ -14,7 +14,7 @@ import java.util.List;
 public class UserListControl {
 
     @EJB
-    UserBean bean;
+    UserLookup bean;
 
     public List<User> findAllUsers() {
         return bean.findAll();
