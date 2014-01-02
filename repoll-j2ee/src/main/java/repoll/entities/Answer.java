@@ -2,6 +2,7 @@ package repoll.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -14,6 +15,7 @@ public class Answer extends DomainObject {
 
     @Override
     @Id
+    @GeneratedValue
     @Column(nullable = false)
     public long getId() {
         return id;

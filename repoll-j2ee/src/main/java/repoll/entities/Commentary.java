@@ -14,6 +14,7 @@ public class Commentary extends DomainObject {
 
     @Override
     @Id
+    @GeneratedValue
     @Column(nullable = false)
     public long getId() {
         return id;
@@ -33,7 +34,7 @@ public class Commentary extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creationDateTime", nullable = false)
+    @Column(name = "creationDateTime", nullable = false, insertable = false)
     public Date getCreationDate() {
         return creationDate;
     }

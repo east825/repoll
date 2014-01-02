@@ -22,29 +22,31 @@ public class User extends DomainObject {
     public static final String FIND_BY_LOGIN = "User.findByLogin";
 
     private long id;
-//    @NotNull
-    @Pattern(regexp = "[\\w-]+", message = "Login is empty or contains illegal symbols")
+    //    @NotNull
+    @Pattern(regexp = "[\\w-]+", message = "Login contains illegal symbols")
     private String login;
     @Pattern(regexp = ".+", message = "Password can't be empty")
 //    @NotNull
     private String password;
-//    @NotNull
+    //    @NotNull
     private String firstName = "";
-//    @NotNull
+    //    @NotNull
     private String lastName = "";
-//    @NotNull
+    //    @NotNull
     private String middleName = "";
-//    @NotNull
+    //    @NotNull
     private String additionalInfo = "";
-//    @NotNull
+    //    @NotNull
     private Long stackoverflowId = 0L;
-//    @NotNull
+    //    @NotNull
     private Date registrationDate;
-//    @NotNull
+    //    @NotNull
     private Date lastVisitDate;
 
     @Override
     @Id
+    // also can use @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(nullable = false)
     public long getId() {
         return id;
@@ -54,7 +56,7 @@ public class User extends DomainObject {
         this.id = id;
     }
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     public String getLogin() {
         return login;
     }
@@ -125,23 +127,24 @@ public class User extends DomainObject {
 
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "registrationDateTime", nullable = false)
+    @Column(name = "registrationDateTime", nullable = false, insertable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Date getRegistrationDate() {
         return registrationDate;
     }
 
     public void setRegistrationDate(Date date) {
-        this.registrationDate = date;
+        this.registrationDate = date == null ? new Date() : date;
     }
 
-
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "lastVisitDateTime", nullable = false)
+    @Column(name = "lastVisitDateTime", nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     public Date getLastVisitDate() {
         return lastVisitDate;
     }
 
     public void setLastVisitDate(Date date) {
-        this.lastVisitDate = date;
+        this.lastVisitDate = date == null ? new Date() : date;
     }
 }

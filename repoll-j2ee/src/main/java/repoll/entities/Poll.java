@@ -15,6 +15,7 @@ public class Poll extends DomainObject {
 
     @Override
     @Id
+    @GeneratedValue
     @Column(nullable = false)
     public long getId() {
         return id;
@@ -43,7 +44,7 @@ public class Poll extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creationDateTime", nullable = false, insertable = true, length = 29)
+    @Column(name = "creationDateTime", nullable = false, insertable = false)
     public Date getCreationDate() {
         return creationDate;
     }

@@ -1,9 +1,6 @@
 package repoll.entities;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -16,6 +13,7 @@ public class Vote extends DomainObject {
 
     @Override
     @Id
+    @GeneratedValue
     @Column(nullable = false)
     public long getId() {
         return id;
@@ -26,7 +24,7 @@ public class Vote extends DomainObject {
     }
 
     @Basic
-    @Column(name = "creationDateTime", nullable = false)
+    @Column(name = "creationDateTime", nullable = false, insertable = false)
     public Timestamp getCreationDate() {
         return creationDate;
     }
