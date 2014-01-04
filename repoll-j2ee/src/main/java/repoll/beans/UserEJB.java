@@ -14,7 +14,7 @@ import java.util.List;
  * @author Mikhail Golubev
  */
 @Stateless
-public class UserLookup {
+public class UserEJB {
     @PersistenceContext
     private EntityManager manager;
 
@@ -44,5 +44,9 @@ public class UserLookup {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public void persist(User user) {
+        manager.persist(user);
     }
 }

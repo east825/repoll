@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jstl/core">
+
+<ui:composition template="/templates/layout.xhtml">
+    <f:metadata>
+        <f:viewParam name="q" value="#{query}"/>
+    </f:metadata>
+    <ui:define name="content">
+        <h1>Polls here</h1>
+        <ul>
+            <c:forEach var="poll" items="#{searchControl.searchPolls(query)}">
+                <li>#{poll.title}</li>
+            </c:forEach>
+        </ul>
+        <p>Search query was: #{query}</p>
+    </ui:define>
+</ui:composition>
+</html>

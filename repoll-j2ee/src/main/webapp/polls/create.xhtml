@@ -4,11 +4,84 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:f="http://java.sun.com/jsf/core">
 
-<ui:composition template="/templates/layout.xhtml">
+<ui:composition template="../templates/layout.xhtml">
+    <ui:define name="title">
+        Create poll
+    </ui:define>
     <ui:define name="content">
-        <h1>Polls here</h1>
+        <h:form id="signUpForm" prependId="false">
+            <h2>Sign up</h2>
+            <h:messages class="messages" errorClass="has-error" warnClass="has-warning"/>
+
+            <p class="text-info">Field marked with * are <b>required</b>.</p>
+
+            <div class="form-group #{login.valid?  '' : 'has-error'}">
+                <label for="login" class="sr-only">Login</label>
+                <h:inputText class="form-control" id="login" p:placeholder="Login*"
+                             value="#{userCreateControl.user.login}" binding="#{login}"
+                             required="true" requiredMessage="Login is required"/>
+
+                <p class="small text-info">Login can contain only letters, numbers, underscores and hyphens.</p>
+            </div>
+
+            <div class="form-group #{firstName.valid? '' : 'has-error'}">
+                <label for="firstName" class="sr-only">First Name</label>
+                <h:inputText type="text" class="form-control" id="firstName" p:placeholder="First name"
+                             value="#{userCreateControl.user.firstName}" binding="#{firstName}"/>
+            </div>
+            <div class="form-group #{middleName.valid? '' : 'has-error'}">
+                <label for="middleName" class="sr-only">Middle Name</label>
+                <h:inputText type="text" class="form-control" id="middleName" p:placeholder="Middle name"
+                             value="#{userCreateControl.user.middleName}" binding="#{middleName}"/>
+            </div>
+            <div class="form-group #{lastName.valid? '' : 'has-error'}">
+                <label for="lastName" class="sr-only">Last Name</label>
+                <h:inputText type="text" class="form-control" id="lastName" p:placeholder="Last name"
+                             value="#{userCreateControl.user.lastName}" binding="#{lastName}"/>
+            </div>
+
+            <!--<div class="form-group #{dob.valid? '' : 'has-error'}">-->
+            <div class="form-group">
+                <label for="dob" class="sr-only">Date of birth</label>
+                <h:inputText p:type="date" class="form-control" id="dob" p:placeholder="Date of birth"
+                             converter="utcDateConverter"/>
+            </div>
+
+            <!--TODO: email validation-->
+            <div class="form-group #{email.valid? '' : 'has-error'}">
+                <label for="email" class="sr-only">Email</label>
+                <h:inputText p:type="email" class="form-control" id="email" p:placeholder="Email*"
+                             value="#{userCreateControl.user.email}" binding="#{email}"
+                             required="true" requiredMessage="Email is required"/>
+            </div>
+
+            <fieldset>
+                <legend>Password</legend>
+                <div class="form-group #{password.valid? '' : 'has-error'}">
+                    <label for="password" class="sr-only">Password</label>
+                    <h:inputSecret class="form-control" id="password" p:placeholder="Password*"
+                                   value="#{userCreateControl.user.password}" binding="#{password}"
+                                   required="true" requiredMessage="Password is required"/>
+                </div>
+                <div class="form-group #{passwordRepeat.valid? '' : 'has-error'}">
+                    <label for="passwordRepeat" class="sr-only">Repeat password</label>
+                    <h:inputSecret class="form-control" id="passwordRepeat" p:placeholder="Repeat*"
+                                   value="#{userCreateControl.passwordRepeat}" binding="#{passwordRepeat}"/>
+                </div>
+            </fieldset>
+            <div class="form-group #{additionalInfo.valid? '' : 'has-error'}">
+                <label for="additionalInfo" class="sr-only">Additional Info:</label>
+                <h:inputTextarea rows="5" id="additionalInfo" class="form-control"
+                                 value="#{userCreateControl.user.additionalInfo}" binding="#{additionalInfo}"/>
+            </div>
+            <h:commandButton class="btn btn-default" value="Submit" action="#{userCreateControl.create}"/>
+        </h:form>
     </ui:define>
 </ui:composition>
 </html>

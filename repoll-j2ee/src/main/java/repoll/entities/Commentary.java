@@ -12,9 +12,12 @@ public class Commentary extends DomainObject {
     private String message;
     private Date creationDate;
 
+    private User author;
+    private Poll poll;
+
     @Override
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     public long getId() {
         return id;
@@ -34,12 +37,33 @@ public class Commentary extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creationDateTime", nullable = false, insertable = false)
+    @Column(name = "creationDateTime", insertable = false,
+            columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     public Date getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(Date date) {
         this.creationDate = date;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = true)
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "pollId", nullable = false)
+    public Poll getPoll() {
+        return poll;
+    }
+
+    public void setPoll(Poll poll) {
+        this.poll = poll;
     }
 }

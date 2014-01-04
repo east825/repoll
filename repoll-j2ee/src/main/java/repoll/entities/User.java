@@ -1,16 +1,22 @@
 package repoll.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Mikhail Golubev
  */
-
 @Entity
-// plain "User" is reserved word in SQL
-@Table(name = "\"User\"")
+@Table(
+        name = "\"User\"", // plain "User" is reserved word in SQL
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "login"),
+                @UniqueConstraint(columnNames = "email")
+        }
+)
 @NamedQueries({
         @NamedQuery(name = User.FIND_ALL, query = "select u from User u"),
         @NamedQuery(name = User.FIND_BY_CREDENTIALS, query = "select u from User u where u.login = :login and u.password = :password"),
@@ -27,26 +33,30 @@ public class User extends DomainObject {
     private String login;
     @Pattern(regexp = ".+", message = "Password can't be empty")
 //    @NotNull
-    private String password;
-    //    @NotNull
+    private String password = "";
+//    @NotNull
     private String firstName = "";
-    //    @NotNull
+//    @NotNull
     private String lastName = "";
-    //    @NotNull
+//    @NotNull
     private String middleName = "";
-    //    @NotNull
+//    @NotNull
     private String additionalInfo = "";
-    //    @NotNull
-    private Long stackoverflowId = 0L;
-    //    @NotNull
+//    @NotNull
     private Date registrationDate;
-    //    @NotNull
+//    @NotNull
     private Date lastVisitDate;
+//    @NotNull
+    private String email;
+    private Date dateOfBirth;
+
+    private List<Poll> polls;
+    private List<Commentary> commentaries;
+    private List<Vote> votes;
 
     @Override
     @Id
-    // also can use @GeneratedValue(strategy = GenerationType.AUTO)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     public long getId() {
         return id;
@@ -115,20 +125,9 @@ public class User extends DomainObject {
         this.additionalInfo = additionalInfo;
     }
 
-
-    @Column(nullable = true)
-    public Long getStackoverflowId() {
-        return stackoverflowId;
-    }
-
-    public void setStackoverflowId(Long id) {
-        this.stackoverflowId = id;
-    }
-
-
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "registrationDateTime", nullable = false, insertable = false,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "registrationDateTime", insertable = false,
+            columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     public Date getRegistrationDate() {
         return registrationDate;
     }
@@ -138,8 +137,7 @@ public class User extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "lastVisitDateTime", nullable = false,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "lastVisitDateTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     public Date getLastVisitDate() {
         return lastVisitDate;
     }
@@ -147,4 +145,52 @@ public class User extends DomainObject {
     public void setLastVisitDate(Date date) {
         this.lastVisitDate = date == null ? new Date() : date;
     }
+
+    @Column(nullable = false, length = 50)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Temporal(value = TemporalType.DATE)
+    @Column(nullable = true)
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    @OneToMany(mappedBy = "author")
+    public List<Poll> getPolls() {
+        return polls;
+    }
+
+    public void setPolls(List<Poll> polls) {
+        this.polls = polls;
+    }
+
+    @OneToMany(mappedBy = "author")
+    public List<Commentary> getCommentaries() {
+        return commentaries;
+    }
+
+    public void setCommentaries(List<Commentary> commentaries) {
+        this.commentaries = commentaries;
+    }
+
+    @OneToMany(mappedBy = "author")
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+
 }
