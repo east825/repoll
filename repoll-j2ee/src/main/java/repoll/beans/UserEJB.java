@@ -2,9 +2,11 @@ package repoll.beans;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import repoll.entities.Poll;
 import repoll.entities.User;
 
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -13,10 +15,14 @@ import java.util.List;
 /**
  * @author Mikhail Golubev
  */
+
+@Named
 @Stateless
-public class UserEJB {
-    @PersistenceContext
-    private EntityManager manager;
+public class UserEJB extends BaseEJB<User> {
+    @Override
+    public Class<User> getEntityClass() {
+        return User.class;
+    }
 
     @NotNull
     public List<User> findAll() {
@@ -25,28 +31,18 @@ public class UserEJB {
 
     @Nullable
     public User findByCredentials(@NotNull String login, @NotNull String password) {
-        try {
-            return manager.createNamedQuery(User.FIND_BY_CREDENTIALS, User.class)
-                    .setParameter("login", login)
-                    .setParameter("password", password)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return runNamedQueryReturnSingle(User.FIND_BY_CREDENTIALS, "login", login, "password", password);
     }
 
     @Nullable
     public User findByLogin(@NotNull String login) {
-        try {
-            return manager.createNamedQuery(User.FIND_BY_LOGIN, User.class)
-                    .setParameter("login", login)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return runNamedQueryReturnSingle(User.FIND_BY_LOGIN, "login", login);
     }
 
-    public void persist(User user) {
-        manager.persist(user);
+    public boolean userVotedInPoll(@NotNull User user, @NotNull Poll poll) {
+        return !manager.createQuery("select v from Vote v where v.author = :user and v.answer.poll = :poll", User.class)
+                .setParameter("user", user)
+                .setParameter("poll", poll)
+                .getResultList().isEmpty();
     }
 }
