@@ -165,6 +165,7 @@ public class User extends DomainObject {
         this.dateOfBirth = dateOfBirth;
     }
 
+    @OrderBy("creationDate DESC")
     @OneToMany(mappedBy = "author")
     public List<Poll> getPolls() {
         return polls;
@@ -174,6 +175,7 @@ public class User extends DomainObject {
         this.polls = polls;
     }
 
+    @OrderBy("creationDate DESC")
     @OneToMany(mappedBy = "author")
     public List<Commentary> getCommentaries() {
         return commentaries;
@@ -192,5 +194,16 @@ public class User extends DomainObject {
         this.votes = votes;
     }
 
+    public void comment(Poll poll, String message) {
+        Commentary commentary = new Commentary();
+        commentary.setMessage(message);
+        getCommentaries().add(commentary);
+        poll.getCommentaries().add(commentary);
+    }
 
+    public void vote(Answer answer) {
+        Vote vote = new Vote();
+        getVotes().add(vote);
+        answer.getVotes().add(vote);
+    }
 }

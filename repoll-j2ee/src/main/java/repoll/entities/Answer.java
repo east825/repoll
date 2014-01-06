@@ -1,6 +1,7 @@
 package repoll.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -10,10 +11,23 @@ import java.util.List;
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pollId", "description"}))
 public class Answer extends DomainObject {
     private long id;
+    @NotNull
     private String description;
 
     private Poll poll;
     private List<Vote> votes;
+
+    /**
+     * Serialization constructor
+     */
+    public Answer() {
+        // empty
+    }
+
+    public Answer(Poll poll, String description) {
+        this.poll = poll;
+        this.description = description;
+    }
 
     @Override
     @Id
@@ -46,7 +60,7 @@ public class Answer extends DomainObject {
         this.poll = poll;
     }
 
-    @OneToMany(mappedBy = "answer", orphanRemoval = true)
+    @OneToMany(mappedBy = "answer", orphanRemoval = true, fetch = FetchType.EAGER)
     public List<Vote> getVotes() {
         return votes;
     }

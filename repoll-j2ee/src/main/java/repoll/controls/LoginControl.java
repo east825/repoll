@@ -4,8 +4,10 @@ import org.jetbrains.annotations.Nullable;
 import repoll.beans.UserEJB;
 import repoll.entities.User;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.ProjectStage;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -26,6 +28,13 @@ public class LoginControl implements Serializable {
     @NotNull
     private String password;
 
+    @PostConstruct
+    private void createTestUser() {
+        if (ControlUtil.getProjectStage() == ProjectStage.Development) {
+            currentUser = userEJB.findByLogin("east825");
+        }
+    }
+
     public String getLogin() {
         return login;
     }
@@ -43,8 +52,8 @@ public class LoginControl implements Serializable {
     }
 
     public String login() {
-        User user = userEJB.findByCredentials(login, password);
-        if (user == null) {
+        User user = userEJB.findByLogin(login);
+        if (user == null || !user.getPassword().equals(password)) {
             return ControlUtil.reportError(null, "Wrong password or login");
         }
         setCurrentUser(user);

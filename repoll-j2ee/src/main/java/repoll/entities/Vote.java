@@ -14,6 +14,18 @@ public class Vote extends DomainObject {
     private User author;
     private Answer answer;
 
+    /**
+     * Serialization constructor
+     */
+    public Vote() {
+        // empty
+    }
+
+    public Vote(User author, Answer answer) {
+        this.answer = answer;
+        this.author = author;
+    }
+
     @Override
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

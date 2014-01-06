@@ -15,11 +15,11 @@
         Sign up
     </ui:define>
     <ui:define name="content">
-        <h:form id="signUpForm" prependId="false">
+        <h:form id="signUpForm" prependId="false" styleClass="center-block">
             <h2>Sign up</h2>
             <h:messages class="messages" errorClass="has-error" warnClass="has-warning"/>
 
-            <p class="text-info">Field marked with * are <b>required</b>.</p>
+            <p class="help-block">Field marked with * are <b>required</b>.</p>
 
             <div class="form-group #{login.valid?  '' : 'has-error'}">
                 <label for="login" class="sr-only">Login</label>
@@ -27,7 +27,7 @@
                              value="#{userCreateControl.user.login}" binding="#{login}"
                              required="true" requiredMessage="Login is required"/>
 
-                <p class="small text-info">Login can contain only letters, numbers, underscores and hyphens.</p>
+                <p class="small help-block">Login can contain only letters, numbers, underscores and hyphens.</p>
             </div>
 
             <div class="form-group #{firstName.valid? '' : 'has-error'}">
@@ -75,10 +75,10 @@
                                    value="#{userCreateControl.passwordRepeat}" binding="#{passwordRepeat}"/>
                 </div>
             </fieldset>
-            <div class="form-group #{additionalInfo.valid? '' : 'has-error'}">
-                <label for="additionalInfo" class="sr-only">Additional Info:</label>
+            <div class="form-group #{info.valid? '' : 'has-error'}">
+                <label for="additionalInfo" class="sr-only">Additional Info</label>
                 <h:inputTextarea rows="5" id="additionalInfo" class="form-control"
-                                 value="#{userCreateControl.user.additionalInfo}" binding="#{additionalInfo}"/>
+                                 value="#{userCreateControl.user.additionalInfo}" binding="#{info}"/>
             </div>
             <h:commandButton class="btn btn-default" value="Submit" action="#{userCreateControl.create}"/>
         </h:form>

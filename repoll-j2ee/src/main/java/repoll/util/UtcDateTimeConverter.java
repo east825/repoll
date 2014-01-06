@@ -16,9 +16,4 @@ public class UtcDateTimeConverter extends DateTimeConverter {
         setTimeZone(TimeZone.getTimeZone("UTC"));
         setType("date");
     }
-
-    @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        return super.getAsObject(context, component, value);
-    }
 }

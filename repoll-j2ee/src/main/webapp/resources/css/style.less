@@ -11,6 +11,7 @@
 
 body {
   padding-top: 50px;
+//  background-image: url("#{resource['/img/hoffman.png']}")
 }
 
 #content {
@@ -33,8 +34,6 @@ ul.messages {
     text-indent: 0.5em;
     padding: 0.5em;
     margin-bottom: 1px
-    //    line-height: 30px;
-    //    height: 30px;
   }
   // the same as "list-unstyled" bootstrap class
   padding-left: 0;
@@ -44,5 +43,27 @@ ul.messages {
 // Forms
 form {
   width: 400px;
-  margin: 0 auto;
+//  margin: 0 auto;
+}
+
+// Poll view page
+
+#legend {
+  margin-left: 50px;
+  ul {
+    list-style-type: square;
+  }
+}
+
+#votingForm {
+  label {
+    display: inline;
+  }
+}
+
+#commentaries {
+  form {
+    width: auto;
+  }
+  width: 600px;
 }

@@ -12,7 +12,7 @@
 <ui:composition template="templates/layout.xhtml">
     <ui:define name="title">Sign in</ui:define>
     <ui:define name="content">
-        <h:form id="signInForm" prependId="false">
+        <h:form id="signInForm" prependId="false" styleClass="center-block">
             <h2>Sign in</h2>
             <h:messages globalOnly="true" class="messages" errorClass="has-error" warnClass="has-warning"/>
             <div class="form-group #{login.valid? '' : 'has-error'}">

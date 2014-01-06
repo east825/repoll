@@ -12,16 +12,32 @@
 
 <ui:composition template="/templates/layout.xhtml">
     <f:metadata>
-        <f:viewParam name="q" value="#{query}"/>
+        <f:viewParam name="q" value="#{searchControl.query}"/>
     </f:metadata>
+    <ui:define name="title">Polls</ui:define>
     <ui:define name="content">
-        <h1>Polls here</h1>
-        <ul>
-            <c:forEach var="poll" items="#{searchControl.searchPolls(query)}">
-                <li>#{poll.title}</li>
-            </c:forEach>
-        </ul>
-        <p>Search query was: #{query}</p>
+        <h1>Polls</h1>
+        <c:set var="polls" value="#{searchControl.searchPolls()}"/>
+        <c:choose>
+            <c:when test="#{empty polls}">
+            <p>No polls matching query <code>#{searchControl.query}</code> found.</p>
+            </c:when>
+            <c:otherwise>
+                <h:dataTable value="#{polls}" var="poll" styleClass="table table-striped">
+                    <h:column>
+                        <f:facet name="header">Title</f:facet>
+                        <h:link outcome="/polls/view.xhtml?id=#{poll.id}" value="#{poll.title}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Created</f:facet>
+                        <h:outputText value="#{poll.creationDate}">
+                            <f:convertDateTime timeStyle="medium" type="both" />
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </c:otherwise>
+        </c:choose>
+
     </ui:define>
 </ui:composition>
 </html>

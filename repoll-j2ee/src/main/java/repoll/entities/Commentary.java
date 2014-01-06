@@ -15,6 +15,17 @@ public class Commentary extends DomainObject {
     private User author;
     private Poll poll;
 
+    /**
+     * Serialization constructor
+     */
+    public Commentary() {
+        // empty
+    }
+
+    public Commentary(User user, Poll poll, String message) {
+        this.message = message;
+    }
+
     @Override
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

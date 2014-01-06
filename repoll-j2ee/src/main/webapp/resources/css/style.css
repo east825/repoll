@@ -25,5 +25,19 @@ ul.messages li {
 }
 form {
   width: 400px;
-  margin: 0 auto;
+}
+#legend {
+  margin-left: 50px;
+}
+#legend ul {
+  list-style-type: square;
+}
+#votingForm label {
+  display: inline;
+}
+#commentaries {
+  width: 600px;
+}
+#commentaries form {
+  width: auto;
 }

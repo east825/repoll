@@ -10,10 +10,13 @@ import java.util.List;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "title"))
 @NamedQueries({
-        @NamedQuery(name = Poll.FIND_BY_TITLE_FUZZY, query = "select p from Poll p where p.title like :title")
+        @NamedQuery(name = Poll.FIND_BY_TITLE_FUZZY, query = "select p from Poll p where p.title like :title"),
+        @NamedQuery(name = Poll.FIND_BY_TITLE, query = "select p from Poll p where p.title = :title")
+
 })
 public class Poll extends DomainObject {
     public static final String FIND_BY_TITLE_FUZZY = "Poll.findByTitleFuzzy";
+    public static final String FIND_BY_TITLE = "Poll.findByTitle";
 
     private long id;
     private String title;
@@ -85,6 +88,7 @@ public class Poll extends DomainObject {
         this.answers = answers;
     }
 
+    @OrderBy("creationDate DESC")
     @OneToMany(mappedBy = "poll", orphanRemoval = true)
     public List<Commentary> getCommentaries() {
         return commentaries;
