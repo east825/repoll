@@ -1,7 +1,6 @@
 package repoll.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +52,11 @@ public class User extends DomainObject {
     private List<Poll> polls;
     private List<Commentary> commentaries;
     private List<Vote> votes;
+
+    @PrePersist
+    private void setTimestamps() {
+        registrationDate = lastVisitDate = new Date();
+    }
 
     @Override
     @Id

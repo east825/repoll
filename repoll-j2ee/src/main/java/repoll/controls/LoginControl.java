@@ -77,5 +77,6 @@ public class LoginControl implements Serializable {
     public void setCurrentUser(@org.jetbrains.annotations.NotNull User user) {
         user.setLastVisitDate(new Date());
         currentUser = user;
+        userEJB.merge(user);
     }
 }

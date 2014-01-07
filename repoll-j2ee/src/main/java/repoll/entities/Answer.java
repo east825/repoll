@@ -9,7 +9,11 @@ import java.util.List;
  */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pollId", "description"}))
+@NamedQueries({
+        @NamedQuery(name = Answer.FIND_FOR_POLL, query = "select a from Answer a where a.poll = :poll")
+})
 public class Answer extends DomainObject {
+    public static final String FIND_FOR_POLL = "Answer.findForPoll";
     private long id;
     @NotNull
     private String description;
@@ -60,7 +64,7 @@ public class Answer extends DomainObject {
         this.poll = poll;
     }
 
-    @OneToMany(mappedBy = "answer", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "answer", orphanRemoval = true)
     public List<Vote> getVotes() {
         return votes;
     }

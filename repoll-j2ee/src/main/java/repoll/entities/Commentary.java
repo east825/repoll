@@ -23,7 +23,14 @@ public class Commentary extends DomainObject {
     }
 
     public Commentary(User user, Poll poll, String message) {
+        this.author = user;
+        this.poll = poll;
         this.message = message;
+    }
+
+    @PrePersist
+    private void setTimestamps() {
+        creationDate = new Date();
     }
 
     @Override

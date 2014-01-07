@@ -45,34 +45,33 @@ public class PollCreateControl {
         this.answers = answers;
     }
 
-    /*public List<String> getAnswerDescriptions() {
-        return answerDescriptions;
-    }
-
-    public void setAnswerDescriptions(List<String> answerDescriptions) {
-        this.answerDescriptions = answerDescriptions;
-    }*/
-
     public String create() {
+        boolean valid = true;
         if (pollEJB.findByTitle(poll.getTitle()) != null) {
-            // TODO: slugify/normalize poll
-            return ControlUtil.reportError("title", "Poll with this title already exists");
+            // TODO: slugify/normalize poll title
+            ControlUtil.reportError("title", "Poll with this title already exists");
+            valid = false;
         }
-/*
-        for (String description : answerDescriptions) {
-            poll.getAnswers().add(new Answer(description));
-        }
-*/
 
-        poll.setAuthor(loginControl.getCurrentUser());
-        pollEJB.persist(poll);
         Set<String> descriptions = Sets.newHashSet(Splitter.on(";")
                 .trimResults()
                 .omitEmptyStrings()
                 .split(answers));
+        if (descriptions.size() < 2) {
+            ControlUtil.reportError("answers", "At least two answers should be specified");
+           valid = false;
+        }
+
+        if (!valid) {
+            return null;
+        }
+
+        poll.setAuthor(loginControl.getCurrentUser());
+        pollEJB.persist(poll);
         for (String description : descriptions) {
             answerEJB.persist(new Answer(poll, description));
         }
+        pollEJB.merge(poll);
         return "/polls/view.xhtml?id=" + poll.getId() + "&faces-redirect=true";
     }
 }

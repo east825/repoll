@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import repoll.beans.*;
 import repoll.entities.*;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -31,15 +32,12 @@ public class PollViewControl {
     private AnswerEJB answerEJB;
     @EJB
     private VoteEJB voteEJB;
-
     @Inject
     private LoginControl loginControl;
 
-
-    private Poll poll = new Poll();
-
+    private User currentUser;
+    private Poll poll;
     private long selectedAnswerID;
-
     private String commentMessage;
 
     public void findPollById() {
@@ -49,12 +47,20 @@ public class PollViewControl {
 //        }
         if (poll != null) {
             List<Answer> answers = poll.getAnswers();
-            selectedAnswerID = answers.size() > 0 ? answers.get(0).getId() : null;
+            selectedAnswerID = answers.size() > 0 ? answers.get(0).getId() : 0;
         }
     }
 
+    @PostConstruct
+    private void initialize() {
+        poll = new Poll();
+        currentUser = loginControl.getCurrentUser();
+    }
+
+    /**
+     * Check whether current user can vote in this poll.
+     */
     public boolean showResults() {
-        User currentUser = loginControl.getCurrentUser();
         return currentUser == null || userEJB.userVotedInPoll(currentUser, poll);
     }
 
@@ -64,18 +70,21 @@ public class PollViewControl {
     public String vote() {
         Answer selected = answerEJB.findById(selectedAnswerID);
         if (selected != null) {
-            voteEJB.persist(new Vote(loginControl.getCurrentUser(), selected));
-            pollEJB.refresh(poll);
+            voteEJB.persist(new Vote(currentUser, selected));
         }
-        return null;
+        userEJB.merge(currentUser);
+        answerEJB.merge(selected);
+        return String.format("/polls/view?id=%d&faces-redirect=true", poll.getId());
     }
 
     /**
      * Leave comment by current user
      */
     public String comment() {
-        commentaryEJB.persist(new Commentary(loginControl.getCurrentUser(), poll, commentMessage));
-        return null;
+        commentaryEJB.persist(new Commentary(currentUser, poll, commentMessage));
+        pollEJB.merge(poll);
+        userEJB.merge(currentUser);
+        return String.format("/polls/view?id=%d&faces-redirect=true", poll.getId());
     }
 
     /**
@@ -88,7 +97,9 @@ public class PollViewControl {
         for (int i = 0; i < answers.size(); i++) {
             Answer answer = answers.get(i);
             int count = answer.getVotes().size();
-            hasValue = count != 0;
+            if (count != 0) {
+                hasValue = true;
+            }
             String title = answer.getDescription();
             String color = COLORS[i % COLORS.length];
             results.add(new VotingResult(title, color, count));

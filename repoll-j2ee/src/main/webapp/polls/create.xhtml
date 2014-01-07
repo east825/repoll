@@ -3,8 +3,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-                xmlns:jsf="http://xmlns.jcp.org/jsf"
-                xmlns:f="http://java.sun.com/jsf/core">
+        >
     <ui:define name="title">
         Create poll
     </ui:define>
@@ -31,7 +30,8 @@
             </div>
 
             <div class="form-group">
-                <p class="small text-info">Enter answers, separated by semicolon. Identical answers will be filtered out.</p>
+                <p class="small help-block">Enter answers, separated by semicolon. Identical answers will be filtered out.</p>
+                <h:messages class="messages" for="answers" errorClass="has-error" warnClass="has-warning"/>
                 <label for="answers" class="sr-only">Answers</label>
                 <h:inputTextarea rows="5" id="answers" styleClass="form-control" p:placeholder="Answers"
                                  value="#{pollCreateControl.answers}"/>

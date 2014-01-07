@@ -5,7 +5,7 @@
                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:jsf="http://xmlns.jcp.org/jsf">
+        >
     <f:metadata>
         <f:viewParam name="id" value="#{pollViewControl.poll.id}"/>
         <f:viewAction action="#{pollViewControl.findPollById}"/>
@@ -17,8 +17,11 @@
             <c:forEach var="result" items="#{pollViewControl.results}">
             data.push({"value": #{result.votesCount}, "color": "#{result.color}"});
             </c:forEach>
-                //noinspection JSJQueryEfficiency
-            new Chart($("#chart canvas").get(0).getContext("2d")).Pie(data);
+            var canvas = $("#chart canvas").get(0);
+            if (canvas) {
+                new Chart(canvas.getContext("2d")).Pie(data);
+            }
+
 
 //            $("#legend ul").each(function () {
 //                $(this).addClass("list-unstyled");
@@ -127,7 +130,9 @@
                                     #{comment.author.login}
                                 </c:otherwise>
                             </c:choose>
-                            at #{comment.creationDate}
+                            at <h:outputText value="#{comment.creationDate}">
+                                <f:convertDateTime timeStyle="short" dateStyle="short" type="both"/>
+                            </h:outputText>
                         </div>
                         <div class="panel-body">
                             <p>#{comment.message}</p>

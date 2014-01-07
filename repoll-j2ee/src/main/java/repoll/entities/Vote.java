@@ -1,15 +1,19 @@
 package repoll.entities;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author Mikhail Golubev
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = Vote.FIND_FOR_ANSWER, query = "select v from Vote v where v.answer = :answer")
+})
 public class Vote extends DomainObject {
+    public static final String FIND_FOR_ANSWER = "Vote.findForAnswer";
     private long id;
-    private Timestamp creationDate;
+    private Date creationDate;
 
     private User author;
     private Answer answer;
@@ -26,6 +30,12 @@ public class Vote extends DomainObject {
         this.author = author;
     }
 
+    @PrePersist
+    private void setTimestamps() {
+        creationDate = new Date();
+    }
+
+
     @Override
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,13 +49,14 @@ public class Vote extends DomainObject {
     }
 
     @Basic
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creationDateTime", insertable = false,
             columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
-    public Timestamp getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Timestamp date) {
+    public void setCreationDate(Date date) {
         this.creationDate = date;
     }
 

@@ -27,6 +27,11 @@ public class Poll extends DomainObject {
     private List<Answer> answers;
     private List<Commentary> commentaries;
 
+    @PrePersist
+    private void setTimestamps() {
+        creationDate = new Date();
+    }
+
     @Override
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,8 +63,8 @@ public class Poll extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creationDateTime", insertable = false,
-            columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "creationDateTime")
+//            insertable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
     public Date getCreationDate() {
         return creationDate;
     }
@@ -67,7 +72,6 @@ public class Poll extends DomainObject {
     public void setCreationDate(Date date) {
         this.creationDate = date;
     }
-
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = true)
@@ -79,6 +83,7 @@ public class Poll extends DomainObject {
         this.author = author;
     }
 
+    // poll and answers usually created together
     @OneToMany(mappedBy = "poll", orphanRemoval = true)
     public List<Answer> getAnswers() {
         return answers;
