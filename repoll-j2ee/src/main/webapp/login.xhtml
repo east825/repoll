@@ -3,7 +3,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-                xmlns:jsf="http://xmlns.jcp.org/jsf">
+        >
 
     <ui:define name="title">Sign in</ui:define>
     <ui:define name="content">
@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <!--<h:outputLink value="/users/create.xhtml">Sign up.</h:outputLink>-->
-                <p>Do not have account? <h:link outcome="/users/create.xhtml" value="Sign up."/></p>
+                <p>Do not have account? <h:link outcome="userCreate" value="Sign up."/></p>
             </div>
             <h:commandButton class="btn btn-primary btn-block" value="Sign in"
                              action="#{loginControl.login}"/>

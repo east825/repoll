@@ -72,6 +72,7 @@ public class PollCreateControl {
             answerEJB.persist(new Answer(poll, description));
         }
         pollEJB.merge(poll);
+//        return "pollView";
         return "/polls/view.xhtml?id=" + poll.getId() + "&faces-redirect=true";
     }
 }

@@ -31,12 +31,12 @@
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
-                <h:link styleClass="navbar-brand" outcome="/polls/list.xhtml" value="Repoll"/>
+                <h:link styleClass="navbar-brand" outcome="pollList" value="Repoll"/>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><h:link outcome="/polls/list.xhtml" value="Polls"/></li>
-                    <li><h:link outcome="/users/list.xhtml" value="Users"/></li>
+                    <li><h:link outcome="pollList" value="Polls"/></li>
+                    <li><h:link outcome="userList" value="Users"/></li>
                 </ul>
 
                 <h:form id="searchForm" styleClass="navbar-form navbar-left" role="search" prependId="false">
@@ -46,27 +46,27 @@
                                      value="#{searchControl.query}"/>
                     </div>
                     <h:commandButton styleClass="btn btn-default" value="Search"
-                                     action="/polls/list.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+                                     action="searchResults"/>
                 </h:form>
 
                 <c:choose>
                     <!--<ui:param name="user" value="#{loginControl.currentUser}"/>-->
                     <c:when test="#{loginControl.currentUser != null}">
                         <h:form id="loggedInControl" styleClass="navbar-form navbar-right">
-                            <h:link id="createPoll" styleClass="btn btn-default" outcome="/polls/create.xhtml"
+                            <h:link id="createPoll" styleClass="btn btn-default" outcome="pollCreate"
                                     value="Create poll"/>
                             <h:commandButton class="btn btn-danger" value="Log out"
                                              action="#{loginControl.logout}"/>
                         </h:form>
                         <p class="navbar-text navbar-right">Logged in as
-                            <h:link outcome="/users/update.xhtml" value="#{loginControl.currentUser.login}">
+                            <h:link outcome="userUpdate" value="#{loginControl.currentUser.login}">
                                 <f:param name="id" value="#{loginControl.currentUser.id}"/>
                             </h:link>
                         </p>
                     </c:when>
                     <c:otherwise>
                         <h:form id="anonymousControl" styleClass="navbar-form navbar-right">
-                            <h:link id="logIn" styleClass="btn btn-primary" outcome="/login.xhtml" value="Log in"/>
+                            <h:link id="login" styleClass="btn btn-primary" outcome="login" value="Log in"/>
                         </h:form>
                     </c:otherwise>
                 </c:choose>

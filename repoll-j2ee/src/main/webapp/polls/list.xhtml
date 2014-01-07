@@ -19,7 +19,9 @@
                 <h:dataTable value="#{polls}" var="poll" styleClass="table table-striped">
                     <h:column>
                         <f:facet name="header">Title</f:facet>
-                        <h:link outcome="/polls/view.xhtml?id=#{poll.id}" value="#{poll.title}"/>
+                        <h:link outcome="pollView" value="#{poll.title}">
+                            <f:param name="id" value="#{poll.id}"/>
+                        </h:link>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Created</f:facet>

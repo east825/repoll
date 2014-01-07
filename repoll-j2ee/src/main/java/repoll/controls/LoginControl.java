@@ -57,12 +57,12 @@ public class LoginControl implements Serializable {
             return ControlUtil.reportError(null, "Wrong password or login");
         }
         setCurrentUser(user);
-        return "/polls/list.xhtml";
+        return "pollList";
     }
 
     public String logout() {
         currentUser = null;
-        return "/login.xhtml";
+        return "login";
     }
 
     public boolean userAuthorised() {

@@ -41,6 +41,6 @@ public class UserCreateControl extends UserEditControl {
         }
         loginControl.setCurrentUser(getUser());
         userEJB.persist(getUser());
-        return "/polls/list.xhtml?faces-redirect=true";
+        return "pollList";
     }
 }
