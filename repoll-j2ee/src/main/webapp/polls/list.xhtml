@@ -1,16 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:c="http://java.sun.com/jstl/core">
-
-<ui:composition template="/templates/layout.xhtml">
+<ui:composition template="/WEB-INF/templates/page-layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core">
     <f:metadata>
         <f:viewParam name="q" value="#{searchControl.query}"/>
     </f:metadata>
@@ -20,7 +14,7 @@
         <c:set var="polls" value="#{searchControl.searchPolls()}"/>
         <c:choose>
             <c:when test="#{empty polls}">
-            <p>No polls matching query <code>#{searchControl.query}</code> found.</p>
+                <p>No polls matching query <code>#{searchControl.query}</code> found.</p>
             </c:when>
             <c:otherwise>
                 <h:dataTable value="#{polls}" var="poll" styleClass="table table-striped">
@@ -31,8 +25,17 @@
                     <h:column>
                         <f:facet name="header">Created</f:facet>
                         <h:outputText value="#{poll.creationDate}">
-                            <f:convertDateTime timeStyle="medium" type="both" />
+                            <f:convertDateTime timeStyle="short" type="both"/>
                         </h:outputText>
+                        by
+                        <c:choose>
+                            <c:when test="#{poll.author == null}">
+                                <em>anonymous user</em>
+                            </c:when>
+                            <c:otherwise>
+                                #{poll.author.login}
+                            </c:otherwise>
+                        </c:choose>
                     </h:column>
                 </h:dataTable>
             </c:otherwise>
@@ -40,4 +43,3 @@
 
     </ui:define>
 </ui:composition>
-</html>

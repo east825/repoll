@@ -1,4 +1,4 @@
-<ui:composition template="/templates/layout.xhtml"
+<ui:composition template="/WEB-INF/templates/page-layout.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -14,11 +14,18 @@
     <ui:define name="scripts">
         <script type="application/javascript">
             var data = [];
-            <c:forEach var="result" items = "#{pollViewControl.results}">
-                    data.push({"value": #{result.votesCount}, "color": "#{result.color}"});
+            <c:forEach var="result" items="#{pollViewControl.results}">
+            data.push({"value": #{result.votesCount}, "color": "#{result.color}"});
             </c:forEach>
                 //noinspection JSJQueryEfficiency
             new Chart($("#chart canvas").get(0).getContext("2d")).Pie(data);
+
+//            $("#legend ul").each(function () {
+//                $(this).addClass("list-unstyled");
+//                $(this).children("li").each(function () {
+//                    $(this).html("foo" + $(this).text())
+//                })
+//            })
         </script>
     </ui:define>
 
@@ -28,92 +35,106 @@
 
     <ui:define name="content">
         <div class="page-header">
-            <h1>#{pollViewControl.poll.title}</h1>
+            <h1>#{pollViewControl.poll.title} <small><c:if test="#{pollViewControl.showResults()}">Results</c:if></small></h1>
         </div>
 
         <section id="poll-description">
-            <c:set var="desc" value="#{pollViewControl.poll.description}"/>
-            <c:choose>
-                <c:when test="#{empty desc}">
-                    <p class="text-info lead">No description available</p>
-                </c:when>
-                <c:otherwise>
-                    <p class="lead">#{desc}</p>
-                </c:otherwise>
-            </c:choose>
+            <div class="row col-lg-12">
+                <c:set var="desc" value="#{pollViewControl.poll.description}"/>
+                <c:choose>
+                    <c:when test="#{empty desc}">
+                        <p class="text-info lead">No description available</p>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="lead">#{desc}</p>
+                    </c:otherwise>
+                </c:choose>
+            </div>
 
-            <c:choose>
+            <div class="row">
+                <c:choose>
                 <c:when test="#{pollViewControl.showResults()}">
-                    <div id="chart" class="pull-left">
-                        <canvas width="400" height="400"></canvas>
+                    <div id="chart" class="col-lg-4">
+                        <canvas width="300" height="300"></canvas>
                     </div>
-                    <div id="legend" class="pull-left">
-                        <ul class="list-unstyled lead">
+                    <div id="legend" class="col-lg-6">
+                        <ul class="lead list-unstyled">
                             <c:forEach var="result" items="#{pollViewControl.results}">
                                 <c:if test="#{result.title != '_background'}">
-                                    <li style="color: #{result.color}">#{result.title}</li>
+                                    <li>
+                                        <canvas width="16" height="16" style="background: #{result.color}"/>
+                                        #{result.title} <span class="badge">#{result.votesCount}</span>
+                                    </li>
                                 </c:if>
                             </c:forEach>
                         </ul>
                     </div>
-
                 </c:when>
                 <c:otherwise>
-                    <h:form id="votingForm" prependId="false">
-                        <div class="form-group">
-                            <label>Answers</label>
-                            <!--Will generate table by default-->
-                            <h:selectOneRadio layout="pageDirection" id="answers"
-                                              value="#{pollViewControl.selectedAnswerID}">
-                                <c:set var="answers" value="#{pollViewControl.poll.answers}"/>
-                                <f:selectItems value="#{answers}" var="answer"
-                                               itemLabel="#{answer.description}" itemValue="#{answer.id}"/>
-                            </h:selectOneRadio>
-                        </div>
-                        <h:commandButton styleClass="btn btn-primary" value="Vote" action="#{pollViewControl.vote()}"/>
-                    </h:form>
+
+                    <div class="col-lg-6">
+                        <h:form id="votingForm" prependId="false">
+                            <div class="form-group">
+                                <label>Answers</label>
+                                <!--Will generate table by default-->
+                                <h:selectOneRadio layout="pageDirection" id="answers"
+                                                  value="#{pollViewControl.selectedAnswerID}">
+                                    <c:set var="answers" value="#{pollViewControl.poll.answers}"/>
+                                    <f:selectItems value="#{answers}" var="answer"
+                                                   itemLabel="#{answer.description}" itemValue="#{answer.id}"/>
+                                </h:selectOneRadio>
+                            </div>
+                            <h:commandButton styleClass="btn btn-primary" value="Vote"
+                                             action="#{pollViewControl.vote()}"/>
+                        </h:form>
+                    </div>
+
+
                 </c:otherwise>
             </c:choose>
-        </section>
-        <div class="clearfix"/>
-        <hr/>
-        <section id="commentaries">
-            <h2>Commentaries</h2>
-
-            <div class="panel panel-primary">
-                <div class="panel-heading">Add comment</div>
-                <div class="panel-body">
-                    <h:form prependId="false">
-                        <div class="form-group #{message.valid? '' : 'has-error'}">
-                            <label for="commentText" class="sr-only">Comment text</label>
-                            <h:inputTextarea id="commentText" styleClass="form-control" rows="3" p:placeholder="Message"
-                                             value="#{pollViewControl.commentMessage}" binding="#{message}"
-                                             required="true" requiredMessage="Message is required"/>
-                        </div>
-                        <h:commandButton styleClass="btn btn-primary btn-sm" value="Comment"
-                                         action="#{pollViewControl.comment()}"/>
-                    </h:form>
-                </div>
             </div>
-            <c:forEach var="comment" items="#{pollViewControl.poll.commentaries}">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        By
-                        <c:choose>
-                            <c:when test="#{comment.author == null}">
-                                <em>anonymous user</em>
-                            </c:when>
-                            <c:otherwise>
-                                #{comment.author.login}
-                            </c:otherwise>
-                        </c:choose>
-                        at #{comment.creationDate}
-                    </div>
+        </section>
+        <hr/>
+        <section id="commentaries" class="row">
+            <div class="col-lg-8">
+                <h2>Commentaries</h2>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Add comment</div>
                     <div class="panel-body">
-                        <p>#{comment.message}</p>
+                        <h:form prependId="false">
+                            <div class="form-group #{message.valid? '' : 'has-error'}">
+                                <label for="commentText" class="sr-only">Comment text</label>
+                                <h:inputTextarea id="commentText" styleClass="form-control" rows="3"
+                                                 p:placeholder="Message"
+                                                 value="#{pollViewControl.commentMessage}" binding="#{message}"
+                                                 required="true" requiredMessage="Message is required"/>
+                            </div>
+                            <h:commandButton styleClass="btn btn-primary btn-sm" value="Comment"
+                                             action="#{pollViewControl.comment()}"/>
+                        </h:form>
                     </div>
                 </div>
-            </c:forEach>
+                <c:forEach var="comment" items="#{pollViewControl.poll.commentaries}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            By
+                            <c:choose>
+                                <c:when test="#{comment.author == null}">
+                                    <em>anonymous user</em>
+                                </c:when>
+                                <c:otherwise>
+                                    #{comment.author.login}
+                                </c:otherwise>
+                            </c:choose>
+                            at #{comment.creationDate}
+                        </div>
+                        <div class="panel-body">
+                            <p>#{comment.message}</p>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
         </section>
     </ui:define>
 </ui:composition>

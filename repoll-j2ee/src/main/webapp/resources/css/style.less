@@ -14,9 +14,15 @@ body {
 //  background-image: url("#{resource['/img/hoffman.png']}")
 }
 
+.container {
+//  box-shadow: 0 0 20px black;
+//  background: rgba(255, 255, 255, 80%);
+}
+
 #content {
   margin-top: 20px;
 }
+
 
 ul.messages {
   .message-box(@base-color) {
@@ -40,18 +46,12 @@ ul.messages {
   list-style: none;
 }
 
-// Forms
-form {
-  width: 400px;
-//  margin: 0 auto;
-}
-
 // Poll view page
-
-#legend {
-  margin-left: 50px;
-  ul {
-    list-style-type: square;
+#chart {
+  canvas {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
   }
 }
 
@@ -59,11 +59,4 @@ form {
   label {
     display: inline;
   }
-}
-
-#commentaries {
-  form {
-    width: auto;
-  }
-  width: 600px;
 }
