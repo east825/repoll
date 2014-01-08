@@ -81,14 +81,14 @@
                                 <label>Answers</label>
                                 <!--Will generate table by default-->
                                 <h:selectOneRadio layout="pageDirection" id="answers"
-                                                  value="#{pollViewControl.selectedAnswerID}">
+                                                  value="#{pollViewControl.selectedAnswerId}">
                                     <c:set var="answers" value="#{pollViewControl.poll.answers}"/>
                                     <f:selectItems value="#{answers}" var="answer"
                                                    itemLabel="#{answer.description}" itemValue="#{answer.id}"/>
                                 </h:selectOneRadio>
                             </div>
                             <h:commandButton styleClass="btn btn-primary" value="Vote"
-                                             action="#{pollViewControl.vote()}"/>
+                                             action="#{pollViewControl.addVote()}"/>
                         </h:form>
                     </div>
 
@@ -114,13 +114,19 @@
                                                  required="true" requiredMessage="Message is required"/>
                             </div>
                             <h:commandButton styleClass="btn btn-primary btn-sm" value="Comment"
-                                             action="#{pollViewControl.comment()}"/>
+                                             action="#{pollViewControl.addComment()}"/>
                         </h:form>
                     </div>
                 </div>
                 <c:forEach var="comment" items="#{pollViewControl.poll.commentaries}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
+                            <h:form rendered="#{pollViewControl.canDeleteComment(comment)}"
+                                    onsubmit="return confirm('Are you sure? This action can\'t be reverted.')">
+                                <input type="hidden" name="commentId" value="#{comment.id}"/>
+                                <h:commandButton style="border: none" styleClass="close" p:aria-hidden="true" value="×"
+                                                 action="#{pollViewControl.deleteComment()}"/>
+                            </h:form>
                             By
                             <c:choose>
                                 <c:when test="#{comment.author == null}">

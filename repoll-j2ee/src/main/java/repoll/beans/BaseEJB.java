@@ -23,6 +23,7 @@ public abstract class BaseEJB<T extends DomainObject> {
         manager.persist(object);
     }
 
+    @NotNull
     public T merge(@NotNull T object) {
         return manager.merge(object);
     }
@@ -34,6 +35,16 @@ public abstract class BaseEJB<T extends DomainObject> {
     @Nullable
     public T findById(long id) {
         return manager.find(getEntityClass(), id);
+    }
+
+    public void remove(@NotNull T object) {
+        object = manager.merge(object);
+        manager.remove(object);
+    }
+
+    public void refresh(@NotNull T object) {
+        manager.merge(object);
+        manager.refresh(object);
     }
 
     @NotNull

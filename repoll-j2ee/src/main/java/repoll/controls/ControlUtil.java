@@ -24,10 +24,12 @@ public class ControlUtil {
         // empty
     }
 
+    @Nullable
     public static String reportError(@Nullable String id, @NotNull String message) {
         return reportMessage(FacesMessage.SEVERITY_ERROR, id, message);
     }
 
+    @Nullable
     public static String reportWarning(@Nullable String id, @NotNull String message) {
         return reportMessage(FacesMessage.SEVERITY_WARN, id, message);
     }
@@ -54,16 +56,19 @@ public class ControlUtil {
         }
     }
 
+    @Nullable
     private static String reportMessage(FacesMessage.Severity severity, String id, String message) {
         FacesMessage facesMessage = new FacesMessage(severity, message, "");
         getContext().addMessage(id, facesMessage);
         return null;
     }
 
-    private static FacesContext getContext() {
+    @NotNull
+    public static FacesContext getContext() {
         return FacesContext.getCurrentInstance();
     }
 
+    @NotNull
     public static ProjectStage getProjectStage() {
         return FacesContext.getCurrentInstance().getApplication().getProjectStage();
     }
@@ -72,6 +77,7 @@ public class ControlUtil {
         return getProjectStage() == ProjectStage.Development;
     }
 
+    @NotNull
     public static String getRequestURL() {
         return ((HttpServletRequest) getContext().getExternalContext().getRequest()).getRequestURL().toString();
     }

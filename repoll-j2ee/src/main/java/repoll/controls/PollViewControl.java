@@ -1,5 +1,6 @@
 package repoll.controls;
 
+import com.google.common.base.Objects;
 import org.jetbrains.annotations.NotNull;
 import repoll.beans.*;
 import repoll.entities.*;
@@ -37,7 +38,7 @@ public class PollViewControl {
 
     private User currentUser;
     private Poll poll;
-    private long selectedAnswerID;
+    private long selectedAnswerId;
     private String commentMessage;
 
     public void findPollById() {
@@ -47,7 +48,7 @@ public class PollViewControl {
 //        }
         if (poll != null) {
             List<Answer> answers = poll.getAnswers();
-            selectedAnswerID = answers.size() > 0 ? answers.get(0).getId() : 0;
+            selectedAnswerId = answers.size() > 0 ? answers.get(0).getId() : 0;
         }
     }
 
@@ -67,11 +68,11 @@ public class PollViewControl {
     /**
      * Leave vote by current user.
      */
-    public String vote() {
-        Answer selected = answerEJB.findById(selectedAnswerID);
+    public String addVote() {
+        Answer selected = answerEJB.findById(selectedAnswerId);
         if (selected != null) {
             voteEJB.persist(new Vote(currentUser, selected));
-            userEJB.merge(currentUser);
+            currentUser = userEJB.merge(currentUser);
             answerEJB.merge(selected);
         }
         return "pollView";
@@ -80,12 +81,39 @@ public class PollViewControl {
     /**
      * Leave comment by current user
      */
-    public String comment() {
+    public String addComment() {
         commentaryEJB.persist(new Commentary(currentUser, poll, commentMessage));
-        pollEJB.merge(poll);
-        userEJB.merge(currentUser);
+        poll = pollEJB.merge(poll);
+        currentUser = userEJB.merge(currentUser);
         return "pollView";
     }
+
+    /**
+     * Delete comment specified by {@code commentId} parameter if it's possible.
+     */
+    public String deleteComment() {
+        // commentId is hidden input field
+        long id = Long.parseLong(ControlUtil.getRequestParameter("commentId"));
+        Commentary selected = commentaryEJB.findById(id);
+        if (selected != null && canDeleteComment(selected)) {
+            commentaryEJB.remove(selected);
+            poll = pollEJB.merge(selected.getPoll());
+            currentUser = userEJB.merge(currentUser);
+        }
+        return "pollView";
+    }
+
+    /**
+     * Check that specified commentary can be deleted by current user.
+     */
+    public boolean canDeleteComment(Commentary commentary) {
+        // anonymous user can do nothing
+        if (currentUser == null) {
+            return false;
+        }
+        return Objects.equal(currentUser, poll.getAuthor()) || Objects.equal(currentUser, commentary.getAuthor());
+    }
+
 
     /**
      * Get poll results containing answer titles, vote counts and colors in chart.
@@ -126,12 +154,12 @@ public class PollViewControl {
         this.commentMessage = commentMessage;
     }
 
-    public long getSelectedAnswerID() {
-        return selectedAnswerID;
+    public long getSelectedAnswerId() {
+        return selectedAnswerId;
     }
 
-    public void setSelectedAnswerID(long selectedAnswerID) {
-        this.selectedAnswerID = selectedAnswerID;
+    public void setSelectedAnswerId(long selectedAnswerId) {
+        this.selectedAnswerId = selectedAnswerId;
     }
 
     public static class VotingResult {
