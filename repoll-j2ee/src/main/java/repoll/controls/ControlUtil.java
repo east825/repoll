@@ -81,4 +81,18 @@ public class ControlUtil {
     public static String getRequestURL() {
         return ((HttpServletRequest) getContext().getExternalContext().getRequest()).getRequestURL().toString();
     }
+
+    public static void send404Error() {
+        FacesContext context = getContext();
+        // See more options on http://stackoverflow.com/questions/4901710/how-to-throw-jsf2-404-error
+        // variant #1
+        try {
+            context.getExternalContext().responseSendError(404, "Not found");
+            context.responseComplete();
+        } catch (IOException ignored) {
+            // empty
+        }
+        // variant #2
+//        ((HttpServletResponse) context.getExternalContext().getResponse()).setStatus(404);
+    }
 }

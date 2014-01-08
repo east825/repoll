@@ -4,10 +4,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-        >
-
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:head>
-    <title>Error on serer side</title>
+    <title><ui:insert name="title"/></title>
     <h:outputStylesheet library="css" name="bootstrap-theme.min.css"/>
     <h:outputStylesheet library="css" name="bootstrap.min.css"/>
     <h:outputStylesheet library="css" name="style.css"/>
@@ -18,8 +17,8 @@
 <h:body>
     <div class="jumbotron">
         <div class="container">
-            <h1>Opps…</h1>
-            <p>Stay calm. It's our fault.</p>
+            <h1><ui:insert name="title">Opps…</ui:insert></h1>
+            <p><ui:insert name="message"></ui:insert></p>
         </div>
     </div>
 </h:body>

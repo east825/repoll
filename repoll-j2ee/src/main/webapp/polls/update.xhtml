@@ -22,7 +22,8 @@
 
             <div class="form-group">
                 <label for="title" class="sr-only">Title</label>
-                <p id="title" class="form-control-static">#{pollUpdateControl}</p>
+                <h:inputText id="title" styleClass="form-control" value="#{pollUpdateControl.poll.title}" p:disabled="true"/>
+                <!--<p id="title" class="form-control-static">#{pollUpdateControl.poll.title}</p>-->
             </div>
 
             <div class="form-group #{desc.valid? '' : 'has-error'}">

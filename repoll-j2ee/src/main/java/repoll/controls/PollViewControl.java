@@ -43,13 +43,12 @@ public class PollViewControl {
 
     public void findPollById() {
         poll = pollEJB.findById(poll.getId());
-//        if (poll == null) {
-//            ControlUtil.redirect("/polls/list.xhtml");
-//        }
-        if (poll != null) {
-            List<Answer> answers = poll.getAnswers();
-            selectedAnswerId = answers.size() > 0 ? answers.get(0).getId() : 0;
+        if (poll == null) {
+            ControlUtil.send404Error();
+            return;
         }
+        List<Answer> answers = poll.getAnswers();
+        selectedAnswerId = answers.size() > 0 ? answers.get(0).getId() : 0;
     }
 
     @PostConstruct

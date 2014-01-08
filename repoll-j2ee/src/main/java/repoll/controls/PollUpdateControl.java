@@ -27,6 +27,9 @@ public class PollUpdateControl {
 
     public void findPollById() {
         poll = pollEJB.findById(poll.getId());
+        if (poll == null) {
+            ControlUtil.send404Error();
+        }
     }
 
     public String update() {

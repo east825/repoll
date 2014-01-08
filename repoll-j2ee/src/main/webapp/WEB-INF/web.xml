@@ -44,8 +44,15 @@
         <param-value>client</param-value>
     </context-param>
 
+<!--
     <error-page>
         <error-code>500</error-code>
-        <location>/error.xhtml</location>
+        <location>/error500.xhtml</location>
+    </error-page>
+-->
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error404.xhtml</location>
     </error-page>
 </web-app>
