@@ -62,6 +62,7 @@
         </navigation-case>
     </navigation-rule>
 
+    <!-- for some reason it doesn't work -->
     <navigation-rule>
         <from-view-id>/polls/create.xhtml</from-view-id>
         <navigation-case>

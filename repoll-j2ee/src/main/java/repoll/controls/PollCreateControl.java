@@ -8,14 +8,16 @@ import repoll.entities.Answer;
 import repoll.entities.Poll;
 
 import javax.ejb.EJB;
-import javax.enterprise.inject.Model;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Set;
 
 /**
  * @author Mikhail Golubev
  */
-@Model
+@Named
+@ViewScoped
 public class PollCreateControl {
     @EJB
     private PollEJB pollEJB;
