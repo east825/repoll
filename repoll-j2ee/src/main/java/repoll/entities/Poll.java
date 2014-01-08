@@ -64,7 +64,6 @@ public class Poll extends DomainObject {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creationDateTime")
-//            insertable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
     public Date getCreationDate() {
         return creationDate;
     }

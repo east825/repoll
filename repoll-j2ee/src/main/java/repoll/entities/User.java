@@ -130,8 +130,7 @@ public class User extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "registrationDateTime", insertable = false,
-            columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "registrationDateTime")
     public Date getRegistrationDate() {
         return registrationDate;
     }
@@ -141,7 +140,7 @@ public class User extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "lastVisitDateTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "lastVisitDateTime")
     public Date getLastVisitDate() {
         return lastVisitDate;
     }

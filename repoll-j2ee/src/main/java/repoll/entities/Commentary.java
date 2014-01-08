@@ -55,8 +55,7 @@ public class Commentary extends DomainObject {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creationDateTime", insertable = false,
-            columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "creationDateTime")
     public Date getCreationDate() {
         return creationDate;
     }
