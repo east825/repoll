@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -65,5 +66,13 @@ public class ControlUtil {
 
     public static ProjectStage getProjectStage() {
         return FacesContext.getCurrentInstance().getApplication().getProjectStage();
+    }
+
+    public static boolean isDevelopmentStage() {
+        return getProjectStage() == ProjectStage.Development;
+    }
+
+    public static String getRequestURL() {
+        return ((HttpServletRequest) getContext().getExternalContext().getRequest()).getRequestURL().toString();
     }
 }

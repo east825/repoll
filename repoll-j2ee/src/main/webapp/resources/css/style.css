@@ -31,3 +31,7 @@ ul.messages li {
 #votingForm label {
   display: inline;
 }
+table.debug {
+  margin-top: 50px;
+  border-color: red;
+}

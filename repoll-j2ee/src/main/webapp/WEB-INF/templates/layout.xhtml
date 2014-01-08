@@ -75,6 +75,23 @@
     </div>
     <div class="container">
         <ui:insert name="container-body"/>
+        <c:if test="#{facesContext.application.projectStage == 'Development'}">
+            <table class="table debug table-condensed">
+                <thead>
+                    <tr class="danger"><th colspan="2">Debug detail</th></tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>Path</th>
+                    <td>#{request.requestURI}</td>
+                </tr>
+                <tr>
+                    <th>Query params</th>
+                    <td>#{param}</td>
+                </tr>
+                </tbody>
+            </table>
+        </c:if>
     </div>
     <ui:insert name="scripts"/>
 </h:body>
