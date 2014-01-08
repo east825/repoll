@@ -61,8 +61,8 @@ public class PollViewControl {
     /**
      * Check whether current user can vote in this poll.
      */
-    public boolean showResults() {
-        return currentUser == null || userEJB.userVotedInPoll(currentUser, poll);
+    public boolean canVote() {
+        return currentUser != null && !userEJB.userVotedInPoll(currentUser, poll);
     }
 
     /**

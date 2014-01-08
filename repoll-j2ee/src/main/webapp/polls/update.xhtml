@@ -1,0 +1,38 @@
+<ui:composition template="/WEB-INF/templates/form-layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:f="http://java.sun.com/jsf/core"
+        >
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{pollUpdateControl.poll.id}"/>
+        <f:viewAction action="#{pollUpdateControl.findPollById}"/>
+    </f:metadata>
+    <ui:define name="title">
+        Update poll
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="signUpForm" prependId="false" styleClass="center-block">
+            <h2>Update poll</h2>
+            <h:messages class="messages" for="signUpForm" errorClass="has-error" warnClass="has-warning"/>
+
+            <p class="help-block">Field marked with * are <b>required</b>.</p>
+
+            <div class="form-group">
+                <label for="title" class="sr-only">Title</label>
+                <p id="title" class="form-control-static">#{pollUpdateControl}</p>
+            </div>
+
+            <div class="form-group #{desc.valid? '' : 'has-error'}">
+                <h:messages class="messages" for="description" errorClass="has-error" warnClass="has-warning"/>
+                <label for="description" class="sr-only">Description</label>
+                <h:inputTextarea rows="5" id="description" styleClass="form-control" p:placeholder="Description"
+                                 value="#{pollUpdateControl.poll.description}" binding="#{desc}"/>
+            </div>
+
+            <h:commandButton class="btn btn-default" value="Submit" action="#{pollUpdateControl.update()}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

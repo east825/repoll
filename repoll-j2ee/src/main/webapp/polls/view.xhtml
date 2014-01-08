@@ -38,7 +38,7 @@
     <ui:define name="content">
         <div class="page-header">
             <h1 class="pull-left">#{pollViewControl.poll.title}
-                <small><c:if test="#{pollViewControl.showResults()}">Results</c:if></small>
+                <small><c:if test="#{pollViewControl.canVote()}">Results</c:if></small>
             </h1>
             <div class="btn-group pull-right" style="margin-top: 20px">
                 <button data-toggle="modal" data-target="#newCommentModal"
@@ -66,7 +66,7 @@
 
             <div class="row">
                 <c:choose>
-                <c:when test="#{pollViewControl.showResults()}">
+                <c:when test="#{!pollViewControl.canVote()}">
                     <div id="chart" class="col-lg-4">
                         <canvas width="300" height="300"></canvas>
                     </div>

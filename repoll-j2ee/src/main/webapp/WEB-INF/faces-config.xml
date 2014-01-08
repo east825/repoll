@@ -82,6 +82,20 @@
     </navigation-rule>
 
     <navigation-rule>
+        <from-view-id>/polls/update.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>pollView</from-outcome>
+            <to-view-id>/polls/view.xhtml</to-view-id>
+            <redirect include-view-params="true">
+                <redirect-param>
+                    <name>id</name>
+                    <value>#{pollUpdateControl.poll.id}</value>
+                </redirect-param>
+            </redirect>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
         <from-view-id>/users/create.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>pollList</from-outcome>
