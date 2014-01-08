@@ -24,6 +24,10 @@
             <from-outcome>pollView</from-outcome>
             <to-view-id>/polls/view.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>pollEdit</from-outcome>
+            <to-view-id>/polls/update.xhtml</to-view-id>
+        </navigation-case>
 
         <!--User related pages-->
         <navigation-case>

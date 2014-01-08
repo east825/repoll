@@ -108,6 +108,10 @@ public class PollViewControl {
         return Objects.equal(currentUser, poll.getAuthor()) || Objects.equal(currentUser, commentary.getAuthor());
     }
 
+    public boolean canEditPoll() {
+        return currentUser != null && Objects.equal(currentUser, poll.getAuthor());
+    }
+
 
     /**
      * Get poll results containing answer titles, vote counts and colors in chart.
