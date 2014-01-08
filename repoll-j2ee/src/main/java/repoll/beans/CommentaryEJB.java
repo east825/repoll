@@ -2,6 +2,7 @@ package repoll.beans;
 
 import org.jetbrains.annotations.NotNull;
 import repoll.entities.Commentary;
+import repoll.entities.Poll;
 import repoll.entities.User;
 
 import javax.ejb.Stateless;
@@ -22,8 +23,11 @@ public class CommentaryEJB extends BaseEJB<Commentary> {
         User author = commentary.getAuthor();
         if (author != null) {
             author.getCommentaries().add(commentary);
+            manager.merge(author);
         }
-        commentary.getPoll().getCommentaries().add(commentary);
+        Poll poll = commentary.getPoll();
+        poll.getCommentaries().add(commentary);
+        manager.merge(poll);
     }
 
     @Override
@@ -32,8 +36,10 @@ public class CommentaryEJB extends BaseEJB<Commentary> {
         User author = commentary.getAuthor();
         if (author != null) {
             author.getCommentaries().remove(commentary);
+            manager.merge(author);
         }
-        commentary.getPoll().getCommentaries().remove(commentary);
-        System.out.println(commentary.getPoll().getCommentaries().size());
+        Poll poll = commentary.getPoll();
+        poll.getCommentaries().remove(commentary);
+        manager.merge(poll);
     }
 }

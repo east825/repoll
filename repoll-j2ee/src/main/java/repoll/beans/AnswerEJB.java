@@ -25,8 +25,9 @@ public class AnswerEJB extends BaseEJB<Answer> {
 
     @Override
     public void persist(@NotNull Answer answer) {
+        super.persist(answer);
         Poll poll = answer.getPoll();
         poll.getAnswers().add(answer);
-        super.persist(answer);
+        manager.merge(poll);
     }
 }

@@ -29,14 +29,7 @@
                             <f:convertDateTime timeStyle="short" dateStyle="short" type="both"/>
                         </h:outputText>
                         by
-                        <c:choose>
-                            <c:when test="#{poll.author == null}">
-                                <em>anonymous user</em>
-                            </c:when>
-                            <c:otherwise>
-                                #{poll.author.login}
-                            </c:otherwise>
-                        </c:choose>
+                        #{empty poll.author? 'anonymous user' : poll.author.login}
                     </h:column>
                 </h:dataTable>
             </c:otherwise>

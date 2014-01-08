@@ -72,8 +72,6 @@ public class PollViewControl {
         Answer selected = answerEJB.findById(selectedAnswerId);
         if (selected != null) {
             voteEJB.persist(new Vote(currentUser, selected));
-            currentUser = userEJB.merge(currentUser);
-            answerEJB.merge(selected);
         }
         return "pollView";
     }
@@ -83,8 +81,6 @@ public class PollViewControl {
      */
     public String addComment() {
         commentaryEJB.persist(new Commentary(currentUser, poll, commentMessage));
-        poll = pollEJB.merge(poll);
-        currentUser = userEJB.merge(currentUser);
         return "pollView";
     }
 
@@ -97,8 +93,6 @@ public class PollViewControl {
         Commentary selected = commentaryEJB.findById(id);
         if (selected != null && canDeleteComment(selected)) {
             commentaryEJB.remove(selected);
-            poll = pollEJB.merge(selected.getPoll());
-            currentUser = userEJB.merge(currentUser);
         }
         return "pollView";
     }

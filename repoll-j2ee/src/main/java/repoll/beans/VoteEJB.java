@@ -30,7 +30,10 @@ public class VoteEJB extends BaseEJB<Vote> {
         User user = vote.getAuthor();
         if (user != null) {
             user.getVotes().add(vote);
+            manager.merge(user);
         }
-        vote.getAnswer().getVotes().add(vote);
+        Answer answer = vote.getAnswer();
+        answer.getVotes().add(vote);
+        manager.merge(answer);
     }
 }

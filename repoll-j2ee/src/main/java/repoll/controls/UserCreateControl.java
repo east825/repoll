@@ -39,8 +39,8 @@ public class UserCreateControl extends UserEditControl {
         if (!valid) {
             return null;
         }
-        loginControl.setCurrentUser(getUser());
         userEJB.persist(getUser());
+        loginControl.setCurrentUser(getUser());
         return "pollList";
     }
 }
