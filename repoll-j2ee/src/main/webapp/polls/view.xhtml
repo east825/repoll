@@ -37,9 +37,12 @@
 
     <ui:define name="content">
         <div class="page-header">
-            <h1 class="pull-left">#{pollViewControl.poll.title}
-                <small><c:if test="#{pollViewControl.canVote()}">Results</c:if></small>
-            </h1>
+            <div class="pull-left">
+                <h1>
+                    #{pollViewControl.poll.title}
+                    <small><c:if test="#{pollViewControl.canVote()}">Results</c:if></small>
+                </h1>
+            </div>
             <div class="btn-group pull-right" style="margin-top: 20px">
                 <button data-toggle="modal" data-target="#newCommentModal"
                         class="btn btn-default">Comment</button>
@@ -53,6 +56,9 @@
 
         <section id="poll-description">
             <div class="row col-lg-12">
+                <p class="text-info"><h:outputText value="#{pollViewControl.poll.creationDate}">
+                    <f:convertDateTime timeStyle="short" dateStyle="medium" type="both"/>
+                </h:outputText></p>
                 <c:set var="desc" value="#{pollViewControl.poll.description}"/>
                 <c:choose>
                     <c:when test="#{empty desc}">
