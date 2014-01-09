@@ -12,7 +12,8 @@
 <ui:debug />
 
 <h:head>
-    <title><ui:insert name="title">Default title</ui:insert></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
     <h:outputStylesheet library="css" name="bootstrap-theme.min.css"/>
     <h:outputStylesheet library="css" name="bootstrap.min.css"/>
     <h:outputStylesheet library="css" name="style.css"/>
@@ -21,6 +22,8 @@
     <h:outputScript library="js" name="bootstrap.min.js" target="head"/>
 
     <h:outputScript library="js" name="Chart.min.js" target="head"/>
+
+    <title><ui:insert name="title">Default title</ui:insert></title>
 </h:head>
 
 <h:body>
